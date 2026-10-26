@@ -1,0 +1,51 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# Emdash content database & media
+data.db
+data.db-*
+uploads/
+
+# Emdash generated types
+emdash-env.d.ts
+
+# Builder / editor temp files
+*.log
+.buildlog.txt
+test.txt
+
+# Editor local history
+.history/
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folders
+.idea/
+
+# vscode setting folders
+.vscode/
+
+.vercel
+
+# Astro
+.astro/
+
+# Development documentation (exclude from public repo)
+*.md
+!README.md
+!LICENSE.md

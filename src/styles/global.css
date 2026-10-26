@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (html.dark) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Brand colors */
+  --color-primary-50: #fef7ee;
+  --color-primary-100: #fdecd3;
+  --color-primary-200: #fad6a5;
+  --color-primary-300: #f7b96d;
+  --color-primary-400: #f39333;
+  --color-primary-500: #f0760b;
+  --color-primary-600: #e15a01;
+  --color-primary-700: #ba4104;
+  --color-primary-800: #94330a;
+  --color-primary-900: #782c0b;
+  --color-primary-950: #411401;
+
+  --color-dark-50: #f6f6f7;
+  --color-dark-100: #e1e3e5;
+  --color-dark-200: #c3c6cc;
+  --color-dark-300: #9ea3ad;
+  --color-dark-400: #797f8d;
+  --color-dark-500: #5f6573;
+  --color-dark-600: #4b505c;
+  --color-dark-700: #3d414b;
+  --color-dark-800: #34373f;
+  --color-dark-900: #2e3037;
+  --color-dark-950: #0a0b0d;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-slide-down: slideDown 0.3s ease-out;
+  --animate-scale-in: scaleIn 0.3s ease-out;
+  --animate-bounce-subtle: bounceSubtle 0.6s ease-in-out;
+  --animate-shimmer: shimmer 2s infinite;
+  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes slideDown {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes scaleIn {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes bounceSubtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(240, 118, 11, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(240, 118, 11, 0.8); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
