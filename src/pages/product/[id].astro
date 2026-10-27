@@ -217,15 +217,15 @@ const relatedProducts = (await getProducts())
 </BaseLayout>
 
 <script define:vars={{ product }}>
-  // Image gallery
-  document.querySelectorAll('[data-image]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const img = (e.currentTarget as HTMLElement).dataset.image!;
-      document.getElementById('main-image')!.setAttribute('src', img);
-      
-      document.querySelectorAll('[data-image]').forEach(b => b.classList.remove('border-primary-600'));
-      (e.currentTarget as HTMLElement).classList.add('border-primary-600');
-    });
+  // Image gallery — event delegation on document (robust to load timing)
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-image]');
+    if (!btn) return;
+    const img = btn.dataset.image;
+    const main = document.getElementById('main-image');
+    if (img && main) main.setAttribute('src', img);
+    document.querySelectorAll('[data-image]').forEach(b => b.classList.remove('border-primary-600'));
+    btn.classList.add('border-primary-600');
   });
 
   // Quantity
