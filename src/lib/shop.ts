@@ -222,19 +222,50 @@ export async function getCategoryBySlug(slug: string): Promise<ShopCategory | nu
 	};
 }
 
+// Collect a taxonomy term slug together with every descendant term slug in its
+// subtree. Used so a parent category page also surfaces products assigned to
+// its child/grandchild terms.
+function collectTermAndDescendants(term: { slug: string; children?: unknown[] }, out: string[] = []): string[] {
+	out.push(term.slug);
+	if (Array.isArray(term.children)) {
+		for (const child of term.children) {
+			collectTermAndDescendants(child as { slug: string; children?: unknown[] }, out);
+		}
+	}
+	return out;
+}
+
 export async function getProductsByCategory(slug: string): Promise<ShopProduct[]> {
-	const result = (await getEmDashCollection("products", {
-		where: { collection: slug },
-	})) as {
+	// Build the set of slugs that belong to this category subtree (self + all
+	// descendants), so a level-1 page also returns products tagged with a
+	// level-2 or level-3 term under it.
+	const terms = await getTaxonomyTerms("collection", { includeCounts: false });
+	let termSet: Set<string> | undefined;
+	const stack = [...terms];
+	while (stack.length && !termSet) {
+		const node = stack.pop() as { slug: string; children?: unknown[] };
+		if (node.slug === slug) {
+			termSet = new Set(collectTermAndDescendants(node));
+		} else if (Array.isArray(node.children)) {
+			stack.push(...(node.children as { slug: string; children?: unknown[] }[]));
+		}
+	}
+
+	const result = (await getEmDashCollection("products" as never)) as {
 		entries?: unknown[] | undefined;
 		error?: unknown;
 	};
 	if (result.error || !Array.isArray(result.entries) || result.entries.length === 0) {
 		return [];
 	}
-	return result.entries
+	const products = result.entries
 		.map((entry) => toProduct(entry as Record<string, unknown>))
 		.filter((p) => p.name !== "");
+
+	// If the requested term was not found in the tree, fall back to an exact
+	// slug match so the behaviour degrades gracefully.
+	if (!termSet) return products.filter((p) => p.category === slug);
+	return products.filter((p) => (p.category ? termSet.has(p.category) : false));
 }
 
 export interface CategoryMeta {
