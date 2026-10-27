@@ -1,91 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import { getProductDetail, getProducts } from '../../lib/shop';
 
-export function getStaticPaths() {
-  return [
-    { params: { id: '1' } },
-    { params: { id: '2' } },
-    { params: { id: '3' } },
-    { params: { id: '4' } },
-    { params: { id: '5' } },
-  ];
-}
+const product = await getProductDetail(Astro.params.id ?? '');
 
-// Mock product data
-const product = {
-  id: '1',
-  name: 'Premium Portland Cement - 50kg Bag',
-  price: 12.99,
-  originalPrice: 15.99,
-  images: [
-    'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=800&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=800&fit=crop',
-  ],
-  rating: 4.8,
-  reviews: 234,
-  inStock: true,
-  sku: 'CEM-PORT-50',
-  category: 'Cement & Concrete',
-  brand: 'BuildPro',
-  description: 'High-quality Portland cement perfect for all construction projects. Provides excellent strength and durability for foundations, walls, and structural applications.',
-  features: [
-    'Premium grade Portland cement',
-    'High compressive strength',
-    'Consistent quality and performance',
-    'Suitable for all weather conditions',
-    'Meets ASTM C150 standards',
-    'Fast setting time'
-  ],
-  specifications: {
-    'Weight': '50 kg (110 lbs)',
-    'Type': 'Portland Cement Type I',
-    'Compressive Strength': '4000+ PSI',
-    'Setting Time': '45-60 minutes',
-    'Color': 'Gray',
-    'Storage': 'Keep dry and covered'
-  }
-};
-
-const relatedProducts = [
-  {
-    id: '2',
-    name: 'Steel Reinforcement Bars',
-    price: 45.50,
-    image: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=500&h=500&fit=crop',
-    rating: 4.9,
-    reviews: 189,
-    inStock: true
-  },
-  {
-    id: '3',
-    name: 'Premium Pine Lumber',
-    price: 8.99,
-    image: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&h=500&fit=crop',
-    rating: 4.7,
-    reviews: 456,
-    inStock: true
-  },
-  {
-    id: '4',
-    name: 'Professional Power Drill',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&h=500&fit=crop',
-    rating: 4.9,
-    reviews: 678,
-    inStock: true
-  },
-  {
-    id: '5',
-    name: 'Copper Electrical Wire',
-    price: 89.99,
-    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500&h=500&fit=crop',
-    rating: 4.6,
-    reviews: 123,
-    inStock: true
-  }
-];
+const relatedProducts = (await getProducts())
+  .filter((p) => p.id !== (Astro.params.id ?? ''))
+  .slice(0, 4);
 ---
 
 <BaseLayout title={`${product.name} - BuildMart`}>

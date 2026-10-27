@@ -45,6 +45,9 @@ test.txt
 # Astro
 .astro/
 
+# Wrangler / Cloudflare local state
+.wrangler/
+
 # Development documentation (exclude from public repo)
 *.md
 !README.md

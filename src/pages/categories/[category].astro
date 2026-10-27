@@ -3,24 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import FilterSidebar from '../../components/FilterSidebar.astro';
 
-export function getStaticPaths() {
-  return [
-    { params: { category: 'cement' } },
-    { params: { category: 'cement-concrete' } },
-    { params: { category: 'steel-metal' } },
-    { params: { category: 'steel-&-metal' } },
-    { params: { category: 'lumber-wood' } },
-    { params: { category: 'lumber-&-wood' } },
-    { params: { category: 'tools-equipment' } },
-    { params: { category: 'tools-&-equipment' } },
-    { params: { category: 'electrical' } },
-    { params: { category: 'plumbing' } },
-    { params: { category: 'paint' } },
-    { params: { category: 'roofing' } }
-  ];
-}
+import { decodeSlug, getTerm } from 'emdash';
+import { getProductsByCategory } from '../../lib/shop';
 
 const { category } = Astro.params;
+
+// Taxonomy (collection) based category lookup — EmDash native taxonomy
+const taxCategorySlug = decodeSlug(category ?? '');
+const taxonomyTerm = await getTerm('collection', taxCategorySlug, { includeCounts: true });
+const taxProducts = taxonomyTerm ? await getProductsByCategory(taxCategorySlug) : [];
 
 // Category data
 const categoryData: Record<string, any> = {
@@ -82,7 +73,15 @@ const categoryData: Record<string, any> = {
   }
 };
 
-const currentCategory = categoryData[category || 'cement'] || categoryData['cement'];
+const currentCategory = taxonomyTerm
+  ? {
+      name: taxonomyTerm.label,
+      icon: '🛁',
+      description: taxonomyTerm.description ?? 'Products in this collection.',
+      banner: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=400&fit=crop',
+      totalProducts: taxonomyTerm.count ?? 0
+    }
+  : categoryData[category || 'cement'] || categoryData['cement'];
 
 // Mock products by category
 const productsByCategory: Record<string, any[]> = {
@@ -444,7 +443,9 @@ const productsByCategory: Record<string, any[]> = {
   ]
 };
 
-const products = productsByCategory[category || 'cement'] || productsByCategory['cement'];
+const products = taxProducts.length
+  ? taxProducts
+  : (productsByCategory[taxCategorySlug] || productsByCategory['cement']);
 ---
 
 <BaseLayout title={`${currentCategory.name} - BuildMart`} description={currentCategory.description}>

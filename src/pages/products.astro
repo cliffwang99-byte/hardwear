@@ -3,17 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import FilterSidebar from '../components/FilterSidebar.astro';
 
-const products = Array.from({ length: 12 }, (_, i) => ({
-  id: `prod-${i + 1}`,
-  name: `Building Material Product ${i + 1}`,
-  price: Math.floor(Math.random() * 200) + 10,
-  originalPrice: i % 3 === 0 ? Math.floor(Math.random() * 250) + 50 : undefined,
-  image: `https://images.unsplash.com/photo-${1500000000000 + i * 10000000}?w=500&h=500&fit=crop`,
-  rating: 4 + Math.random(),
-  reviews: Math.floor(Math.random() * 500) + 50,
-  badge: i % 4 === 0 ? 'Best Seller' : i % 5 === 0 ? 'New' : undefined,
-  inStock: i % 7 !== 0
-}));
+import { getProducts } from '../lib/shop';
+
+const products = await getProducts();
 ---
 
 <BaseLayout title="Products - BuildMart">

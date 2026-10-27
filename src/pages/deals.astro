@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
+import { getProducts } from '../lib/shop';
 
-// Hot deals products
-const hotDeals = [
+const hotDeals = (await getProducts()).slice(0, 12);
+
+// Local fallback (used only if the EmDash `products` collection is empty)
+const fallbackHotDeals = [
   {
     id: 'd1',
     name: 'Premium Portland Cement - 50kg Bag',
