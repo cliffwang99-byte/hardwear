@@ -217,93 +217,89 @@ const relatedProducts = (await getProducts())
 </BaseLayout>
 
 <script define:vars={{ product }}>
-  // Image gallery — event delegation on document (robust to load timing)
-  document.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-image]');
-    if (!btn) return;
-    const img = btn.dataset.image;
-    const main = document.getElementById('main-image');
-    if (img && main) main.setAttribute('src', img);
-    document.querySelectorAll('[data-image]').forEach(b => b.classList.remove('border-primary-600'));
-    btn.classList.add('border-primary-600');
+  // Image gallery - event delegation (pure JS)
+  document.addEventListener('click', function (e) {
+    var n = e.target;
+    while (n && n.nodeType === 1) {
+      if (n.hasAttribute && n.hasAttribute('data-image')) {
+        var m = document.getElementById('main-image');
+        if (m) m.setAttribute('src', n.getAttribute('data-image'));
+        var all = document.querySelectorAll('[data-image]');
+        for (var i = 0; i < all.length; i++) all[i].classList.remove('border-primary-600');
+        n.classList.add('border-primary-600');
+        return;
+      }
+      n = n.parentNode;
+    }
   });
 
   // Quantity
-  let quantity = 1;
-  document.getElementById('increase-qty')?.addEventListener('click', () => {
+  var quantity = 1;
+  var incBtn = document.getElementById('increase-qty');
+  if (incBtn) incBtn.addEventListener('click', function () {
     quantity++;
-    document.getElementById('quantity')!.textContent = quantity.toString();
+    var q = document.getElementById('quantity');
+    if (q) q.textContent = quantity.toString();
   });
-  document.getElementById('decrease-qty')?.addEventListener('click', () => {
+  var decBtn = document.getElementById('decrease-qty');
+  if (decBtn) decBtn.addEventListener('click', function () {
     if (quantity > 1) {
       quantity--;
-      document.getElementById('quantity')!.textContent = quantity.toString();
+      var q = document.getElementById('quantity');
+      if (q) q.textContent = quantity.toString();
     }
   });
 
   // Add to cart
-  document.getElementById('add-to-cart-btn')?.addEventListener('click', () => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingItem = cart.find((item: any) => item.id === product.id);
-
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images[0],
-        quantity: quantity
-      });
+  var cartBtn = document.getElementById('add-to-cart-btn');
+  if (cartBtn) cartBtn.addEventListener('click', function () {
+    var cart = [];
+    try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (err) { cart = []; }
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].id === product.id) { existing = cart[i]; break; }
     }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    const count = cart.reduce((sum: number, item: any) => sum + item.quantity, 0);
-    document.querySelectorAll('[data-cart-count]').forEach(el => {
-      el.textContent = count.toString();
-    });
-
-    const btn = document.getElementById('add-to-cart-btn')!;
-    btn.textContent = 'Added to Cart!';
-    setTimeout(() => {
-      btn.textContent = 'Add to Cart';
-    }, 2000);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push({ id: product.id, name: product.name, price: product.price, image: product.images[0], quantity: quantity });
+    }
+    try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (err) {}
+    var count = 0;
+    for (var j = 0; j < cart.length; j++) count += cart[j].quantity;
+    var cc = document.querySelectorAll('[data-cart-count]');
+    for (var k = 0; k < cc.length; k++) cc[k].textContent = count.toString();
+    if (cartBtn) cartBtn.textContent = 'Added to Cart!';
+    setTimeout(function () { if (cartBtn) cartBtn.textContent = 'Add to Cart'; }, 2000);
   });
 
   // Wishlist
-  document.getElementById('wishlist-btn')?.addEventListener('click', () => {
-    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    const index = wishlist.indexOf(product.id);
-    
-    if (index > -1) {
-      wishlist.splice(index, 1);
-    } else {
-      wishlist.push(product.id);
-    }
-    
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    
-    document.querySelectorAll('[data-wishlist-count]').forEach(el => {
-      el.textContent = wishlist.length.toString();
-    });
+  var wishBtn = document.getElementById('wishlist-btn');
+  if (wishBtn) wishBtn.addEventListener('click', function () {
+    var wishlist = [];
+    try { wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]'); } catch (err) { wishlist = []; }
+    var idx = wishlist.indexOf(product.id);
+    if (idx > -1) { wishlist.splice(idx, 1); } else { wishlist.push(product.id); }
+    try { localStorage.setItem('wishlist', JSON.stringify(wishlist)); } catch (err) {}
+    var wc = document.querySelectorAll('[data-wishlist-count]');
+    for (var w = 0; w < wc.length; w++) wc[w].textContent = wishlist.length.toString();
   });
 
   // Tabs
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const tab = (e.currentTarget as HTMLElement).dataset.tab!;
-      
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('active', 'border-primary-600');
-        b.classList.add('border-transparent');
-      });
-      (e.currentTarget as HTMLElement).classList.add('active', 'border-primary-600');
-      (e.currentTarget as HTMLElement).classList.remove('border-transparent');
-      
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-      document.getElementById(tab)!.classList.remove('hidden');
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  for (var t = 0; t < tabBtns.length; t++) {
+    tabBtns[t].addEventListener('click', function () {
+      var tab = this.getAttribute('data-tab');
+      for (var a = 0; a < tabBtns.length; a++) {
+        tabBtns[a].classList.remove('active', 'border-primary-600');
+        tabBtns[a].classList.add('border-transparent');
+      }
+      this.classList.add('active', 'border-primary-600');
+      this.classList.remove('border-transparent');
+      var contents = document.querySelectorAll('.tab-content');
+      for (var c = 0; c < contents.length; c++) contents[c].classList.add('hidden');
+      var target = document.getElementById(tab);
+      if (target) target.classList.remove('hidden');
     });
-  });
+  }
 </script>
