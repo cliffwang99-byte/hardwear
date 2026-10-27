@@ -29,6 +29,22 @@ const relatedProducts = (await getProducts())
       <div class="space-y-4 animate-slide-up">
         <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-dark-700">
           <img id="main-image" src={product.images[0]} alt={product.name} class="w-full h-full object-cover" />
+          <button
+            id="gallery-prev"
+            type="button"
+            aria-label="Previous image"
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 dark:bg-dark-800/80 hover:bg-primary-600 hover:text-white text-gray-800 dark:text-gray-200 shadow-lg flex items-center justify-center transition-colors z-10"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button
+            id="gallery-next"
+            type="button"
+            aria-label="Next image"
+            class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 dark:bg-dark-800/80 hover:bg-primary-600 hover:text-white text-gray-800 dark:text-gray-200 shadow-lg flex items-center justify-center transition-colors z-10"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+          </button>
         </div>
         <div class="grid grid-cols-4 gap-4">
           {product.images.map((img, i) => (
@@ -217,21 +233,46 @@ const relatedProducts = (await getProducts())
 </BaseLayout>
 
 <script define:vars={{ product }}>
-  // Image gallery - event delegation (pure JS)
+  // Image gallery - pure JS (thumbnails + prev/next arrows)
+  var galleryImages = product.images || [];
+  var currentIndex = 0;
+
+  function setGalleryIndex(index) {
+    if (!galleryImages.length) return;
+    var len = galleryImages.length;
+    // wrap around
+    currentIndex = ((index % len) + len) % len;
+    var main = document.getElementById('main-image');
+    if (main) main.setAttribute('src', galleryImages[currentIndex]);
+    var thumbs = document.querySelectorAll('[data-image]');
+    for (var t = 0; t < thumbs.length; t++) {
+      thumbs[t].classList.remove('border-primary-600');
+      if (thumbs[t].getAttribute('data-image') === galleryImages[currentIndex]) {
+        thumbs[t].classList.add('border-primary-600');
+      }
+    }
+  }
+
+  // Thumbnail click (event delegation)
   document.addEventListener('click', function (e) {
     var n = e.target;
     while (n && n.nodeType === 1) {
       if (n.hasAttribute && n.hasAttribute('data-image')) {
-        var m = document.getElementById('main-image');
-        if (m) m.setAttribute('src', n.getAttribute('data-image'));
-        var all = document.querySelectorAll('[data-image]');
-        for (var i = 0; i < all.length; i++) all[i].classList.remove('border-primary-600');
-        n.classList.add('border-primary-600');
+        var src = n.getAttribute('data-image');
+        for (var i = 0; i < galleryImages.length; i++) {
+          if (galleryImages[i] === src) { setGalleryIndex(i); break; }
+        }
         return;
       }
       n = n.parentNode;
     }
   });
+
+  // Prev / Next arrows
+  var prevBtn = document.getElementById('gallery-prev');
+  if (prevBtn) prevBtn.addEventListener('click', function () { setGalleryIndex(currentIndex - 1); });
+  var nextBtn = document.getElementById('gallery-next');
+  if (nextBtn) nextBtn.addEventListener('click', function () { setGalleryIndex(currentIndex + 1); });
 
   // Quantity
   var quantity = 1;
