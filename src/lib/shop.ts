@@ -224,3 +224,60 @@ export async function getProductsByCategory(slug: string): Promise<ShopProduct[]
 		.map((entry) => toProduct(entry as Record<string, unknown>))
 		.filter((p) => p.name !== "");
 }
+
+export interface CategoryMeta {
+	name: string;
+	banner: string;
+	seoTitle: string;
+	seoDescription: string;
+	longDescription: string;
+	totalProducts: number;
+}
+
+// Extract plain text from an EmDash portableText block array so categories can
+// render their rich-text long description without additional dependencies.
+function ptToText(node: unknown): string {
+	let out = "";
+	const walk = (value: unknown): void => {
+		if (Array.isArray(value)) {
+			for (const item of value) walk(item);
+		} else if (value && typeof value === "object") {
+			const rec = value as Record<string, unknown>;
+			if (typeof rec.text === "string") out += rec.text;
+			if (rec.children) walk(rec.children);
+		}
+	};
+	walk(node);
+	return out;
+}
+
+// Merge the lightweight taxonomy term (name/count) with the rich `categories`
+// content-type entry (banner image, long description, SEO) keyed by slug.
+export async function getCategoryPageData(slug: string): Promise<CategoryMeta | null> {
+	const term = await getTerm("collection", slug);
+	const catResult = (await getEmDashEntry("categories" as never, slug)) as {
+		entry?: unknown;
+		error?: unknown;
+	};
+	const entry = catResult?.entry as Record<string, unknown> | undefined;
+	const d =
+		entry && entry.data && typeof entry.data === "object"
+			? (entry.data as Record<string, unknown>)
+			: {};
+	if (!term && !entry) return null;
+
+	const seo = (d.seo && typeof d.seo === "object" ? d.seo : {}) as Record<string, unknown>;
+	const longtext = Array.isArray(d.longtext) ? d.longtext : null;
+
+	return {
+		name:
+			typeof d.name === "string" && d.name.trim()
+				? d.name.trim()
+				: (term?.label ?? ""),
+		banner: mediaUrl(d.categoryimage),
+		seoTitle: typeof seo.seoTitle === "string" ? seo.seoTitle : "",
+		seoDescription: typeof seo.seoDescription === "string" ? seo.seoDescription : "",
+		longDescription: longtext ? ptToText(longtext) : "",
+		totalProducts: term?.count ?? 0,
+	};
+}

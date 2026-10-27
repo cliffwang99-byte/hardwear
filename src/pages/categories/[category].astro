@@ -3,15 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import FilterSidebar from '../../components/FilterSidebar.astro';
 
-import { decodeSlug, getTerm } from 'emdash';
-import { getProductsByCategory } from '../../lib/shop';
+import { decodeSlug } from 'emdash';
+import { getCategoryPageData, getProductsByCategory } from '../../lib/shop';
 
 const { category } = Astro.params;
 
-// Taxonomy (collection) based category lookup — EmDash native taxonomy
+// Category lookup — merge taxonomy (collection) term with rich `categories` entry
 const taxCategorySlug = decodeSlug(category ?? '');
-const taxonomyTerm = await getTerm('collection', taxCategorySlug, { includeCounts: true });
-const taxProducts = taxonomyTerm ? await getProductsByCategory(taxCategorySlug) : [];
+const catMeta = await getCategoryPageData(taxCategorySlug);
+const taxProducts = catMeta ? await getProductsByCategory(taxCategorySlug) : [];
 
 // Category data
 const categoryData: Record<string, any> = {
@@ -73,15 +73,15 @@ const categoryData: Record<string, any> = {
   }
 };
 
-const currentCategory = taxonomyTerm
+const currentCategory = catMeta
   ? {
-      name: taxonomyTerm.label,
+      name: catMeta.name || categoryData[taxCategorySlug]?.name || categoryData['cement'].name,
       icon: '🛁',
-      description: taxonomyTerm.description ?? 'Products in this collection.',
-      banner: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=400&fit=crop',
-      totalProducts: taxonomyTerm.count ?? 0
+      description: catMeta.longDescription || catMeta.seoDescription || categoryData[taxCategorySlug]?.description || 'Products in this collection.',
+      banner: catMeta.banner || categoryData[taxCategorySlug]?.banner || 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=400&fit=crop',
+      totalProducts: catMeta.totalProducts || categoryData[taxCategorySlug]?.totalProducts || categoryData['cement'].totalProducts
     }
-  : categoryData[category || 'cement'] || categoryData['cement'];
+  : categoryData[taxCategorySlug] || categoryData['cement'];
 
 // Mock products by category
 const productsByCategory: Record<string, any[]> = {
@@ -448,7 +448,7 @@ const products = taxProducts.length
   : (productsByCategory[taxCategorySlug] || productsByCategory['cement']);
 ---
 
-<BaseLayout title={`${currentCategory.name} - BuildMart`} description={currentCategory.description}>
+<BaseLayout title={catMeta?.seoTitle || `${currentCategory.name} - BuildMart`} description={catMeta?.seoDescription || currentCategory.description}>
   <!-- Category Banner -->
   <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white overflow-hidden">
     <!-- Background Image with Overlay -->
@@ -578,14 +578,24 @@ const products = taxProducts.length
       <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-6">About {currentCategory.name}</h2>
         <div class="prose prose-lg dark:prose-invert max-w-none">
-          <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-            Our {currentCategory.name.toLowerCase()} collection features premium quality products from trusted manufacturers. 
-            Whether you're working on a residential project or a large commercial construction, we have the right materials for your needs.
-          </p>
-          <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-            All products are tested for quality and durability, ensuring they meet industry standards. 
-            We offer competitive pricing, fast delivery, and expert support to help you choose the right products for your project.
-          </p>
+          {
+            catMeta?.longDescription
+              ? catMeta.longDescription.split(/\n{2,}/).filter(Boolean).map((para) => (
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4" set:html={para}></p>
+                ))
+              : (
+                  <>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                      Our {currentCategory.name.toLowerCase()} collection features premium quality products from trusted manufacturers. 
+                      Whether you're working on a residential project or a large commercial construction, we have the right materials for your needs.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                      All products are tested for quality and durability, ensuring they meet industry standards. 
+                      We offer competitive pricing, fast delivery, and expert support to help you choose the right products for your project.
+                    </p>
+                  </>
+              )
+          }
         </div>
 
         <!-- Features -->
