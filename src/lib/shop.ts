@@ -35,10 +35,22 @@ const fallbackProducts: ShopProduct[] = [
 
 function mediaUrl(value: unknown): string {
 	if (typeof value === "string") return value;
+	if (Array.isArray(value)) {
+		if (value.length === 0) return "";
+		return mediaUrl(value[0]);
+	}
 	if (value && typeof value === "object") {
 		const rec = value as Record<string, unknown>;
-		if (typeof rec.url === "string") return rec.url;
-		if (typeof rec.src === "string") return rec.src;
+		if (typeof rec.url === "string" && rec.url) return rec.url;
+		if (typeof rec.src === "string" && rec.src) return rec.src;
+		let mediaKey = typeof rec.storageKey === "string" ? rec.storageKey : "";
+		if (rec.meta && typeof rec.meta === "object") {
+			const meta = rec.meta as Record<string, unknown>;
+			if (!mediaKey && typeof meta.storageKey === "string") mediaKey = meta.storageKey;
+			if (!mediaKey && typeof meta.key === "string") mediaKey = meta.key;
+		}
+		if (mediaKey && !/^(https?:)?\/\//i.test(mediaKey)) mediaKey = "/_emdash/api/media/file/" + mediaKey;
+		return mediaKey;
 	}
 	return "";
 }
