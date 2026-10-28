@@ -83,6 +83,10 @@ const currentCategory = catMeta
     }
   : categoryData[taxCategorySlug] || categoryData['cement'];
 
+const aboutParagraphs: string[] = catMeta?.longDescription
+  ? catMeta.longDescription.split(/\n{2,}/).filter(Boolean)
+  : [];
+
 // Mock products by category
 const productsByCategory: Record<string, any[]> = {
   'cement': [
@@ -579,9 +583,9 @@ const products = taxProducts.length
         <h2 class="text-3xl font-bold mb-6">About {currentCategory.name}</h2>
         <div class="prose prose-lg dark:prose-invert max-w-none">
           {
-            catMeta?.longDescription
-              ? catMeta.longDescription.split(/\n{2,}/).filter(Boolean).map((para) => (
-                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4" set:html={para}></p>
+            aboutParagraphs.length > 0
+              ? aboutParagraphs.map((text) => (
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4" set:html={text}></p>
                 ))
               : (
                   <>
