@@ -319,8 +319,8 @@ if (navItems.length === 0) {
     </div>
 
     <!-- Navigation with Smooth Animated Underline - Desktop Only -->
-    <nav class="mt-4 border-t border-gray-200/50 dark:border-dark-800/50 pt-4 hidden lg:block">
-      <ul class="flex items-center gap-8 text-sm font-medium overflow-x-auto">
+    <nav class="mt-4 border-t border-gray-200/50 dark:border-dark-800/50 pt-4 hidden lg:block relative z-40">
+      <ul class="flex flex-wrap items-center gap-8 text-sm font-medium overflow-visible">
         <NavMenu items={navItems} variant="desktop" />
         <li class="relative group">
           <a href="/deals" class="relative py-2 inline-block font-bold text-primary-600 dark:text-primary-400">
