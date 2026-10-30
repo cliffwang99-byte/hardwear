@@ -72,3 +72,188 @@
     50% { transform: translateY(-10px); }
   }
 }
+
+/* Rich text (EmDash PortableText) typography for category long descriptions.
+   @tailwindcss/typography is not installed, so `prose` classes have no effect;
+   these rules style the raw tags emitted by PortableText instead. */
+.category-richtext {
+  color: var(--color-gray-600);
+  line-height: 1.75;
+}
+
+.dark .category-richtext {
+  color: var(--color-dark-300);
+}
+
+.category-richtext > * + * {
+  margin-top: 1rem;
+}
+
+.category-richtext p {
+  margin-bottom: 1rem;
+}
+
+.category-richtext h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-gray-900);
+}
+
+.category-richtext h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-gray-900);
+}
+
+.category-richtext h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-gray-900);
+}
+
+.dark .category-richtext h2,
+.dark .category-richtext h3,
+.dark .category-richtext h4 {
+  color: var(--color-dark-50);
+}
+
+.category-richtext ul,
+.category-richtext ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-richtext ul {
+  list-style-type: disc;
+}
+
+.category-richtext ol {
+  list-style-type: decimal;
+}
+
+.category-richtext li {
+  margin-bottom: 0.4rem;
+}
+
+.category-richtext li > ul,
+.category-richtext li > ol {
+  margin-top: 0.4rem;
+  margin-bottom: 0;
+}
+
+.category-richtext a {
+  color: var(--color-primary-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.category-richtext a:hover {
+  color: var(--color-primary-700);
+}
+
+.dark .category-richtext a {
+  color: var(--color-primary-400);
+}
+
+.dark .category-richtext a:hover {
+  color: var(--color-primary-300);
+}
+
+.category-richtext strong {
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.dark .category-richtext strong {
+  color: var(--color-dark-50);
+}
+
+.category-richtext blockquote {
+  border-left: 4px solid var(--color-primary-500);
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  font-style: italic;
+  color: var(--color-gray-700);
+}
+
+.dark .category-richtext blockquote {
+  color: var(--color-dark-300);
+}
+
+.category-richtext img {
+  border-radius: 0.75rem;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem 0;
+}
+
+.category-richtext code {
+  background: var(--color-gray-100);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.dark .category-richtext code {
+  background: var(--color-dark-800);
+}
+
+.category-richtext pre {
+  background: var(--color-dark-950);
+  color: var(--color-dark-100);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.category-richtext pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.category-richtext table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.category-richtext th,
+.category-richtext td {
+  border: 1px solid var(--color-gray-200);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.dark .category-richtext th,
+.dark .category-richtext td {
+  border-color: var(--color-dark-700);
+}
+
+.category-richtext th {
+  background: var(--color-gray-100);
+  font-weight: 600;
+}
+
+.dark .category-richtext th {
+  background: var(--color-dark-800);
+}
+
+.category-richtext hr {
+  border: 0;
+  border-top: 1px solid var(--color-gray-200);
+  margin: 2rem 0;
+}
+
+.dark .category-richtext hr {
+  border-top-color: var(--color-dark-700);
+}

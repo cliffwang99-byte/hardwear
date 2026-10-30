@@ -273,25 +273,40 @@ export interface CategoryMeta {
 	banner: string;
 	seoTitle: string;
 	seoDescription: string;
+	termDescription: string;
 	longDescription: string;
+	longDescriptionBlocks: unknown[];
 	totalProducts: number;
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
 // render their rich-text long description without additional dependencies.
+// Each top-level block becomes one paragraph, joined by a blank line, so the
+// consumer can split on /\n{2,}/ to recover the original paragraph structure.
 function ptToText(node: unknown): string {
-	let out = "";
-	const walk = (value: unknown): void => {
-		if (Array.isArray(value)) {
-			for (const item of value) walk(item);
-		} else if (value && typeof value === "object") {
-			const rec = value as Record<string, unknown>;
-			if (typeof rec.text === "string") out += rec.text;
-			if (rec.children) walk(rec.children);
-		}
+	const textOf = (value: unknown): string => {
+		let out = "";
+		const walk = (v: unknown): void => {
+			if (Array.isArray(v)) {
+				for (const item of v) walk(item);
+			} else if (v && typeof v === "object") {
+				const rec = v as Record<string, unknown>;
+				if (typeof rec.text === "string") out += rec.text;
+				if (rec.children) walk(rec.children);
+			}
+		};
+		walk(value);
+		return out.trim();
 	};
-	walk(node);
-	return out;
+
+	if (!Array.isArray(node)) return textOf(node);
+
+	const paragraphs: string[] = [];
+	for (const block of node) {
+		const text = textOf(block);
+		if (text) paragraphs.push(text);
+	}
+	return paragraphs.join("\n\n");
 }
 
 // Merge the lightweight taxonomy term (name/count) with the rich `categories`
@@ -320,7 +335,9 @@ export async function getCategoryPageData(slug: string): Promise<CategoryMeta | 
 		banner: mediaUrl(d.categoryimage),
 		seoTitle: typeof seo.seoTitle === "string" ? seo.seoTitle : "",
 		seoDescription: typeof seo.seoDescription === "string" ? seo.seoDescription : "",
+		termDescription: term?.description ?? "",
 		longDescription: longtext ? ptToText(longtext) : "",
+		longDescriptionBlocks: longtext ?? [],
 		totalProducts: term?.count ?? 0,
 	};
 }
