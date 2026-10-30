@@ -327,6 +327,10 @@ export interface CategoryMeta {
 	longDescriptionBlocks: unknown[];
 	totalProducts: number;
 	entryId: string;
+	// Actual content-collection slug the entry was read from. Pages pass this to
+	// `createPublicPageContext` so the SEO layer can resolve the entry — the slug
+	// is typed at the CMS, so it is reported back instead of assumed.
+	collection: string;
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
@@ -359,20 +363,36 @@ function ptToText(node: unknown): string {
 	return paragraphs.join("\n\n");
 }
 
+// Try several candidate collection slugs in order and return the first entry
+// that resolves. Collection slugs are typed at the CMS, not in this repo, so a
+// hard-coded name breaks silently when the editor picks a different spelling.
+async function getEntryFromCandidates(
+	candidates: string[],
+	slug: string,
+): Promise<{ entry: Record<string, unknown> | undefined; collection: string }> {
+	for (const candidate of candidates) {
+		const result = (await getEmDashEntry(candidate as never, slug)) as {
+			entry?: unknown;
+			error?: unknown;
+		};
+		const entry = result?.entry as Record<string, unknown> | undefined;
+		if (entry && entry.data && typeof entry.data === "object") {
+			return { entry, collection: candidate };
+		}
+	}
+	return { entry: undefined, collection: candidates[0] ?? "" };
+}
+
 // Merge the lightweight taxonomy term (name/count) with the rich content-type
 // entry (banner image, long description, SEO) keyed by the same slug.
 async function getTermPageData(
 	taxonomy: string,
-	collection: string,
+	collections: string[],
 	imageField: string,
 	slug: string,
 ): Promise<CategoryMeta | null> {
 	const term = await getTerm(taxonomy, slug);
-	const entryResult = (await getEmDashEntry(collection as never, slug)) as {
-		entry?: unknown;
-		error?: unknown;
-	};
-	const entry = entryResult?.entry as Record<string, unknown> | undefined;
+	const { entry, collection } = await getEntryFromCandidates(collections, slug);
 	const d =
 		entry && entry.data && typeof entry.data === "object"
 			? (entry.data as Record<string, unknown>)
@@ -398,15 +418,23 @@ async function getTermPageData(
 		longDescriptionBlocks: longtext ?? [],
 		totalProducts: term?.count ?? 0,
 		entryId: typeof entry?.id === "string" ? entry.id : "",
+		collection,
 	};
 }
 
 // Product categories: taxonomy term `collection` + rich `categories` entry.
 export async function getCategoryPageData(slug: string): Promise<CategoryMeta | null> {
-	return getTermPageData("collection", "categories", "categoryimage", slug);
+	return getTermPageData("collection", ["categories"], "categoryimage", slug);
 }
 
-// Product topics: taxonomy term `topic` + rich `topics` entry.
+// Product topics: taxonomy term `topic` + a rich SEO entry collection. The
+// editor may name the collection `topicseo`, `topicss`, etc., so probe the
+// likely spellings instead of pinning one.
 export async function getTopicPageData(slug: string): Promise<CategoryMeta | null> {
-	return getTermPageData("topic", "topics", "topicimage", slug);
+	return getTermPageData(
+		"topic",
+		["topicseo", "topicss", "topics", "topic_seo", "topic"],
+		"topicimage",
+		slug,
+	);
 }

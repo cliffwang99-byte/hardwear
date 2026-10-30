@@ -10,7 +10,7 @@ import { getTopicPageData, getProductsByTopic, getProducts } from '../../lib/sho
 
 const { topic } = Astro.params;
 
-// Topic lookup — merge taxonomy (`topic`) term with rich `topics` entry
+// Topic lookup — merge taxonomy (`topic`) term with rich `topicseo` entry
 const taxTopicSlug = decodeSlug(topic ?? '');
 const topicMeta = await getTopicPageData(taxTopicSlug);
 const taxProducts = topicMeta ? await getProductsByTopic(taxTopicSlug) : [];
@@ -116,7 +116,7 @@ const pageContext = createPublicPageContext({
   description: seoMeta.description,
   canonical: seoMeta.canonical,
   image: seoMeta.ogImage || currentTopic.banner,
-  content: topicMeta?.entryId ? { collection: 'topics', id: topicMeta.entryId, slug: taxTopicSlug } : undefined,
+  content: topicMeta?.entryId ? { collection: topicMeta.collection, id: topicMeta.entryId, slug: taxTopicSlug } : undefined,
   seo: {
     ogTitle: seoMeta.ogTitle,
     ogDescription: seoMeta.ogDescription,

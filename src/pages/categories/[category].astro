@@ -488,7 +488,7 @@ const pageContext = createPublicPageContext({
   description: seoMeta.description,
   canonical: seoMeta.canonical,
   image: seoMeta.ogImage || currentCategory.banner,
-  content: catMeta?.entryId ? { collection: 'categories', id: catMeta.entryId, slug: taxCategorySlug } : undefined,
+  content: catMeta?.entryId ? { collection: catMeta.collection, id: catMeta.entryId, slug: taxCategorySlug } : undefined,
   seo: {
     ogTitle: seoMeta.ogTitle,
     ogDescription: seoMeta.ogDescription,
