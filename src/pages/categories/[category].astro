@@ -3,7 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import FilterSidebar from '../../components/FilterSidebar.astro';
 
-import { decodeSlug } from 'emdash';
+import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
+import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
 import { getCategoryPageData, getProductsByCategory } from '../../lib/shop';
 
@@ -450,9 +451,61 @@ const productsByCategory: Record<string, any[]> = {
 const products = taxProducts.length
   ? taxProducts
   : (productsByCategory[taxCategorySlug] || productsByCategory['cement']);
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'BuildMart';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const seoMeta = getSeoMeta(
+  {
+    data: {
+      seo: {
+        title: catMeta?.seoTitle || null,
+        description: catMeta?.seoDescription || null,
+        image: catMeta?.seoImage || null,
+        canonical: catMeta?.seoCanonical || null,
+        noIndex: catMeta?.seoNoIndex ?? false,
+      },
+    },
+  },
+  {
+    siteTitle,
+    siteUrl,
+    titleSeparator,
+    path: Astro.url.pathname,
+    defaultTitle: currentCategory.name,
+    defaultDescription: currentCategory.description,
+    defaultOgImage: currentCategory.banner,
+  },
+);
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'content',
+  pageType: 'website',
+  title: seoMeta.title,
+  description: seoMeta.description,
+  canonical: seoMeta.canonical,
+  image: seoMeta.ogImage || currentCategory.banner,
+  content: catMeta?.entryId ? { collection: 'categories', id: catMeta.entryId, slug: taxCategorySlug } : undefined,
+  seo: {
+    ogTitle: seoMeta.ogTitle,
+    ogDescription: seoMeta.ogDescription,
+    ogImage: seoMeta.ogImage,
+    robots: seoMeta.robots,
+  },
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'Home', url: '/' },
+    { name: 'Categories', url: '/categories' },
+    { name: currentCategory.name, url: Astro.url.pathname },
+  ],
+});
 ---
 
-<BaseLayout title={catMeta?.seoTitle || `${currentCategory.name} - BuildMart`} description={catMeta?.seoDescription || currentCategory.description}>
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
   <!-- Category Banner -->
   <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white overflow-hidden">
     <!-- Background Image with Overlay -->

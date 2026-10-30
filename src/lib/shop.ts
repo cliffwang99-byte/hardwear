@@ -273,10 +273,14 @@ export interface CategoryMeta {
 	banner: string;
 	seoTitle: string;
 	seoDescription: string;
+	seoImage: string;
+	seoCanonical: string;
+	seoNoIndex: boolean;
 	termDescription: string;
 	longDescription: string;
 	longDescriptionBlocks: unknown[];
 	totalProducts: number;
+	entryId: string;
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
@@ -333,11 +337,15 @@ export async function getCategoryPageData(slug: string): Promise<CategoryMeta | 
 				? d.name.trim()
 				: (term?.label ?? ""),
 		banner: mediaUrl(d.categoryimage),
-		seoTitle: typeof seo.seoTitle === "string" ? seo.seoTitle : "",
-		seoDescription: typeof seo.seoDescription === "string" ? seo.seoDescription : "",
+		seoTitle: typeof seo.title === "string" ? seo.title : "",
+		seoDescription: typeof seo.description === "string" ? seo.description : "",
+		seoImage: mediaUrl(seo.image),
+		seoCanonical: typeof seo.canonical === "string" ? seo.canonical : "",
+		seoNoIndex: seo.noIndex === true,
 		termDescription: term?.description ?? "",
 		longDescription: longtext ? ptToText(longtext) : "",
 		longDescriptionBlocks: longtext ?? [],
 		totalProducts: term?.count ?? 0,
+		entryId: typeof entry?.id === "string" ? entry.id : "",
 	};
 }
