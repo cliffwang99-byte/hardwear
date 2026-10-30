@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import { getSeoMeta, getSiteSettings } from 'emdash';
+import { createPublicPageContext } from 'emdash/page';
 import { getProductDetail, getProducts } from '../../lib/shop';
 
 const product = await getProductDetail(Astro.params.id ?? '');
@@ -8,9 +10,62 @@ const product = await getProductDetail(Astro.params.id ?? '');
 const relatedProducts = (await getProducts())
   .filter((p) => p.id !== (Astro.params.id ?? ''))
   .slice(0, 4);
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'BuildMart';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const seoMeta = getSeoMeta(
+  {
+    data: {
+      seo: {
+        title: product.seoTitle || null,
+        description: product.seoDescription || null,
+        image: product.seoImage || null,
+        canonical: product.seoCanonical || null,
+        noIndex: product.seoNoIndex,
+      },
+    },
+  },
+  {
+    siteTitle,
+    siteUrl,
+    titleSeparator,
+    path: Astro.url.pathname,
+    defaultTitle: product.name,
+    defaultDescription: product.description,
+    defaultOgImage: product.images[0] || null,
+  },
+);
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'content',
+  pageType: 'website',
+  title: seoMeta.title,
+  description: seoMeta.description,
+  canonical: seoMeta.canonical,
+  image: seoMeta.ogImage || product.images[0] || null,
+  content: product.entryId ? { collection: 'products', id: product.entryId, slug: product.id } : undefined,
+  seo: {
+    ogTitle: seoMeta.ogTitle,
+    ogDescription: seoMeta.ogDescription,
+    ogImage: seoMeta.ogImage,
+    robots: seoMeta.robots,
+  },
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'Home', url: '/' },
+    { name: 'Products', url: '/products' },
+    { name: product.category, url: `/categories/${product.category.toLowerCase()}` },
+    { name: product.name, url: Astro.url.pathname },
+  ],
+});
 ---
 
-<BaseLayout title={`${product.name} - BuildMart`}>
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
   <div class="container mx-auto px-4 py-8">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm mb-8 animate-fade-in">

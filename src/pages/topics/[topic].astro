@@ -1,0 +1,301 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import FilterSidebar from '../../components/FilterSidebar.astro';
+
+import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
+import { createPublicPageContext } from 'emdash/page';
+import { PortableText } from 'emdash/ui';
+import { getTopicPageData, getProductsByTopic, getProducts } from '../../lib/shop';
+
+const { topic } = Astro.params;
+
+// Topic lookup — merge taxonomy (`topic`) term with rich `topics` entry
+const taxTopicSlug = decodeSlug(topic ?? '');
+const topicMeta = await getTopicPageData(taxTopicSlug);
+const taxProducts = topicMeta ? await getProductsByTopic(taxTopicSlug) : [];
+
+// Topic data (fallback when the CMS has no data yet)
+const topicData: Record<string, any> = {
+  'best-sellers': {
+    name: 'Best Sellers',
+    icon: '⭐',
+    description: 'The most popular products our customers keep coming back for',
+    banner: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  },
+  'new-arrivals': {
+    name: 'New Arrivals',
+    icon: '🆕',
+    description: 'Freshly added products and the latest materials on the market',
+    banner: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  },
+  'eco-friendly': {
+    name: 'Eco-Friendly',
+    icon: '🌿',
+    description: 'Sustainable materials with a lower environmental footprint',
+    banner: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  },
+  'professional-grade': {
+    name: 'Professional Grade',
+    icon: '🛠️',
+    description: 'Contractor-grade tools and materials built for daily job-site use',
+    banner: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  },
+  'budget-friendly': {
+    name: 'Budget Friendly',
+    icon: '💰',
+    description: 'Reliable products that keep your project on budget',
+    banner: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  },
+  'heavy-duty': {
+    name: 'Heavy Duty',
+    icon: '🏋️',
+    description: 'Extra-tough products for demanding commercial projects',
+    banner: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&h=400&fit=crop',
+    totalProducts: 0
+  }
+};
+
+const defaultTopic = topicData['best-sellers'];
+
+const currentTopic = topicMeta
+  ? {
+      name: topicMeta.name || topicData[taxTopicSlug]?.name || defaultTopic.name,
+      icon: '🏷️',
+      description: topicMeta.termDescription || topicMeta.seoDescription || topicData[taxTopicSlug]?.description || 'Products in this topic.',
+      banner: topicMeta.banner || topicData[taxTopicSlug]?.banner || defaultTopic.banner,
+      totalProducts: topicMeta.totalProducts || topicData[taxTopicSlug]?.totalProducts || 0
+    }
+  : topicData[taxTopicSlug] || defaultTopic;
+
+const longtextBlocks = topicMeta?.longDescriptionBlocks ?? [];
+const hasLongtext = longtextBlocks.length > 0;
+
+// Fallback products when the taxonomy has no assignments yet
+const fallbackProducts = await getProducts();
+const products = taxProducts.length ? taxProducts : fallbackProducts.slice(0, 12);
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'BuildMart';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const seoMeta = getSeoMeta(
+  {
+    data: {
+      seo: {
+        title: topicMeta?.seoTitle || null,
+        description: topicMeta?.seoDescription || null,
+        image: topicMeta?.seoImage || null,
+        canonical: topicMeta?.seoCanonical || null,
+        noIndex: topicMeta?.seoNoIndex ?? false,
+      },
+    },
+  },
+  {
+    siteTitle,
+    siteUrl,
+    titleSeparator,
+    path: Astro.url.pathname,
+    defaultTitle: currentTopic.name,
+    defaultDescription: currentTopic.description,
+    defaultOgImage: currentTopic.banner,
+  },
+);
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'content',
+  pageType: 'website',
+  title: seoMeta.title,
+  description: seoMeta.description,
+  canonical: seoMeta.canonical,
+  image: seoMeta.ogImage || currentTopic.banner,
+  content: topicMeta?.entryId ? { collection: 'topics', id: topicMeta.entryId, slug: taxTopicSlug } : undefined,
+  seo: {
+    ogTitle: seoMeta.ogTitle,
+    ogDescription: seoMeta.ogDescription,
+    ogImage: seoMeta.ogImage,
+    robots: seoMeta.robots,
+  },
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'Home', url: '/' },
+    { name: 'Topics', url: '/topics' },
+    { name: currentTopic.name, url: Astro.url.pathname },
+  ],
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <!-- Topic Banner -->
+  <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0">
+      <img src={currentTopic.banner} alt={currentTopic.name} class="w-full h-full object-cover opacity-20" />
+      <div class="absolute inset-0 bg-gradient-to-r from-dark-950/90 via-dark-950/70 to-dark-950/90"></div>
+    </div>
+
+    <!-- Animated Pattern -->
+    <div class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="topic-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#topic-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 py-16 md:py-20 relative z-10">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+        <a href="/" class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <a href="/topics" class="text-primary-300 hover:text-white transition-colors duration-300">Topics</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-white font-medium">{currentTopic.name}</span>
+      </nav>
+
+      <!-- Topic Header -->
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-4" style="animation: fadeInUp 0.6s ease-in-out 0.1s both;">
+          <span class="text-6xl">{currentTopic.icon}</span>
+          <div>
+            <h1 class="text-4xl md:text-5xl font-black mb-2">{currentTopic.name}</h1>
+            <p class="text-primary-200 text-lg">{currentTopic.totalProducts || products.length}+ Products Available</p>
+          </div>
+        </div>
+        <p class="text-xl text-white/80 leading-relaxed" style="animation: fadeInUp 0.6s ease-in-out 0.2s both;">
+          {currentTopic.description}
+        </p>
+      </div>
+    </div>
+
+    <!-- Wave Divider -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <path d="M0 80L60 70C120 60 240 40 360 35C480 30 600 40 720 45C840 50 960 50 1080 45C1200 40 1320 30 1380 25L1440 20V80H1380C1320 80 1200 80 1080 80C960 80 840 80 720 80C600 80 480 80 360 80C240 80 120 80 60 80H0Z" class="fill-white dark:fill-dark-950"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="container mx-auto px-4 py-12">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-64 flex-shrink-0">
+        <FilterSidebar />
+      </aside>
+
+      <!-- Products Grid -->
+      <div class="flex-1">
+        <!-- Toolbar -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-dark-800">
+          <div>
+            <p class="text-gray-600 dark:text-gray-400">
+              Showing <span class="font-semibold text-gray-900 dark:text-white">{products.length}</span> of
+              <span class="font-semibold text-gray-900 dark:text-white">{currentTopic.totalProducts || products.length}</span> products
+            </p>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="flex items-center gap-4">
+            <label for="sort" class="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
+            <select id="sort" class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300">
+              <option>Best Selling</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+              <option>Rating</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {products.map((product, i) => (
+            <div style={`animation: fadeInUp 0.6s ease-in-out ${i * 0.05}s both;`}>
+              <ProductCard {...product} />
+            </div>
+          ))}
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center gap-2">
+          <button class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {[1, 2, 3, 4, 5].map(page => (
+            <button class={`px-4 py-2 rounded-xl border-2 transition-all duration-300 ${page === 1 ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500'}`}>
+              {page}
+            </button>
+          ))}
+
+          <button class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topic Info Section -->
+  <section class="bg-gray-50 dark:bg-dark-900 py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-6">About {currentTopic.name}</h2>
+        <div class="category-richtext max-w-none">
+          {
+            hasLongtext
+              ? <PortableText value={longtextBlocks as any} />
+              : (
+                  <>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                      Our {currentTopic.name.toLowerCase()} topic groups products that share the same purpose, so you can
+                      compare similar items side by side and pick the right material for your project.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                      Every product in this topic is checked for quality and durability, and we keep pricing, delivery
+                      and technical support consistent across the whole range.
+                    </p>
+                  </>
+              )
+          }
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {[
+            { icon: '✓', title: 'Quality Assured', desc: 'All products tested and certified' },
+            { icon: '🚚', title: 'Fast Delivery', desc: 'Deliver as agreed on time' },
+            { icon: '💬', title: 'Expert Support', desc: '24/7 technical assistance' }
+          ].map(feature => (
+            <div class="bg-white dark:bg-dark-800 rounded-2xl p-6 border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
+              <div class="text-4xl mb-3">{feature.icon}</div>
+              <h3 class="font-bold text-lg mb-2">{feature.title}</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

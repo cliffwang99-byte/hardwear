@@ -11,6 +11,7 @@ export interface ShopProduct {
 	badge?: string;
 	inStock: boolean;
 	category?: string;
+	topic?: string;
 }
 
 export interface ShopCategory {
@@ -84,6 +85,7 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		badge: typeof d.badge === "string" ? d.badge : undefined,
 		inStock: d.inStock !== false,
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection),
+		topic: referenceSlug((d.terms as Record<string, unknown> | undefined)?.topic),
 	};
 }
 
@@ -119,6 +121,12 @@ export interface ShopProductDetail extends ShopProduct {
 	description: string;
 	features: string[];
 	specifications: Record<string, string>;
+	seoTitle: string;
+	seoDescription: string;
+	seoImage: string;
+	seoCanonical: string;
+	seoNoIndex: boolean;
+	entryId: string;
 }
 
 const fallbackDetail: ShopProductDetail = {
@@ -156,6 +164,12 @@ const fallbackDetail: ShopProductDetail = {
 		Color: "Gray",
 		Storage: "Keep dry and covered",
 	},
+	seoTitle: "",
+	seoDescription: "",
+	seoImage: "",
+	seoCanonical: "",
+	seoNoIndex: false,
+	entryId: "",
 };
 
 export async function getProductDetail(slug: string): Promise<ShopProductDetail> {
@@ -168,6 +182,7 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 
 	const d = (entry.data && typeof entry.data === "object" ? entry.data : {}) as Record<string, unknown>;
 	const p = toProduct(entry);
+	const seo = (d.seo && typeof d.seo === "object" ? d.seo : {}) as Record<string, unknown>;
 
 	const resolveImages = (): string[] => {
 		const imgs = d.images;
@@ -194,6 +209,12 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 			d.specifications && typeof d.specifications === "object" && !Array.isArray(d.specifications)
 				? (d.specifications as Record<string, string>)
 				: fallbackDetail.specifications,
+		seoTitle: typeof seo.title === "string" ? seo.title : "",
+		seoDescription: typeof seo.description === "string" ? seo.description : "",
+		seoImage: mediaUrl(seo.image),
+		seoCanonical: typeof seo.canonical === "string" ? seo.canonical : "",
+		seoNoIndex: seo.noIndex === true,
+		entryId: typeof entry.id === "string" ? entry.id : "",
 	};
 }
 
@@ -235,21 +256,28 @@ function collectTermAndDescendants(term: { slug: string; children?: unknown[] },
 	return out;
 }
 
+// Resolve the set of slugs in a taxonomy term subtree (self + descendants).
+async function resolveTermSlugSet(taxonomy: string, slug: string): Promise<Set<string> | undefined> {
+	const terms = await getTaxonomyTerms(taxonomy, { includeCounts: false });
+	const stack: { slug: string; children?: unknown[] }[] = terms.map((term) => ({
+		slug: term.slug,
+		children: term.children,
+	}));
+	while (stack.length) {
+		const node = stack.pop() as { slug: string; children?: unknown[] };
+		if (node.slug === slug) return new Set(collectTermAndDescendants(node));
+		if (Array.isArray(node.children)) {
+			stack.push(...(node.children as { slug: string; children?: unknown[] }[]));
+		}
+	}
+	return undefined;
+}
+
 export async function getProductsByCategory(slug: string): Promise<ShopProduct[]> {
 	// Build the set of slugs that belong to this category subtree (self + all
 	// descendants), so a level-1 page also returns products tagged with a
 	// level-2 or level-3 term under it.
-	const terms = await getTaxonomyTerms("collection", { includeCounts: false });
-	let termSet: Set<string> | undefined;
-	const stack = [...terms];
-	while (stack.length && !termSet) {
-		const node = stack.pop() as { slug: string; children?: unknown[] };
-		if (node.slug === slug) {
-			termSet = new Set(collectTermAndDescendants(node));
-		} else if (Array.isArray(node.children)) {
-			stack.push(...(node.children as { slug: string; children?: unknown[] }[]));
-		}
-	}
+	const termSet = await resolveTermSlugSet("collection", slug);
 
 	const result = (await getEmDashCollection("products" as never)) as {
 		entries?: unknown[] | undefined;
@@ -266,6 +294,24 @@ export async function getProductsByCategory(slug: string): Promise<ShopProduct[]
 	// slug match so the behaviour degrades gracefully.
 	if (!termSet) return products.filter((p) => p.category === slug);
 	return products.filter((p) => (p.category ? termSet.has(p.category) : false));
+}
+
+export async function getProductsByTopic(slug: string): Promise<ShopProduct[]> {
+	const termSet = await resolveTermSlugSet("topic", slug);
+
+	const result = (await getEmDashCollection("products" as never)) as {
+		entries?: unknown[] | undefined;
+		error?: unknown;
+	};
+	if (result.error || !Array.isArray(result.entries) || result.entries.length === 0) {
+		return [];
+	}
+	const products = result.entries
+		.map((entry) => toProduct(entry as Record<string, unknown>))
+		.filter((p) => p.name !== "");
+
+	if (!termSet) return products.filter((p) => p.topic === slug);
+	return products.filter((p) => (p.topic ? termSet.has(p.topic) : false));
 }
 
 export interface CategoryMeta {
@@ -313,15 +359,20 @@ function ptToText(node: unknown): string {
 	return paragraphs.join("\n\n");
 }
 
-// Merge the lightweight taxonomy term (name/count) with the rich `categories`
-// content-type entry (banner image, long description, SEO) keyed by slug.
-export async function getCategoryPageData(slug: string): Promise<CategoryMeta | null> {
-	const term = await getTerm("collection", slug);
-	const catResult = (await getEmDashEntry("categories" as never, slug)) as {
+// Merge the lightweight taxonomy term (name/count) with the rich content-type
+// entry (banner image, long description, SEO) keyed by the same slug.
+async function getTermPageData(
+	taxonomy: string,
+	collection: string,
+	imageField: string,
+	slug: string,
+): Promise<CategoryMeta | null> {
+	const term = await getTerm(taxonomy, slug);
+	const entryResult = (await getEmDashEntry(collection as never, slug)) as {
 		entry?: unknown;
 		error?: unknown;
 	};
-	const entry = catResult?.entry as Record<string, unknown> | undefined;
+	const entry = entryResult?.entry as Record<string, unknown> | undefined;
 	const d =
 		entry && entry.data && typeof entry.data === "object"
 			? (entry.data as Record<string, unknown>)
@@ -336,7 +387,7 @@ export async function getCategoryPageData(slug: string): Promise<CategoryMeta | 
 			typeof d.name === "string" && d.name.trim()
 				? d.name.trim()
 				: (term?.label ?? ""),
-		banner: mediaUrl(d.categoryimage),
+		banner: mediaUrl(d[imageField]),
 		seoTitle: typeof seo.title === "string" ? seo.title : "",
 		seoDescription: typeof seo.description === "string" ? seo.description : "",
 		seoImage: mediaUrl(seo.image),
@@ -348,4 +399,14 @@ export async function getCategoryPageData(slug: string): Promise<CategoryMeta | 
 		totalProducts: term?.count ?? 0,
 		entryId: typeof entry?.id === "string" ? entry.id : "",
 	};
+}
+
+// Product categories: taxonomy term `collection` + rich `categories` entry.
+export async function getCategoryPageData(slug: string): Promise<CategoryMeta | null> {
+	return getTermPageData("collection", "categories", "categoryimage", slug);
+}
+
+// Product topics: taxonomy term `topic` + rich `topics` entry.
+export async function getTopicPageData(slug: string): Promise<CategoryMeta | null> {
+	return getTermPageData("topic", "topics", "topicimage", slug);
 }
