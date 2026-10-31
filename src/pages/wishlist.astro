@@ -60,7 +60,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <h3 class="font-semibold mb-2 line-clamp-2">${product.name}</h3>
             <p class="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-4">$${product.price.toFixed(2)}</p>
             <button data-add-to-cart-wishlist="${id}" class="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-all duration-300 hover:shadow-lg">
-              Add to Cart
+              Request a Quote
             </button>
           </div>
         </div>
@@ -107,9 +107,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         // Visual feedback
         const target = e.currentTarget as HTMLElement;
-        target.textContent = 'Added!';
+        target.textContent = 'Added to Quote!';
         setTimeout(() => {
-          target.textContent = 'Add to Cart';
+          target.textContent = 'Request a Quote';
         }, 1000);
       });
     });
