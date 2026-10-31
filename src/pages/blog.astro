@@ -4,7 +4,6 @@ import { getPosts } from '../lib/blog';
 
 const posts = await getPosts();
 const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Boolean))]];
-
 ---
 
 <BaseLayout title="Blog - Construction Tips & Guides | BuildMart">
@@ -14,7 +13,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
       <div class="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
       <div class="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-3xl mx-auto text-center">
         <h1 class="text-4xl sm:text-5xl font-bold mb-4">BuildMart Blog</h1>
@@ -30,7 +29,6 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
     <div class="container mx-auto px-4">
       <div class="max-w-6xl mx-auto">
         <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
-          <!-- Search -->
           <div class="w-full lg:w-96">
             <div class="relative">
               <input
@@ -45,14 +43,13 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
             </div>
           </div>
 
-          <!-- Category Filter -->
           <div class="flex flex-wrap gap-2 justify-center">
             {categories.map(cat => (
               <button
                 class="category-filter px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105"
                 class:list={[
-                  cat === 'All' 
-                    ? 'bg-primary-600 text-white' 
+                  cat === 'All'
+                    ? 'bg-primary-600 text-white'
                     : 'bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700'
                 ]}
                 data-category={cat}
@@ -66,103 +63,45 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
     </div>
   </section>
 
-  <!-- Featured Posts -->
-  <section class="py-12 sm:py-16 bg-gray-50 dark:bg-dark-800">
-    <div class="container mx-auto px-4">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8">Featured Articles</h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {blogPosts.filter(post => post.featured).map(post => (
-            <article class="bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
-              <div class="aspect-video bg-gradient-to-br from-primary-100 to-orange-100 dark:from-primary-900/30 dark:to-orange-900/30 flex items-center justify-center text-6xl">
-                {post.image}
-              </div>
-              
-              <div class="p-6">
-                <div class="flex items-center gap-3 mb-3">
-                  <span class="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold">
-                    {post.category}
-                  </span>
-                  <span class="text-sm text-gray-500 dark:text-gray-400">{post.readTime}</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                  {post.title}
-                </h3>
-                
-                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                  {post.excerpt}
-                </p>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-dark-700">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {post.author.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900 dark:text-white">{post.author}</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">{post.date}</p>
-                    </div>
-                  </div>
-                  
-                  <a href={`/blog/${post.id}`} class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Read More
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
   <!-- All Posts -->
   <section class="py-12 sm:py-16 bg-white dark:bg-dark-900">
     <div class="container mx-auto px-4">
       <div class="max-w-6xl mx-auto">
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8">Latest Articles</h2>
-        
+
         <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map(post => (
-            <article 
+          {posts.map(post => (
+            <article
               class="blog-post bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group border border-gray-200 dark:border-dark-800"
               data-category={post.category}
             >
-              <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 flex items-center justify-center text-5xl">
-                {post.image}
-              </div>
-              
+              <a href={`/blog/${post.id}`} class="block">
+                <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 overflow-hidden">
+                  {post.image
+                    ? <img src={post.image} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div class="w-full h-full flex items-center justify-center text-5xl">📰</div>}
+                </div>
+              </a>
+
               <div class="p-5">
                 <div class="flex items-center gap-2 mb-3">
-                  <span class="px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-xs font-semibold">
-                    {post.category}
-                  </span>
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{post.readTime}</span>
+                  {post.category && (
+                    <span class="px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-xs font-semibold">
+                      {post.category}
+                    </span>
+                  )}
+                  {post.date && <span class="text-xs text-gray-500 dark:text-gray-400">{post.date}</span>}
                 </div>
-                
+
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                  {post.title}
+                  <a href={`/blog/${post.id}`}>{post.title}</a>
                 </h3>
-                
+
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                   {post.excerpt}
                 </p>
-                
+
                 <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-dark-700">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 bg-gradient-to-br from-primary-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      {post.author.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <p class="text-xs font-medium text-gray-900 dark:text-white">{post.author}</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">{post.date}</p>
-                    </div>
-                  </div>
-                  
                   <a href={`/blog/${post.id}`} class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold text-xs">
                     Read →
                   </a>
@@ -182,13 +121,6 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
           <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No articles found</h3>
           <p class="text-gray-600 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
         </div>
-
-        <!-- Load More Button -->
-        <div class="mt-12 text-center">
-          <button class="px-8 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 hover:scale-105">
-            Load More Articles
-          </button>
-        </div>
       </div>
     </div>
   </section>
@@ -202,12 +134,12 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
         </div>
-        
+
         <h2 class="text-3xl sm:text-4xl font-bold mb-4">Subscribe to Our Newsletter</h2>
         <p class="text-lg text-white/90 mb-8">
           Get the latest construction tips, product updates, and exclusive deals delivered to your inbox.
         </p>
-        
+
         <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
           <input
             type="email"
@@ -223,12 +155,11 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
             Subscribe
           </button>
         </form>
-        
+
         <p class="text-sm text-white/70 mt-4">
           No spam, unsubscribe anytime. Read our <a href="/privacy" class="underline hover:text-white">Privacy Policy</a>.
         </p>
 
-        <!-- Success Message -->
         <div id="newsletter-success" class="hidden mt-6 p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30">
           <div class="flex items-center justify-center gap-3">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,26 +169,6 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
               Thank you for subscribing! Check your email to confirm.
             </p>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Popular Topics -->
-  <section class="py-12 sm:py-16 bg-gray-50 dark:bg-dark-800">
-    <div class="container mx-auto px-4">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Popular Topics</h2>
-        
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {['Concrete', 'Roofing', 'Insulation', 'Framing', 'Plumbing', 'Electrical', 'Flooring', 'Drywall', 'Painting', 'Safety', 'Tools', 'Budget'].map(topic => (
-            <a 
-              href={`/blog?topic=${topic.toLowerCase()}`}
-              class="px-4 py-3 bg-white dark:bg-dark-900 rounded-xl text-center font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-dark-700"
-            >
-              {topic}
-            </a>
-          ))}
         </div>
       </div>
     </div>
@@ -296,16 +207,14 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
   categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
       const category = button.getAttribute('data-category');
-      
-      // Update active button
+
       categoryButtons.forEach(btn => {
         btn.classList.remove('bg-primary-600', 'text-white');
         btn.classList.add('bg-gray-100', 'dark:bg-dark-800', 'text-gray-700', 'dark:text-gray-300');
       });
       button.classList.remove('bg-gray-100', 'dark:bg-dark-800', 'text-gray-700', 'dark:text-gray-300');
       button.classList.add('bg-primary-600', 'text-white');
-      
-      // Filter posts
+
       let visibleCount = 0;
       blogPosts.forEach(post => {
         const postCategory = post.getAttribute('data-category');
@@ -316,8 +225,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
           post.classList.add('hidden');
         }
       });
-      
-      // Show/hide no results message
+
       if (visibleCount === 0) {
         noResults?.classList.remove('hidden');
       } else {
@@ -327,17 +235,17 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
   });
 
   // Search Functionality
-  const searchInput = document.getElementById('blog-search') as HTMLInputElement;
-  
+  const searchInput = document.getElementById('blog-search');
+
   searchInput?.addEventListener('input', (e) => {
-    const query = (e.target as HTMLInputElement).value.toLowerCase();
+    const query = e.target.value.toLowerCase();
     let visibleCount = 0;
-    
+
     blogPosts.forEach(post => {
-      const title = post.querySelector('h3')?.textContent?.toLowerCase() || '';
+      const title = post.querySelector('h3 a, h3')?.textContent?.toLowerCase() || '';
       const excerpt = post.querySelector('p')?.textContent?.toLowerCase() || '';
       const category = post.getAttribute('data-category')?.toLowerCase() || '';
-      
+
       if (title.includes(query) || excerpt.includes(query) || category.includes(query)) {
         post.classList.remove('hidden');
         visibleCount++;
@@ -345,8 +253,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
         post.classList.add('hidden');
       }
     });
-    
-    // Show/hide no results message
+
     if (visibleCount === 0 && query.length > 0) {
       noResults?.classList.remove('hidden');
     } else {
@@ -355,33 +262,23 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
   });
 
   // Newsletter Form
-  const newsletterForm = document.getElementById('newsletter-form') as HTMLFormElement;
+  const newsletterForm = document.getElementById('newsletter-form');
   const newsletterSuccess = document.getElementById('newsletter-success');
 
   newsletterForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData(newsletterForm);
     const email = formData.get('email');
-    
+
     console.log('Newsletter subscription:', email);
-    
-    // Show success message
+
     if (newsletterSuccess) {
       newsletterSuccess.classList.remove('hidden');
       newsletterForm.reset();
-      
-      // Hide after 5 seconds
       setTimeout(() => {
         newsletterSuccess.classList.add('hidden');
       }, 5000);
     }
-    
-    // In production, send to backend
-    // fetch('/api/newsletter/subscribe', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email })
-    // });
   });
 </script>
