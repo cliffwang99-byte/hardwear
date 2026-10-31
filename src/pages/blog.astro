@@ -1,6 +1,6 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPosts } from '../lib/blog';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts } from '../../lib/blog';
 
 const posts = await getPosts();
 const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Boolean))]];
