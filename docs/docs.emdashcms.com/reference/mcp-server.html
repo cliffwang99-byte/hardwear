@@ -1,0 +1,807 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="download_date" content="2026-10-31T00:55:03.696Z"/><meta name="viewport" content="width=device-width, initial-scale=1"><title>MCP Server Reference | EmDash</title><link rel="canonical" href="mcp-server/index.html"><link rel="sitemap" href="https://docs.emdashcms.com/sitemap-index.xml"><link rel="shortcut icon" href="../favicon.svg" type="image/svg+xml"><meta name="generator" content="Astro v7.3.2"><meta name="generator" content="Starlight v0.42.0"><meta property="og:title" content="MCP Server Reference"><meta property="og:type" content="article"><meta property="og:url" content="https://docs.emdashcms.com/reference/mcp-server/"><meta property="og:locale" content="en"><meta property="og:description" content="Authentication, protocol behavior, and the complete tool inventory for the MCP server."><meta property="og:site_name" content="EmDash"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="Authentication, protocol behavior, and the complete tool inventory for the MCP server."><style>@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--font-inter:Inter-c50cd4c815d22ecb,"Inter-c50cd4c815d22ecb fallback: Arial","Inter-c50cd4c815d22ecb fallback: Arial Bold",sans-serif;}</style><link rel="preload" href="../_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2"><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"></path></svg><svg aria-hidden="true" class="dark astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"></path></svg><svg aria-hidden="true" class="auto astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg></template><link rel="stylesheet" href="../_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="../_astro/middleware.Cxj_7hJc.css"><style>@layer starlight.components{.card:where(.astro-phrokjlo){--sl-card-border:var(--sl-color-purple);--sl-card-bg:var(--sl-color-purple-low);border:1px solid var(--sl-color-gray-5);background-color:var(--sl-color-black);flex-direction:column;gap:clamp(.5rem,.125rem + 1vw,1rem);padding:clamp(1rem,.125rem + 3vw,2.5rem)}.card:where(.astro-phrokjlo):nth-child(4n+1){--sl-card-border:var(--sl-color-orange);--sl-card-bg:var(--sl-color-orange-low)}.card:where(.astro-phrokjlo):nth-child(4n+3){--sl-card-border:var(--sl-color-green);--sl-card-bg:var(--sl-color-green-low)}.card:where(.astro-phrokjlo):nth-child(4n+4){--sl-card-border:var(--sl-color-red);--sl-card-bg:var(--sl-color-red-low)}.card:where(.astro-phrokjlo):nth-child(4n+5){--sl-card-border:var(--sl-color-blue);--sl-card-bg:var(--sl-color-blue-low)}.title:where(.astro-phrokjlo){font-weight:600;font-size:var(--sl-text-h4);color:var(--sl-color-white);line-height:var(--sl-line-height-headings);align-items:center;gap:1rem}.card:where(.astro-phrokjlo) .icon:where(.astro-phrokjlo){border:1px solid var(--sl-card-border);background-color:var(--sl-card-bg);border-radius:.25rem;flex-shrink:0;padding:.2em}.card:where(.astro-phrokjlo) .body:where(.astro-phrokjlo){font-size:clamp(var(--sl-text-sm), calc(.5rem + 1vw), var(--sl-text-body));margin:0}}
+@layer starlight.components{.card-grid:where(.astro-nh6a6jf3){grid-template-columns:100%;gap:1rem;display:grid}.card-grid:where(.astro-nh6a6jf3)>*{margin-top:0!important}@media (width>=50rem){.card-grid:where(.astro-nh6a6jf3){grid-template-columns:1fr 1fr;gap:1.5rem}.stagger:where(.astro-nh6a6jf3){--stagger-height:5rem;padding-bottom:var(--stagger-height)}.stagger:where(.astro-nh6a6jf3)>:nth-child(2n){transform:translateY(var(--stagger-height))}}}
+@layer starlight.components{svg:where(.astro-anoh5s2p){color:var(--sl-icon-color);font-size:var(--sl-icon-size,1em);width:1em;height:1em}}
+@layer starlight.components{starlight-tabs:where(.astro-zdxsovxw){display:block}.tablist-wrapper:where(.astro-zdxsovxw){overflow-x:auto}:where(.astro-zdxsovxw)[role=tablist]{border-bottom:2px solid var(--sl-color-gray-5);padding:0;list-style:none;display:flex}.tab:where(.astro-zdxsovxw){display:flex}.tab:where(.astro-zdxsovxw)>:where(.astro-zdxsovxw)[role=tab]{--sl-tab-color-border:var(--sl-color-gray-5);line-height:var(--sl-line-height-headings);box-shadow:0 2px 0 var(--sl-tab-color-border);color:var(--sl-color-gray-3);outline-offset:var(--sl-outline-offset-inside);overflow-wrap:initial;align-items:center;gap:.5rem;padding:.275rem 1.25rem;text-decoration:none;display:flex}.tab:where(.astro-zdxsovxw) :where(.astro-zdxsovxw)[role=tab][aria-selected=true]{--sl-tab-color-border:var(--sl-color-text-accent);color:var(--sl-color-white);font-weight:600}.tablist-wrapper:where(.astro-zdxsovxw)~[role=tabpanel]{margin-top:1rem}}
+@layer starlight.components{.sl-link-card:where(.astro-snpl7mlt){border:1px solid var(--sl-color-gray-5);box-shadow:var(--sl-shadow-sm);border-radius:.5rem;grid-template-columns:1fr auto;gap:.5rem;padding:1rem;display:grid;position:relative}a:where(.astro-snpl7mlt){line-height:var(--sl-line-height-headings);text-decoration:none}a:where(.astro-snpl7mlt):before{content:"";position:absolute;inset:0}.stack:where(.astro-snpl7mlt){flex-direction:column;gap:.5rem}.title:where(.astro-snpl7mlt){color:var(--sl-color-white);font-weight:600;font-size:var(--sl-text-lg)}.description:where(.astro-snpl7mlt){color:var(--sl-color-gray-3);line-height:1.5}.icon:where(.astro-snpl7mlt){color:var(--sl-color-gray-3)}.sl-link-card:where(.astro-snpl7mlt):hover{background:var(--sl-color-gray-7,var(--sl-color-gray-6));border-color:var(--sl-color-gray-2)}.sl-link-card:where(.astro-snpl7mlt):hover .icon:where(.astro-snpl7mlt){color:var(--sl-color-white)}}
+@layer starlight.components{.sl-steps{--bullet-size:calc(var(--sl-line-height) * 1rem);--bullet-margin:.375rem;counter-reset:steps-counter var(--sl-steps-start,0);padding-inline-start:0;list-style:none}.sl-steps>li{counter-increment:steps-counter;padding-inline-start:calc(var(--bullet-size) + 1rem);min-height:calc(var(--bullet-size) + var(--bullet-margin));padding-bottom:1px;position:relative}.sl-steps>li+li{margin-top:0}.sl-steps>li:before{content:counter(steps-counter);top:0;width:var(--bullet-size);height:var(--bullet-size);line-height:var(--bullet-size);font-size:var(--sl-text-xs);text-align:center;color:var(--sl-color-white);background-color:var(--sl-color-gray-6);box-shadow:inset 0 0 0 1px var(--sl-color-gray-5);border-radius:99rem;font-weight:600;position:absolute;inset-inline-start:0}.sl-steps>li:after{--guide-width:1px;content:"";top:calc(var(--bullet-size) + var(--bullet-margin));bottom:var(--bullet-margin);width:var(--guide-width);background-color:var(--sl-color-hairline-light);position:absolute;inset-inline-start:calc((var(--bullet-size) - var(--guide-width)) / 2)}}@layer starlight.content{.sl-steps>li>:first-child{--lh:calc(1em * var(--sl-line-height));--shift-y:calc(.5 * (var(--bullet-size) - var(--lh)));transform:translateY(var(--shift-y));margin-bottom:var(--shift-y)}.sl-steps>li>:first-child:where(h1,h2,h3,h4,h5,h6){--lh:calc(1em * var(--sl-line-height-headings))}@supports (--prop:1lh){.sl-steps>li>:first-child{--lh:1lh}}}
+</style><script type="module" src="../_astro/page.ERgG2pni.js"></script></head><body class="astro-wnr2sy5k"><a class="sl-skip-link astro-vzx7l6mq" href=".">Skip to content</a><blockquote class="agent-docs-index astro-pbhazpx6" data-agent-docs-index="true" aria-hidden="true"><h2 class="astro-pbhazpx6">Documentation Index</h2><p class="astro-pbhazpx6">Fetch the complete documentation index at: <a href="../llms_txt.html" class="astro-pbhazpx6">/llms.txt</a></p><p class="astro-pbhazpx6">Use this file to discover all available pages before exploring further.</p></blockquote><div class="page sl-flex astro-yt7huk7t"><header class="header astro-yt7huk7t"><div class="header astro-bvhx65jw"><div class="title-wrapper sl-flex astro-bvhx65jw"><a href="../index.html" class="site-title sl-flex astro-x5oma6p2"><img class="light:sl-hidden print:hidden astro-x5oma6p2" alt="" src="../_astro/logo-dark.BoAjKvTY.svg" width="471" height="118"><img class="dark:sl-hidden print:block astro-x5oma6p2" alt="" src="../_astro/logo-light.Aarph4BT.svg" width="471" height="118"><span class="sr-only astro-x5oma6p2" translate="no">EmDash</span></a></div><div class="sl-flex print:hidden astro-bvhx65jw"><site-search class="astro-bvhx65jw astro-2b3rjpfm" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal="" disabled="" aria-label="Search" aria-keyshortcuts="Control+K" class="astro-2b3rjpfm"><svg aria-hidden="true" class="astro-2b3rjpfm astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"></path></svg><span class="sl-hidden md:sl-block astro-2b3rjpfm" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-2b3rjpfm" style="display: none;"><kbd class="astro-2b3rjpfm">Ctrl</kbd><kbd class="astro-2b3rjpfm">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-2b3rjpfm"><div class="dialog-frame sl-flex astro-2b3rjpfm"><button data-close-modal="" class="sl-flex md:sl-hidden astro-2b3rjpfm">Cancel</button><div class="search-container astro-2b3rjpfm"><div id="starlight__search" class="astro-2b3rjpfm"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="../_astro/Search.astro_astro_type_script_index_0_lang.CdS7UIoa.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-bvhx65jw"><div class="sl-flex social-icons astro-bvhx65jw"><a href="https://github.com/emdash-cms/emdash" rel="me" class="sl-flex astro-us5k3yqb"><span class="sr-only astro-us5k3yqb">GitHub</span><svg aria-hidden="true" class="astro-us5k3yqb astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"></path></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-mr6hoze4"><span class="sr-only astro-mr6hoze4">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg><select autocomplete="off" class="astro-mr6hoze4"><option value="dark" class="astro-mr6hoze4">Dark</option><option value="light" class="astro-mr6hoze4">Light</option><option value="auto" selected="" class="astro-mr6hoze4">Auto</option></select><svg aria-hidden="true" class="icon caret astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"></path></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">globalThis.process??={},globalThis.process.env??={};var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script><script type="module">globalThis.process??={},globalThis.process.env??={};var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-yt7huk7t" aria-label="Main"><button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-5tyokytj"><svg aria-hidden="true" class="open-menu astro-5tyokytj astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"></path></svg><svg aria-hidden="true" class="close-menu astro-5tyokytj astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"></path></svg><span class="sr-only astro-5tyokytj">Menu</span></button><script type="module">globalThis.process??={},globalThis.process.env??={};var e=class extends HTMLElement{constructor(){super(),matchMedia(`(min-width: 50em)`).addEventListener(`change`,()=>this.hidePopover()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover="" id="starlight__sidebar" class="sidebar-pane astro-yt7huk7t"><div class="sidebar-content sl-flex astro-yt7huk7t"><sl-sidebar-state-persist data-hash="0l246rv" class="astro-osi3h7p7"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-w5kfzas3"><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Start Here</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../getting-started/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Getting Started</span></a></li><li class="astro-w5kfzas3"><a href="../existing-project/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Add to an Existing Project</span></a></li><li class="astro-w5kfzas3"><a href="../upgrade-to-v1/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Upgrade to EmDash 1.0</span></a></li><li class="astro-w5kfzas3"><a href="../why-emdash/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Why EmDash?</span></a></li><li class="astro-w5kfzas3"><a href="../docs-mcp/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Docs MCP for AI Tools</span></a></li><li class="astro-w5kfzas3"><a href="../agent-skills/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Agent Skills</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Coming From...</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../coming-from/wordpress/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">EmDash for WordPress Developers</span></a></li><li class="astro-w5kfzas3"><a href="../coming-from/astro-for-wp-devs/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Astro for WordPress Developers</span></a></li><li class="astro-w5kfzas3"><a href="../coming-from/astro/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">EmDash for Astro Developers</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Guides</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../guides/create-a-blog/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Create a Blog</span></a></li><li class="astro-w5kfzas3"><a href="../guides/working-with-content/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Working with Content</span></a></li><li class="astro-w5kfzas3"><a href="../guides/querying-content/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Querying Content</span></a></li><li class="astro-w5kfzas3"><a href="../guides/media-library/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Media Library</span></a></li><li class="astro-w5kfzas3"><a href="../guides/dark-mode/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Dark Mode</span></a></li><li class="astro-w5kfzas3"><a href="../guides/taxonomies/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Taxonomies</span></a></li><li class="astro-w5kfzas3"><a href="../guides/relations/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Relations</span></a></li><li class="astro-w5kfzas3"><a href="../guides/menus/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Navigation Menus</span></a></li><li class="astro-w5kfzas3"><a href="../guides/widgets/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Widget Areas</span></a></li><li class="astro-w5kfzas3"><a href="../guides/page-layouts/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Page Layouts</span></a></li><li class="astro-w5kfzas3"><a href="../guides/blocks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Blocks</span></a></li><li class="astro-w5kfzas3"><a href="../guides/sections/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Sections</span></a></li><li class="astro-w5kfzas3"><a href="../guides/site-settings/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Site Settings</span></a></li><li class="astro-w5kfzas3"><a href="../guides/change-domain/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Move to a New Domain</span></a></li><li class="astro-w5kfzas3"><a href="../guides/seo/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Built-in SEO Features</span></a></li><li class="astro-w5kfzas3"><a href="../guides/authentication/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Authentication</span></a></li><li class="astro-w5kfzas3"><a href="../guides/email/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Email Setup</span></a></li><li class="astro-w5kfzas3"><a href="../guides/atmosphere-auth/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Atmosphere Login</span></a></li><li class="astro-w5kfzas3"><a href="../guides/ai-tools/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">AI Tools</span></a></li><li class="astro-w5kfzas3"><a href="../guides/x402-payments/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">x402 Payments</span></a></li><li class="astro-w5kfzas3"><a href="../guides/preview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Preview Mode</span></a></li><li class="astro-w5kfzas3"><a href="../guides/backups/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Backups</span></a></li><li class="astro-w5kfzas3"><a href="../guides/site-transfer/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Site Transfer</span></a></li><li class="astro-w5kfzas3"><a href="../guides/internationalization/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Internationalization (i18n)</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../plugins/overview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Overview</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/installing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Installing Plugins</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/registry/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Registry</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/migrate-from-marketplace/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrate from Marketplace</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/upgrading-sites/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Upgrading Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Migration</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../migration/from-wordpress/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrate from WordPress</span></a></li><li class="astro-w5kfzas3"><a href="../migration/content-import/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Import</span></a></li><li class="astro-w5kfzas3"><a href="../migration/porting-plugins/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Porting WordPress Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Plugin Development</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/choosing-a-format/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Choosing a Plugin Format</span></a></li><li class="astro-w5kfzas3"><details class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Sandboxed Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="6"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/your-first-plugin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Your First Plugin</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/manifest/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Manifest</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Plugin CLI</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/hooks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Hooks</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/api-routes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">API Routes</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/storage/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Storage</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/settings/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Settings</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/block-kit/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Block Kit</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/capabilities/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Capabilities &amp; Security</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/publishing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Bundling &amp; Publishing</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/delegated-releases/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Automated Releases</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-plugins/migrating-to-the-cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrating to the CLI</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Native Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="7"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../plugins/creating-native-plugins/your-first-native-plugin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Your First Native Plugin</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-native-plugins/react-admin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">React Admin Pages &amp; Widgets</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-native-plugins/portable-text-components/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Portable Text Components</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-native-plugins/page-fragments/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Page Fragments</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/creating-native-plugins/distributing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Distributing Native Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><a href="../plugins/registry-client/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Querying the Registry</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/field-kit/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Field Kit</span></a></li><li class="astro-w5kfzas3"><a href="../plugins/ai-search/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">AI Search</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Contributing</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="8"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../contributing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Contributor Guide</span></a></li><li class="astro-w5kfzas3"><a href="../contributing/architecture/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Architecture (internals)</span></a></li><li class="astro-w5kfzas3"><a href="../contributing/docs-style-guide/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Documentation Style Guide</span></a></li><li class="astro-w5kfzas3"><a href="../contributing/translating/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Translating EmDash</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Themes</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="9"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../themes/overview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Themes Overview</span></a></li><li class="astro-w5kfzas3"><a href="../themes/creating-themes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Creating Themes</span></a></li><li class="astro-w5kfzas3"><a href="../themes/seed-files/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Seed File Format</span></a></li><li class="astro-w5kfzas3"><a href="../themes/porting-wp-themes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Porting WordPress Themes</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Deployment</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="10"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../deployment/cloudflare/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Deploy to Cloudflare</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/nodejs/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Deploy to Node.js</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/updating/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Update EmDash</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/core-migrations/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Core Database Migrations</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/schema-evolution/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Evolving a Deployed Site</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/database/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Database Options</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/storage/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Storage Options</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/object-cache/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Object Cache</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/route-caching/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Route Caching</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/plugin-sandbox/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Sandbox</span></a></li><li class="astro-w5kfzas3"><a href="../deployment/secrets/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Secrets &amp; Key Management</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Concepts</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="11"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../concepts/architecture/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Architecture</span></a></li><li class="astro-w5kfzas3"><a href="../concepts/collections/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Collections</span></a></li><li class="astro-w5kfzas3"><a href="../concepts/content-model/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Model</span></a></li><li class="astro-w5kfzas3"><a href="../concepts/admin-panel/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Admin Panel</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Reference</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="12"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="configuration/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Configuration</span></a></li><li class="astro-w5kfzas3"><a href="cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">CLI Commands</span></a></li><li class="astro-w5kfzas3"><a href="content-lifecycle/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Lifecycle</span></a></li><li class="astro-w5kfzas3"><a href="api/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">API Reference</span></a></li><li class="astro-w5kfzas3"><a href="field-types/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Field Types</span></a></li><li class="astro-w5kfzas3"><a href="hooks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Hook Reference</span></a></li><li class="astro-w5kfzas3"><a href="rest-api/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">REST API</span></a></li><li class="astro-w5kfzas3"><a href="mcp-server/index.html" aria-current="page" class="astro-w5kfzas3"><span class="astro-w5kfzas3">MCP Server</span></a></li></ul></details></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-h25g4d7i"><div class="social-icons astro-h25g4d7i"><a href="https://github.com/emdash-cms/emdash" rel="me" class="sl-flex astro-us5k3yqb"><span class="sr-only astro-us5k3yqb">GitHub</span><svg aria-hidden="true" class="astro-us5k3yqb astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"></path></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-mr6hoze4"><span class="sr-only astro-mr6hoze4">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg><select autocomplete="off" class="astro-mr6hoze4"><option value="dark" class="astro-mr6hoze4">Dark</option><option value="light" class="astro-mr6hoze4">Light</option><option value="auto" selected="" class="astro-mr6hoze4">Auto</option></select><svg aria-hidden="true" class="icon caret astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"></path></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script></div></div></div></sl-sidebar-pane></nav><div class="main-frame astro-yt7huk7t"><script type="module">globalThis.process??={},globalThis.process.env??={};var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-w7w3dzri"><aside class="right-sidebar-container print:hidden astro-w7w3dzri"><div class="right-sidebar astro-w7w3dzri"><div class="lg:sl-hidden astro-pk3u54ys"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-khxcspzp"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-khxcspzp"><details id="starlight__mobile-toc" class="astro-khxcspzp"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-khxcspzp"><span class="toggle sl-flex astro-khxcspzp">On this page<svg aria-hidden="true" class="caret astro-khxcspzp astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></span><span class="display-current astro-khxcspzp"></span></summary><div class="dropdown astro-khxcspzp"><ul class="isMobile astro-5cws5vfn" style="--depth: 0;"><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Overview</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Authentication</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Scopes</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Role requirements</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Transport</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Tool inventory</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Content tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Byline tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Schema tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Search tool</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Taxonomy tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Menu tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Revision tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Settings tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Site transfer tools</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Use the tool schemas</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Content lifecycle and bylines</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Translations</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Schemas, media, taxonomies, and menus</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Site transfer</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Export</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Import</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Approvals</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Plugin tools</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">OAuth discovery</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Errors</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="../_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.BC4YkNnQ.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-pk3u54ys"><div class="sl-container astro-pk3u54ys"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-5cws5vfn" style="--depth: 0;"><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Overview</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Authentication</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Scopes</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Role requirements</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Transport</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Tool inventory</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Content tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Byline tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Schema tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Search tool</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Taxonomy tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Menu tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Revision tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Settings tools</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Site transfer tools</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Use the tool schemas</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Content lifecycle and bylines</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Translations</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Schemas, media, taxonomies, and menus</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Site transfer</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Export</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Import</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="." style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Approvals</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Plugin tools</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">OAuth discovery</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="." style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Errors</span></a></li></ul></nav></starlight-toc><script type="module" src="../_astro/TableOfContents.astro_astro_type_script_index_0_lang.BP64OFl3.js"></script></div></div></div></aside><div class="main-pane astro-w7w3dzri"><main data-pagefind-body="" class="astro-wnr2sy5k" lang="en" dir="ltr"><div class="content-panel astro-dmd24nna"><div class="sl-container astro-dmd24nna"><h1 id="_top" class="astro-ud6vd3vr">MCP Server Reference</h1></div></div><div class="content-panel astro-dmd24nna"><div class="sl-container astro-dmd24nna"><div class="sl-markdown-content">
+<p>EmDash exposes a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) server at <code dir="auto">/_emdash/api/mcp</code>. MCP clients use it to read and manage content, bylines, schemas, media, taxonomies, menus, revisions, and settings, and to export or import the whole site.</p>
+<aside aria-label="Note" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Note</p><div class="starlight-aside__content"><p>To connect Claude, ChatGPT, or another AI client, follow the <a href="../guides/ai-tools/index.html">AI tools guide</a>.</p></div></aside>
+<div class="sl-heading-wrapper level-h2"><h2 id="authentication">Authentication</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Authentication”</span></a></div>
+<p>The MCP endpoint requires a Bearer token. EmDash supports these token flows:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth 2.1 Authorization Code with Proof Key for Code Exchange (PKCE)</td>
+<td>Interactive MCP clients. The user approves the requested scopes in a browser.</td>
+</tr>
+<tr>
+<td>Personal access token</td>
+<td>Long-lived access for a client or automation. Tokens use the <code dir="auto">ec_pat_</code> prefix and are created in the admin.</td>
+</tr>
+<tr>
+<td>OAuth 2.0 Device Authorization Grant</td>
+<td>Command-line clients that ask the user to approve a code in a browser. <code dir="auto">emdash login</code> uses this flow.</td>
+</tr>
+</tbody>
+</table>
+<p>Session cookies do not authenticate the MCP endpoint.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="scopes">Scopes</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Scopes”</span></a></div>
+<p>OAuth and personal access tokens limit which tools a client can call. The user’s role is checked separately, so a scope never grants a permission the user does not have.</p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">content:read</code></td>
+<td>Read and search content, bylines, taxonomies, terms, menus, and revisions. Draft-like content also requires the user’s <code dir="auto">content:read_drafts</code> permission.</td>
+</tr>
+<tr>
+<td><code dir="auto">content:write</code></td>
+<td>Create and change content, bylines, and revisions. It also grants <code dir="auto">taxonomies:manage</code> and <code dir="auto">menus:manage</code> for compatibility with existing tokens.</td>
+</tr>
+<tr>
+<td><code dir="auto">media:read</code></td>
+<td>Read media records.</td>
+</tr>
+<tr>
+<td><code dir="auto">media:write</code></td>
+<td>Upload, register, update, and delete media.</td>
+</tr>
+<tr>
+<td><code dir="auto">schema:read</code></td>
+<td>Read collections and fields.</td>
+</tr>
+<tr>
+<td><code dir="auto">schema:write</code></td>
+<td>Create, update, and delete collections and fields.</td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomies:manage</code></td>
+<td>Create, update, and delete taxonomy definitions and terms.</td>
+</tr>
+<tr>
+<td><code dir="auto">menus:manage</code></td>
+<td>Create, update, and delete menus and menu items.</td>
+</tr>
+<tr>
+<td><code dir="auto">settings:read</code></td>
+<td>Read site settings.</td>
+</tr>
+<tr>
+<td><code dir="auto">settings:manage</code></td>
+<td>Update site settings.</td>
+</tr>
+<tr>
+<td><code dir="auto">mcp:tools</code></td>
+<td>Call MCP tools exposed by any enabled plugin.</td>
+</tr>
+<tr>
+<td><code dir="auto">mcp:tools:&lt;pluginId&gt;</code></td>
+<td>Call MCP tools exposed by one enabled plugin.</td>
+</tr>
+<tr>
+<td><code dir="auto">transfer:export</code></td>
+<td>Export the whole site as a <a href="../guides/site-transfer/index.html">site package</a> and download it.</td>
+</tr>
+<tr>
+<td><code dir="auto">transfer:analyze</code></td>
+<td>Upload a site package and analyze it for import.</td>
+</tr>
+<tr>
+<td><code dir="auto">transfer:execute</code></td>
+<td>Start, advance, cancel, and abandon a site import.</td>
+</tr>
+<tr>
+<td><code dir="auto">admin</code></td>
+<td>Call every core tool, including the site transfer tools. Plugin tools still require <code dir="auto">mcp:tools</code> or the plugin-specific scope.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code dir="auto">admin</code> scope includes <code dir="auto">transfer:export</code>, <code dir="auto">transfer:analyze</code>, and <code dir="auto">transfer:execute</code>. Each transfer scope grants only its own actions and requires the administrator role. To let a client, such as an agent, analyze a site package without exporting or importing, grant <code dir="auto">transfer:analyze</code> instead of <code dir="auto">admin</code>.</p>
+<p>The authorization-code consent page lets the user remove requested scopes. EmDash also intersects the request with the client’s registered scopes and the user’s role, and refuses an empty grant.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="role-requirements">Role requirements</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Role requirements”</span></a></div>
+<p>The following table shows the minimum role for the broad capability. Ownership checks can require a higher role when a user acts on another user’s content.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Minimum role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read published content, media, taxonomies, terms, and menus</td>
+<td>Subscriber</td>
+</tr>
+<tr>
+<td>Read drafts, scheduled content, trash, comparisons, and revisions</td>
+<td>Contributor</td>
+</tr>
+<tr>
+<td>Create content, edit owned drafts, or upload media</td>
+<td>Contributor</td>
+</tr>
+<tr>
+<td>Edit owned published or scheduled content, publish owned content, or register media</td>
+<td>Author</td>
+</tr>
+<tr>
+<td>Manage bylines, taxonomies, menus, or all users’ content</td>
+<td>Editor</td>
+</tr>
+<tr>
+<td>Read schemas or settings</td>
+<td>Editor</td>
+</tr>
+<tr>
+<td>Change schemas or settings, permanently delete content, or repair media usage</td>
+<td>Admin</td>
+</tr>
+<tr>
+<td>Export or import the whole site</td>
+<td>Admin</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../guides/authentication/index.html">user roles</a> for the complete role definitions.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="transport">Transport</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Transport”</span></a></div>
+<p>The server uses stateless Streamable HTTP. Each request is independent; the server does not keep an MCP session or a Server-Sent Events connection.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/mcp</code></td>
+<td>Accepts JSON-RPC initialization, tool listing, and tool calls.</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/mcp</code></td>
+<td>Returns <code dir="auto">405 Method Not Allowed</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/mcp</code></td>
+<td>Returns <code dir="auto">405 Method Not Allowed</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Responses use <a href="https://www.jsonrpc.org/specification">JSON-RPC 2.0</a>. Call <code dir="auto">tools/list</code> to obtain the current input schemas and MCP annotations before constructing a tool request.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="tool-inventory">Tool inventory</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Tool inventory”</span></a></div>
+<p>The following inventory matches the static tools returned by <code dir="auto">tools/list</code>. The registered title is included because clients may display it instead of the tool name.</p>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="content-tools">Content tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Content tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">content_list</code></td>
+<td>List Content</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_get</code></td>
+<td>Get Content</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_create</code></td>
+<td>Create Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_update</code></td>
+<td>Update Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_delete</code></td>
+<td>Delete Content (Trash)</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_restore</code></td>
+<td>Restore Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_permanent_delete</code></td>
+<td>Permanently Delete Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_publish</code></td>
+<td>Publish Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_unpublish</code></td>
+<td>Unpublish Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_schedule</code></td>
+<td>Schedule Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_unschedule</code></td>
+<td>Cancel Scheduled Publication</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_compare</code></td>
+<td>Compare Live vs Draft</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_discard_draft</code></td>
+<td>Discard Draft</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_list_trashed</code></td>
+<td>List Trashed Content</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_duplicate</code></td>
+<td>Duplicate Content</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">content_translations</code></td>
+<td>Get Content Translations</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="byline-tools">Byline tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Byline tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">byline_list</code></td>
+<td>List Bylines</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">byline_get</code></td>
+<td>Get Byline</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">byline_create</code></td>
+<td>Create Byline</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">byline_update</code></td>
+<td>Update Byline</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">byline_delete</code></td>
+<td>Delete Byline</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">byline_translations</code></td>
+<td>List Byline Translations</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="schema-tools">Schema tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Schema tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">schema_list_collections</code></td>
+<td>List Collections</td>
+<td><code dir="auto">schema:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_get_collection</code></td>
+<td>Get Collection Schema</td>
+<td><code dir="auto">schema:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_list_block_types</code></td>
+<td>List Block Types</td>
+<td><code dir="auto">schema:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_get_block_type</code></td>
+<td>Get Block Type</td>
+<td><code dir="auto">schema:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_create_block_type</code></td>
+<td>Create Block Type</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_update_block_type</code></td>
+<td>Update Block Type</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_activate_block_type_version</code></td>
+<td>Activate Block Type Version</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_create_collection</code></td>
+<td>Create Collection</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_delete_collection</code></td>
+<td>Delete Collection</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_update_collection</code></td>
+<td>Update Collection</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_create_field</code></td>
+<td>Add Field to Collection</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_delete_field</code></td>
+<td>Remove Field from Collection</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">schema_update_field</code></td>
+<td>Update Field</td>
+<td><code dir="auto">schema:write</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="media-tools">Media tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Media tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">media_list</code></td>
+<td>List Media</td>
+<td><code dir="auto">media:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_create</code></td>
+<td>Confirm Signed Media Upload</td>
+<td><code dir="auto">media:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_upload</code></td>
+<td>Upload Media</td>
+<td><code dir="auto">media:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_get</code></td>
+<td>Get Media Item</td>
+<td><code dir="auto">media:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_update</code></td>
+<td>Update Media Metadata</td>
+<td><code dir="auto">media:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_delete</code></td>
+<td>Delete Media</td>
+<td><code dir="auto">media:write</code></td>
+</tr>
+<tr>
+<td><code dir="auto">media_usage_repair</code></td>
+<td>Repair Media Usage Index</td>
+<td><code dir="auto">admin</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="search-tool">Search tool</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Search tool”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">search</code></td>
+<td>Search Content</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="taxonomy-tools">Taxonomy tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Taxonomy tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">taxonomy_list</code></td>
+<td>List Taxonomies</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_get</code></td>
+<td>Get Taxonomy Definition</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_create</code></td>
+<td>Create Taxonomy Definition</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_update</code></td>
+<td>Update Taxonomy Definition</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_delete</code></td>
+<td>Delete Taxonomy Definition</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_list_terms</code></td>
+<td>List Taxonomy Terms</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_create_term</code></td>
+<td>Create Taxonomy Term</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_update_term</code></td>
+<td>Update Taxonomy Term</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_delete_term</code></td>
+<td>Delete Taxonomy Term</td>
+<td><code dir="auto">taxonomies:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">taxonomy_term_translations</code></td>
+<td>List Term Translations</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="menu-tools">Menu tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Menu tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">menu_list</code></td>
+<td>List Menus</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_get</code></td>
+<td>Get Menu with Items</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_translations</code></td>
+<td>List Menu Translations</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_create</code></td>
+<td>Create Menu</td>
+<td><code dir="auto">menus:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_update</code></td>
+<td>Update Menu</td>
+<td><code dir="auto">menus:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_delete</code></td>
+<td>Delete Menu</td>
+<td><code dir="auto">menus:manage</code></td>
+</tr>
+<tr>
+<td><code dir="auto">menu_set_items</code></td>
+<td>Set Menu Items</td>
+<td><code dir="auto">menus:manage</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="revision-tools">Revision tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Revision tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">revision_list</code></td>
+<td>List Revisions</td>
+<td><code dir="auto">content:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">revision_restore</code></td>
+<td>Restore Revision</td>
+<td><code dir="auto">content:write</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="settings-tools">Settings tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Settings tools”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">settings_get</code></td>
+<td>Get Site Settings</td>
+<td><code dir="auto">settings:read</code></td>
+</tr>
+<tr>
+<td><code dir="auto">settings_update</code></td>
+<td>Update Site Settings</td>
+<td><code dir="auto">settings:manage</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="site-transfer-tools">Site transfer tools</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Site transfer tools”</span></a></div>
+<p><code dir="auto">transfer:*</code> means any one of <code dir="auto">transfer:export</code>, <code dir="auto">transfer:analyze</code>, or <code dir="auto">transfer:execute</code>. The <code dir="auto">admin</code> scope satisfies every requirement in this table.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Registered title</th>
+<th>Required scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">site_transfer_capabilities</code></td>
+<td>Get Site Transfer Capabilities</td>
+<td><code dir="auto">transfer:*</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_export_start</code></td>
+<td>Start Site Export</td>
+<td><code dir="auto">transfer:export</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_export_status</code></td>
+<td>Get Site Export Status</td>
+<td><code dir="auto">transfer:export</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_import_analyze</code></td>
+<td>Analyze Site Import</td>
+<td><code dir="auto">transfer:analyze</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_import_start</code></td>
+<td>Start Site Import</td>
+<td><code dir="auto">transfer:execute</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_import_status</code></td>
+<td>Get Site Import Status</td>
+<td><code dir="auto">transfer:*</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_import_resume</code></td>
+<td>Resume Site Import</td>
+<td><code dir="auto">transfer:execute</code></td>
+</tr>
+<tr>
+<td><code dir="auto">site_import_receipt</code></td>
+<td>Get Site Import Receipt</td>
+<td><code dir="auto">transfer:*</code></td>
+</tr>
+</tbody>
+</table>
+<p><code dir="auto">site_export_start</code> and <code dir="auto">site_import_start</code> also accept a token without the scope when an admin approves the request. For the operation an approved request starts, <code dir="auto">site_export_status</code>, <code dir="auto">site_import_status</code>, <code dir="auto">site_import_resume</code>, and <code dir="auto">site_import_receipt</code> then accept the same token without the scope.</p>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="use-the-tool-schemas">Use the tool schemas</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Use the tool schemas”</span></a></div>
+<p><code dir="auto">tools/list</code> returns each tool’s description, JSON input schema, and annotations. Read that metadata before constructing a call so your client uses the fields, allowed values, and limits supported by the installed EmDash version.</p>
+<p>For example, a client updating an article first calls <code dir="auto">content_get</code> and keeps the returned <code dir="auto">_rev</code>. It can then send this JSON-RPC request:</p>
+<div class="expressive-code"><link rel="stylesheet" href="../_astro/ec.w36nc.css"><script type="module" src="../_astro/ec.0vx5m.js"></script><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"jsonrpc"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">2.0</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"id"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"method"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">tools/call</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"params"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"name"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">content_update</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"arguments"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"collection"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">articles</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"id"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">01JARTICLE0000000000000000</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"title"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Updated title</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> },</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"_rev"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">opaque-revision-token</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">    </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;jsonrpc&quot;: &quot;2.0&quot;,  &quot;id&quot;: 2,  &quot;method&quot;: &quot;tools/call&quot;,  &quot;params&quot;: {    &quot;name&quot;: &quot;content_update&quot;,    &quot;arguments&quot;: {      &quot;collection&quot;: &quot;articles&quot;,      &quot;id&quot;: &quot;01JARTICLE0000000000000000&quot;,      &quot;data&quot;: { &quot;title&quot;: &quot;Updated title&quot; },      &quot;_rev&quot;: &quot;opaque-revision-token&quot;    }  }}"><div></div></button></div></figure></div>
+<p>The result is returned as JSON text in the first content block. A tool with an output schema may also return the same value in <code dir="auto">structuredContent</code>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="content-lifecycle-and-bylines">Content lifecycle and bylines</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Content lifecycle and bylines”</span></a></div>
+<p>The <a href="content-lifecycle/index.html">content lifecycle reference</a> defines the state, revision,
+permission, conflict, and hook behavior shared by MCP, REST, the CLI, and the admin panel.</p>
+<p><code dir="auto">content_get</code> returns an opaque <code dir="auto">_rev</code> value. Pass it to <code dir="auto">content_update</code>, <code dir="auto">content_publish</code>, <code dir="auto">content_unpublish</code>, <code dir="auto">content_schedule</code>, or <code dir="auto">content_discard_draft</code>. A stale value returns a conflict, so read the item again before retrying.</p>
+<p><code dir="auto">content_update</code> is a partial update: omitted fields keep their current values. Updating a published item stages a draft while the live version remains unchanged. Use <code dir="auto">content_compare</code> to review the live and draft values, then call <code dir="auto">content_publish</code> to make the draft live or <code dir="auto">content_discard_draft</code> to remove it. <code dir="auto">content_delete</code> moves an item to trash; only <code dir="auto">content_permanent_delete</code> removes a trashed item permanently.</p>
+<p>Bylines are reusable author or contributor credits. <code dir="auto">byline_create</code> can create a guest credit or link a byline to a CMS user. A user can have only one byline per locale. A translation created with <code dir="auto">translationOf</code> keeps the source byline’s user unless you pass <code dir="auto">userId</code>; pass <code dir="auto">null</code> to leave the translation unlinked. Pass the returned byline ID in the <code dir="auto">bylines</code> input accepted by <code dir="auto">content_create</code> and <code dir="auto">content_update</code>. Deleting a byline removes that credit from content and clears it as the primary byline.</p>
+<p>While another user holds an entry’s <a href="rest-api/index.html">edit lock</a> because they have it open in the admin, <code dir="auto">content_update</code>, <code dir="auto">content_delete</code>, <code dir="auto">content_publish</code>, <code dir="auto">content_unpublish</code>, <code dir="auto">content_schedule</code>, <code dir="auto">content_unschedule</code>, <code dir="auto">content_discard_draft</code> and <code dir="auto">revision_restore</code> fail with <code dir="auto">ENTRY_LOCKED</code>, and the error names the holder. Reading the item again does not clear the refusal. Pass <code dir="auto">overrideLock: true</code> to write anyway.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="translations">Translations</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Translations”</span></a></div>
+<p>Content, byline, taxonomy term, and menu translation tools return every locale variant in the relevant translation group. Use the creation tool’s <code dir="auto">translationOf</code> input when its schema provides one; <code dir="auto">tools/list</code> is authoritative for the required fields.</p>
+<p><code dir="auto">content_translations</code> accepts a collection and content ID or slug. The byline, taxonomy-term, and menu translation tools accept either one record’s ID or the shared translation-group ID. A user without draft access sees only published content translations.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="schemas-media-taxonomies-and-menus">Schemas, media, taxonomies, and menus</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Schemas, media, taxonomies, and menus”</span></a></div>
+<p>Schema tools change the database structure. Use <code dir="auto">schema_get_collection</code> before creating content or changing fields; it returns the available field names, types, constraints, and validation rules. Collection and field deletion remove stored content or field values and cannot be undone.</p>
+<p>Use <code dir="auto">media_upload</code> to send base64-encoded bytes. Uploads are subject to the configured size and MIME-type limits, and identical bytes may return an existing media item with <code dir="auto">deduplicated: true</code>.</p>
+<p><code dir="auto">media_create</code> confirms a pending upload created through <code dir="auto">POST /_emdash/api/media/upload-url</code>. Upload the file with the returned signed URL, then call <code dir="auto">media_create</code> from the same user account with the returned <code dir="auto">storageKey</code>. The tool checks that the stored file exists and matches the size supplied when the upload URL was requested before making it available in the media library.</p>
+<p>Taxonomy definitions describe the classification and the collections it applies to; terms are the individual values assigned to content. Hierarchical terms can use <code dir="auto">parentId</code>, but a parent must belong to the same taxonomy and cannot create a cycle. Creating or updating a term with <code dir="auto">parentId</code> in a non-hierarchical taxonomy returns <code dir="auto">VALIDATION_ERROR</code>. A term with children must have those children removed or moved before deletion.</p>
+<p><code dir="auto">menu_set_items</code> replaces a menu’s complete item list in one atomic operation. The array order becomes the menu order. A nested item’s <code dir="auto">parentIndex</code> points to an earlier item in the same array, so place every parent before its children.</p>
+<p><code dir="auto">media_usage_repair</code> can process one collection or every collection and may run for a long time on a large site. Its <code dir="auto">complete</code>, <code dir="auto">partial</code>, <code dir="auto">failed</code>, and <code dir="auto">stale</code> statuses are successful tool responses. Inspect the returned status and counts instead of relying on <code dir="auto">isError</code>; authentication, validation, and unexpected execution failures set <code dir="auto">isError: true</code>.</p>
+<aside aria-label="Caution" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Caution</p><div class="starlight-aside__content"><p>Tools whose registered metadata has <code dir="auto">destructiveHint: true</code> can delete stored data. Confirm the target and its current state before calling them.</p></div></aside>
+<div class="sl-heading-wrapper level-h2"><h2 id="site-transfer">Site transfer</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Site transfer”</span></a></div>
+<p>The <code dir="auto">site_*</code> tools export a whole site as a <a href="../guides/site-transfer/index.html">site package</a> and import a package into an empty site. They start and drive operations and return bounded summaries. They never carry package bytes, media, record contents, principal email addresses, or download URLs. Download an export, and upload a package for import, with the <a href="cli/index.html">CLI</a> or the <a href="../guides/site-transfer/index.html">REST API</a>, then refer to the operation by its ID.</p>
+<p>Every transfer tool requires the Admin role. The role is checked before the scope, so a non-admin caller receives <code dir="auto">INSUFFICIENT_PERMISSIONS</code> and no approval request is created.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="export">Export</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Export”</span></a></div>
+<p><code dir="auto">site_export_start</code> accepts <code dir="auto">comments</code> (default <code dir="auto">true</code>) and returns the new operation. <code dir="auto">site_export_status</code> runs one bounded export step on each call and reports the operation and <code dir="auto">nextRequestInMs</code>. Call it again after that delay until <code dir="auto">nextRequestInMs</code> is <code dir="auto">null</code>. Pass <code dir="auto">advance: false</code> to read the status without running a step. Once the export is complete, the result also includes <code dir="auto">totals</code>: record counts by kind, media count and bytes, and package file count and bytes.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="import">Import</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Import”</span></a></div>
+<p>Upload the package first. The CLI’s <code dir="auto">emdash site import &lt;file&gt; --analyze</code> uploads and analyzes it and prints the operation ID.</p>
+<p><code dir="auto">site_import_analyze</code> runs one bounded analysis step per call. Repeat it until <code dir="auto">nextRequestInMs</code> is <code dir="auto">null</code>; the result then includes a plan summary with <code dir="auto">packageDigest</code>, <code dir="auto">planDigest</code>, <code dir="auto">executable</code>, counts, sizes, principals, decisions, transformations, warnings, and blockers. Each transformation is listed as its <code dir="auto">code</code>, the record <code dir="auto">kind</code> when it has one, and a <code dir="auto">count</code>, without the IDs or values it applies to. Principals, warnings, and blockers list at most 50 items each, with the full count in <code dir="auto">total</code>. Principals are listed without email addresses, with the suggested and currently mapped target user IDs. Pass <code dir="auto">decisions</code> to map principals to target user IDs (or <code dir="auto">null</code>) and to choose the package or target title and tagline. Each change produces a new <code dir="auto">planDigest</code>.</p>
+<p><code dir="auto">site_import_start</code> takes the operation ID and the <code dir="auto">packageDigest</code> and <code dir="auto">planDigest</code> of the latest plan. The plan must have no blockers. The tool has <code dir="auto">destructiveHint: true</code>: once started, the import writes to the site and blocks other writes until it completes or an administrator abandons it. Show the user the plan and get their confirmation before calling it.</p>
+<p><code dir="auto">site_import_resume</code> runs one bounded import step and reports the operation and <code dir="auto">nextRequestInMs</code>. Call it until <code dir="auto">nextRequestInMs</code> is <code dir="auto">null</code>; it is safe to repeat after a disconnect. <code dir="auto">site_import_status</code> reports the operation and uploaded file counts without advancing the import. <code dir="auto">site_import_receipt</code> returns the complete receipt, including <code dir="auto">receiptDigest</code>, once the import is complete.</p>
+<p>While an import is executing, and after it fails or is cancelled until it is abandoned, every other tool that can write fails with <code dir="auto">TRANSFER_IMPORT_IN_PROGRESS</code>. This includes plugin tools. Tools annotated <code dir="auto">readOnlyHint: true</code> and the eight <code dir="auto">site_*</code> tools keep working, and <code dir="auto">initialize</code> and <code dir="auto">tools/list</code> are never blocked. During media usage activation, write tools fail with <code dir="auto">MEDIA_USAGE_ACTIVATION_IN_PROGRESS</code> in the same way.</p>
+<p>Operation summaries include <code dir="auto">id</code>, <code dir="auto">kind</code>, <code dir="auto">state</code>, <code dir="auto">stage</code>, <code dir="auto">progress</code>, <code dir="auto">packageDigest</code>, <code dir="auto">planDigest</code>, <code dir="auto">error</code> (<code dir="auto">{ code }</code> or <code dir="auto">null</code>), and timestamps. <code dir="auto">progress</code> is <code dir="auto">{ done, total }</code> steps, plus <code dir="auto">records</code>, the records an export has written so far, and <code dir="auto">bytesDone</code> and <code dir="auto">bytesTotal</code>, once they are known. The MCP tools cannot cancel or abandon an import; use the <a href="../guides/site-transfer/index.html">REST API</a>.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="approvals">Approvals</h3><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Approvals”</span></a></div>
+<p>A token with <code dir="auto">admin</code> or the needed transfer scope never asks for approval. For a token without either, such as an agent granted only <code dir="auto">transfer:analyze</code>, <code dir="auto">site_export_start</code> and <code dir="auto">site_import_start</code> run when an administrator approves the request:</p>
+<ol>
+<li>The first call without the scope creates a pending approval request and fails with <code dir="auto">TRANSFER_APPROVAL_REQUIRED</code>. The message text and <code dir="auto">_meta.details</code> carry the <code dir="auto">approvalId</code> and its <code dir="auto">expiresAt</code>. Calling again with the same arguments and no <code dir="auto">approvalId</code> returns the same open request.</li>
+<li>An administrator approves the request under <strong>Approval requests</strong> in <strong>Settings → Transfer</strong>, or with the session-only approval endpoint of the <a href="rest-api/index.html">REST API</a>. API tokens cannot approve requests.</li>
+<li>The client repeats the call with the same arguments and the <code dir="auto">approvalId</code>. The approval is used up when that call starts the operation. If the operation fails to start, the client can retry with the same <code dir="auto">approvalId</code> until it expires.</li>
+</ol>
+<p>A request is bound to the user, the token, the action, and the exact arguments: the export options, or the import operation ID and both digests. A pending request expires 15 minutes after it is made, and an approved one 15 minutes after approval. A call with different arguments or another token, or with a denied, expired, or used approval, fails with <code dir="auto">TRANSFER_APPROVAL_INVALID</code>.</p>
+<p><code dir="auto">site_import_start</code> checks the digests, the operation state, and the plan’s blockers before it creates a request, so an administrator is only asked to approve an import that can run. An approval needs a token ID, so a caller without one receives <code dir="auto">INSUFFICIENT_SCOPE</code>.</p>
+<p>After an approved call starts an operation, the same user and token can call <code dir="auto">site_export_status</code>, or <code dir="auto">site_import_status</code>, <code dir="auto">site_import_resume</code>, and <code dir="auto">site_import_receipt</code>, for that operation without the scope.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="plugin-tools">Plugin tools</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Plugin tools”</span></a></div>
+<p>An administrator must enable each plugin’s MCP surface. Enabled tools appear in <code dir="auto">tools/list</code> with an MCP-safe plugin prefix followed by <code dir="auto">__&lt;localName&gt;</code> (for example, <code dir="auto">@acme/calendar</code> and <code dir="auto">createEvent</code> become <code dir="auto">acme__calendar__createEvent</code>) and require <code dir="auto">mcp:tools</code> or <code dir="auto">mcp:tools:&lt;pluginId&gt;</code> for token-authenticated calls. EmDash also checks the permission declared by the plugin route and records the plugin, tool, route, and actor in the audit log.</p>
+<p>Scoped IDs with ambiguous separators include a short hash before the local tool name. Use <code dir="auto">tools/list</code> to discover generated names. If two tools generate the same name, EmDash keeps the first and logs a warning for the skipped tool.</p>
+<p>Because plugin tools are installation-specific, they are not part of the static inventory above.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="oauth-discovery">OAuth discovery</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “OAuth discovery”</span></a></div>
+<p>MCP clients discover the authorization server from the protected-resource metadata:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">GET</span><span style="--0:#D6DEEB;--1:#403F53"> /.well-known/oauth-protected-resource</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="GET /.well-known/oauth-protected-resource"><div></div></button></div></figure></div>
+<p>The response identifies <code dir="auto">/_emdash/api/mcp</code> as the protected resource and links to the authorization server. Clients then read its metadata at:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">GET</span><span style="--0:#D6DEEB;--1:#403F53"> /.well-known/oauth-authorization-server/_emdash</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="GET /.well-known/oauth-authorization-server/_emdash"><div></div></button></div></figure></div>
+<p>That document supplies the current authorization, token, registration, and device-authorization endpoints, supported scopes, grant types, and the <code dir="auto">S256</code> PKCE method. Use the discovered values instead of hard-coding the OAuth protocol routes.</p>
+<p>An unauthenticated MCP request returns a <code dir="auto">401</code> response with the discovery URL:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">HTTP</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#F78C6C;--1:#AA0982">1.1</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">401</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Unauthorized</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">WWW-Authenticate</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer resource_metadata="https://example.com/.well-known/oauth-protected-resource"</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="HTTP/1.1 401 UnauthorizedWWW-Authenticate: Bearer resource_metadata=&quot;https://example.com/.well-known/oauth-protected-resource&quot;"><div></div></button></div></figure></div>
+<div class="sl-heading-wrapper level-h2"><h2 id="errors">Errors</h2><a class="sl-anchor-link" href="."><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Errors”</span></a></div>
+<p>A tool failure has <code dir="auto">isError: true</code>. The first text block starts with a stable code, and <code dir="auto">_meta.code</code> repeats it for clients that read structured metadata:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"content"</span><span style="--0:#D6DEEB;--1:#403F53">: [{ </span><span style="--0:#7FDBCA;--1:#096E72">"type"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">text</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#7FDBCA;--1:#096E72">"text"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">[NOT_FOUND] Collection 'articles' not found</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> }],</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"isError"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"_meta"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"code"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">NOT_FOUND</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> }</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;content&quot;: [{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;[NOT_FOUND] Collection 'articles' not found&quot; }],  &quot;isError&quot;: true,  &quot;_meta&quot;: { &quot;code&quot;: &quot;NOT_FOUND&quot; }}"><div></div></button></div></figure></div>
+<p>A refusal from an entry’s edit lock carries the holder in <code dir="auto">_meta.details</code>:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"content"</span><span style="--0:#D6DEEB;--1:#403F53">: [{ </span><span style="--0:#7FDBCA;--1:#096E72">"type"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">text</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#7FDBCA;--1:#096E72">"text"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">[ENTRY_LOCKED] Ada is holding this entry</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> }],</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"isError"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"_meta"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"code"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">ENTRY_LOCKED</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"details"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"userId"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">01JB...</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"userName"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Ada</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"acquiredAt"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">2026-05-01T09:12:04.117Z</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"expiresAt"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">2026-05-01T09:19:04.117Z</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">    </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;content&quot;: [{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;[ENTRY_LOCKED] Ada is holding this entry&quot; }],  &quot;isError&quot;: true,  &quot;_meta&quot;: {    &quot;code&quot;: &quot;ENTRY_LOCKED&quot;,    &quot;details&quot;: {      &quot;userId&quot;: &quot;01JB...&quot;,      &quot;userName&quot;: &quot;Ada&quot;,      &quot;acquiredAt&quot;: &quot;2026-05-01T09:12:04.117Z&quot;,      &quot;expiresAt&quot;: &quot;2026-05-01T09:19:04.117Z&quot;    }  }}"><div></div></button></div></figure></div>
+<p>Authentication failures use codes such as <code dir="auto">INSUFFICIENT_SCOPE</code> and <code dir="auto">INSUFFICIENT_PERMISSIONS</code>. Transport failures use the JSON-RPC internal-error code <code dir="auto">-32603</code> and do not expose the underlying exception.</p></div><footer class="sl-flex astro-kpffynsd"><div class="meta sl-flex astro-kpffynsd"><a href="https://github.com/emdash-cms/emdash/tree/main/docs/src/content/docs/reference/mcp-server.mdx" class="sl-flex print:hidden astro-csk3o3jv"><svg aria-hidden="true" class="astro-csk3o3jv astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.2em;"><path d="M22 7.24a1 1 0 0 0-.29-.71l-4.24-4.24a1 1 0 0 0-1.1-.22 1 1 0 0 0-.32.22l-2.83 2.83L2.29 16.05a1 1 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.1-.1.17-.2.22-.33a1 1 0 0 0 0-.24v-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"></path></svg>Edit page</a></div><div class="pagination-links print:hidden astro-b5a5xgmk" dir="ltr"><a href="rest-api/index.html" rel="prev" class="astro-b5a5xgmk"><svg aria-hidden="true" class="astro-b5a5xgmk astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"></path></svg><span class="astro-b5a5xgmk">Previous<br class="astro-b5a5xgmk"><span class="link-title astro-b5a5xgmk">REST API</span></span></a></div></footer></div></div></main></div></div></div></div><chat-bubble-snippet api-url="https://489e01e7-ef28-414f-9fec-15e1736fd9b2.search.ai.cloudflare.com/" placeholder="Ask about EmDash…" translations="{&quot;chatTitle&quot;:&quot;Ask the docs&quot;,&quot;chatEmptyTitle&quot;:&quot;Ask a question about EmDash&quot;,&quot;chatEmptyDescription&quot;:&quot;Answers are generated from the EmDash documentation and can be wrong. Check the linked pages.&quot;}"></chat-bubble-snippet><script type="module" src="../_astro/AskAI.astro_astro_type_script_index_0_lang.BmA8m48Q.js"></script></body>

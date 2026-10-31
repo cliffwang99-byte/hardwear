@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
+import { createPublicPageContext } from 'emdash/page';
+import { PortableText } from 'emdash/ui';
+import { getPostBySlug, getPosts } from '../../../lib/blog';
+
+const slug = decodeSlug(Astro.params.slug ?? '');
+const post = await getPostBySlug(slug);
+const recent = (await getPosts()).filter((p) => p.id !== post?.id).slice(0, 3);
+
+if (!post) return Astro.redirect('/blog');
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'BuildMart';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const seoMeta = getSeoMeta(
+	{
+		data: {
+			seo: {
+				title: post.seoTitle || null,
+				description: post.seoDescription || null,
+				image: post.seoImage || null,
+				canonical: post.seoCanonical || null,
+				noIndex: post.seoNoIndex,
+			},
+		},
+	},
+	{
+		siteTitle, siteUrl, titleSeparator,
+		path: Astro.url.pathname,
+		defaultTitle: post.title,
+		defaultDescription: post.excerpt,
+		defaultOgImage: post.image || null,
+	},
+);
+
+const pageContext = createPublicPageContext({
+	Astro,
+	kind: 'content',
+	pageType: 'article',
+	title: seoMeta.title,
+	description: seoMeta.description,
+	canonical: seoMeta.canonical,
+	image: seoMeta.ogImage || post.image || null,
+	content: post.entryId ? { collection: 'posts', id: post.entryId, slug: post.id } : undefined,
+	seo: {
+		ogTitle: seoMeta.ogTitle, ogDescription: seoMeta.ogDescription,
+		ogImage: seoMeta.ogImage, robots: seoMeta.robots,
+	},
+	siteName: siteTitle, siteUrl,
+	breadcrumbs: [
+		{ name: 'Home', url: '/' },
+		{ name: 'Blog', url: '/blog' },
+		{ name: post.title, url: Astro.url.pathname },
+	],
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <div class="container mx-auto px-4 py-10">
+    <nav class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      <a href="/" class="hover:text-primary-600">Home</a> / <a href="/blog" class="hover:text-primary-600">Blog</a> / <span class="text-gray-900 dark:text-white font-medium">{post.title}</span>
+    </nav>
+
+    {post.image && (
+      <img src={post.image} alt={post.title} class="w-full h-[380px] sm:h-[480px] object-cover rounded-2xl mb-8 border border-gray-200 dark:border-dark-700" />
+    )}
+
+    <div class="max-w-3xl">
+      <div class="flex items-center gap-3 mb-4">
+        {post.category && (
+          <span class="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold">{post.category}</span>
+        )}
+        {post.date && <span class="text-sm text-gray-500 dark:text-gray-400">{post.date}</span>}
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">{post.title}</h1>
+
+      {post.excerpt && (
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">{post.excerpt}</p>
+      )}
+
+      <article class="prose prose-lg max-w-none prose-gray dark:prose-invert [&>p]:mb-5">
+        <PortableText value={post.content as any} />
+      </article>
+    </div>
+  </div>
+
+  {recent.length > 0 && (
+    <section class="py-12 bg-gray-50 dark:bg-dark-800 border-t border-gray-200 dark:border-dark-700">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {recent.map((p) => (
+            <a href={`/blog/${p.id}`} class="bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all border border-gray-200 dark:border-dark-800 group">
+              {p.image && <img src={p.image} alt={p.title} class="aspect-video object-cover w-full" />}
+              <div class="p-5">
+                <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-primary-600 line-clamp-2">{p.title}</h3>
+                {p.date && <p class="text-xs text-gray-500 mt-2">{p.date}</p>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

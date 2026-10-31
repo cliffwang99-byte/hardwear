@@ -1,0 +1,1415 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="download_date" content="2026-10-31T00:55:03.696Z"/><meta name="viewport" content="width=device-width, initial-scale=1"><title>REST API Reference | EmDash</title><link rel="canonical" href="index.html"><link rel="sitemap" href="https://docs.emdashcms.com/sitemap-index.xml"><link rel="shortcut icon" href="../../favicon.svg" type="image/svg+xml"><meta name="generator" content="Astro v7.3.2"><meta name="generator" content="Starlight v0.42.0"><meta property="og:title" content="REST API Reference"><meta property="og:type" content="article"><meta property="og:url" content="https://docs.emdashcms.com/reference/rest-api/"><meta property="og:locale" content="en"><meta property="og:description" content="The public HTTP contract, authentication rules, and complete OpenAPI operation inventory."><meta property="og:site_name" content="EmDash"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="The public HTTP contract, authentication rules, and complete OpenAPI operation inventory."><style>@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-c50cd4c815d22ecb;src:url("/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-c50cd4c815d22ecb fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--font-inter:Inter-c50cd4c815d22ecb,"Inter-c50cd4c815d22ecb fallback: Arial","Inter-c50cd4c815d22ecb fallback: Arial Bold",sans-serif;}</style><link rel="preload" href="../../_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2"><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"></path></svg><svg aria-hidden="true" class="dark astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"></path></svg><svg aria-hidden="true" class="auto astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg></template><link rel="stylesheet" href="../../_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="../../_astro/middleware.Cxj_7hJc.css"><style>@layer starlight.components{.card:where(.astro-phrokjlo){--sl-card-border:var(--sl-color-purple);--sl-card-bg:var(--sl-color-purple-low);border:1px solid var(--sl-color-gray-5);background-color:var(--sl-color-black);flex-direction:column;gap:clamp(.5rem,.125rem + 1vw,1rem);padding:clamp(1rem,.125rem + 3vw,2.5rem)}.card:where(.astro-phrokjlo):nth-child(4n+1){--sl-card-border:var(--sl-color-orange);--sl-card-bg:var(--sl-color-orange-low)}.card:where(.astro-phrokjlo):nth-child(4n+3){--sl-card-border:var(--sl-color-green);--sl-card-bg:var(--sl-color-green-low)}.card:where(.astro-phrokjlo):nth-child(4n+4){--sl-card-border:var(--sl-color-red);--sl-card-bg:var(--sl-color-red-low)}.card:where(.astro-phrokjlo):nth-child(4n+5){--sl-card-border:var(--sl-color-blue);--sl-card-bg:var(--sl-color-blue-low)}.title:where(.astro-phrokjlo){font-weight:600;font-size:var(--sl-text-h4);color:var(--sl-color-white);line-height:var(--sl-line-height-headings);align-items:center;gap:1rem}.card:where(.astro-phrokjlo) .icon:where(.astro-phrokjlo){border:1px solid var(--sl-card-border);background-color:var(--sl-card-bg);border-radius:.25rem;flex-shrink:0;padding:.2em}.card:where(.astro-phrokjlo) .body:where(.astro-phrokjlo){font-size:clamp(var(--sl-text-sm), calc(.5rem + 1vw), var(--sl-text-body));margin:0}}
+@layer starlight.components{.card-grid:where(.astro-nh6a6jf3){grid-template-columns:100%;gap:1rem;display:grid}.card-grid:where(.astro-nh6a6jf3)>*{margin-top:0!important}@media (width>=50rem){.card-grid:where(.astro-nh6a6jf3){grid-template-columns:1fr 1fr;gap:1.5rem}.stagger:where(.astro-nh6a6jf3){--stagger-height:5rem;padding-bottom:var(--stagger-height)}.stagger:where(.astro-nh6a6jf3)>:nth-child(2n){transform:translateY(var(--stagger-height))}}}
+@layer starlight.components{svg:where(.astro-anoh5s2p){color:var(--sl-icon-color);font-size:var(--sl-icon-size,1em);width:1em;height:1em}}
+@layer starlight.components{starlight-tabs:where(.astro-zdxsovxw){display:block}.tablist-wrapper:where(.astro-zdxsovxw){overflow-x:auto}:where(.astro-zdxsovxw)[role=tablist]{border-bottom:2px solid var(--sl-color-gray-5);padding:0;list-style:none;display:flex}.tab:where(.astro-zdxsovxw){display:flex}.tab:where(.astro-zdxsovxw)>:where(.astro-zdxsovxw)[role=tab]{--sl-tab-color-border:var(--sl-color-gray-5);line-height:var(--sl-line-height-headings);box-shadow:0 2px 0 var(--sl-tab-color-border);color:var(--sl-color-gray-3);outline-offset:var(--sl-outline-offset-inside);overflow-wrap:initial;align-items:center;gap:.5rem;padding:.275rem 1.25rem;text-decoration:none;display:flex}.tab:where(.astro-zdxsovxw) :where(.astro-zdxsovxw)[role=tab][aria-selected=true]{--sl-tab-color-border:var(--sl-color-text-accent);color:var(--sl-color-white);font-weight:600}.tablist-wrapper:where(.astro-zdxsovxw)~[role=tabpanel]{margin-top:1rem}}
+@layer starlight.components{.sl-link-card:where(.astro-snpl7mlt){border:1px solid var(--sl-color-gray-5);box-shadow:var(--sl-shadow-sm);border-radius:.5rem;grid-template-columns:1fr auto;gap:.5rem;padding:1rem;display:grid;position:relative}a:where(.astro-snpl7mlt){line-height:var(--sl-line-height-headings);text-decoration:none}a:where(.astro-snpl7mlt):before{content:"";position:absolute;inset:0}.stack:where(.astro-snpl7mlt){flex-direction:column;gap:.5rem}.title:where(.astro-snpl7mlt){color:var(--sl-color-white);font-weight:600;font-size:var(--sl-text-lg)}.description:where(.astro-snpl7mlt){color:var(--sl-color-gray-3);line-height:1.5}.icon:where(.astro-snpl7mlt){color:var(--sl-color-gray-3)}.sl-link-card:where(.astro-snpl7mlt):hover{background:var(--sl-color-gray-7,var(--sl-color-gray-6));border-color:var(--sl-color-gray-2)}.sl-link-card:where(.astro-snpl7mlt):hover .icon:where(.astro-snpl7mlt){color:var(--sl-color-white)}}
+@layer starlight.components{.sl-steps{--bullet-size:calc(var(--sl-line-height) * 1rem);--bullet-margin:.375rem;counter-reset:steps-counter var(--sl-steps-start,0);padding-inline-start:0;list-style:none}.sl-steps>li{counter-increment:steps-counter;padding-inline-start:calc(var(--bullet-size) + 1rem);min-height:calc(var(--bullet-size) + var(--bullet-margin));padding-bottom:1px;position:relative}.sl-steps>li+li{margin-top:0}.sl-steps>li:before{content:counter(steps-counter);top:0;width:var(--bullet-size);height:var(--bullet-size);line-height:var(--bullet-size);font-size:var(--sl-text-xs);text-align:center;color:var(--sl-color-white);background-color:var(--sl-color-gray-6);box-shadow:inset 0 0 0 1px var(--sl-color-gray-5);border-radius:99rem;font-weight:600;position:absolute;inset-inline-start:0}.sl-steps>li:after{--guide-width:1px;content:"";top:calc(var(--bullet-size) + var(--bullet-margin));bottom:var(--bullet-margin);width:var(--guide-width);background-color:var(--sl-color-hairline-light);position:absolute;inset-inline-start:calc((var(--bullet-size) - var(--guide-width)) / 2)}}@layer starlight.content{.sl-steps>li>:first-child{--lh:calc(1em * var(--sl-line-height));--shift-y:calc(.5 * (var(--bullet-size) - var(--lh)));transform:translateY(var(--shift-y));margin-bottom:var(--shift-y)}.sl-steps>li>:first-child:where(h1,h2,h3,h4,h5,h6){--lh:calc(1em * var(--sl-line-height-headings))}@supports (--prop:1lh){.sl-steps>li>:first-child{--lh:1lh}}}
+</style><script type="module" src="../../_astro/page.ERgG2pni.js"></script></head><body class="astro-wnr2sy5k"><a class="sl-skip-link astro-vzx7l6mq" href="index.html">Skip to content</a><blockquote class="agent-docs-index astro-pbhazpx6" data-agent-docs-index="true" aria-hidden="true"><h2 class="astro-pbhazpx6">Documentation Index</h2><p class="astro-pbhazpx6">Fetch the complete documentation index at: <a href="../../llms_txt.html" class="astro-pbhazpx6">/llms.txt</a></p><p class="astro-pbhazpx6">Use this file to discover all available pages before exploring further.</p></blockquote><div class="page sl-flex astro-yt7huk7t"><header class="header astro-yt7huk7t"><div class="header astro-bvhx65jw"><div class="title-wrapper sl-flex astro-bvhx65jw"><a href="../../index.html" class="site-title sl-flex astro-x5oma6p2"><img class="light:sl-hidden print:hidden astro-x5oma6p2" alt="" src="../../_astro/logo-dark.BoAjKvTY.svg" width="471" height="118"><img class="dark:sl-hidden print:block astro-x5oma6p2" alt="" src="../../_astro/logo-light.Aarph4BT.svg" width="471" height="118"><span class="sr-only astro-x5oma6p2" translate="no">EmDash</span></a></div><div class="sl-flex print:hidden astro-bvhx65jw"><site-search class="astro-bvhx65jw astro-2b3rjpfm" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal="" disabled="" aria-label="Search" aria-keyshortcuts="Control+K" class="astro-2b3rjpfm"><svg aria-hidden="true" class="astro-2b3rjpfm astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"></path></svg><span class="sl-hidden md:sl-block astro-2b3rjpfm" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-2b3rjpfm" style="display: none;"><kbd class="astro-2b3rjpfm">Ctrl</kbd><kbd class="astro-2b3rjpfm">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-2b3rjpfm"><div class="dialog-frame sl-flex astro-2b3rjpfm"><button data-close-modal="" class="sl-flex md:sl-hidden astro-2b3rjpfm">Cancel</button><div class="search-container astro-2b3rjpfm"><div id="starlight__search" class="astro-2b3rjpfm"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="../../_astro/Search.astro_astro_type_script_index_0_lang.CdS7UIoa.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-bvhx65jw"><div class="sl-flex social-icons astro-bvhx65jw"><a href="https://github.com/emdash-cms/emdash" rel="me" class="sl-flex astro-us5k3yqb"><span class="sr-only astro-us5k3yqb">GitHub</span><svg aria-hidden="true" class="astro-us5k3yqb astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"></path></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-mr6hoze4"><span class="sr-only astro-mr6hoze4">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg><select autocomplete="off" class="astro-mr6hoze4"><option value="dark" class="astro-mr6hoze4">Dark</option><option value="light" class="astro-mr6hoze4">Light</option><option value="auto" selected="" class="astro-mr6hoze4">Auto</option></select><svg aria-hidden="true" class="icon caret astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"></path></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">globalThis.process??={},globalThis.process.env??={};var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script><script type="module">globalThis.process??={},globalThis.process.env??={};var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-yt7huk7t" aria-label="Main"><button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-5tyokytj"><svg aria-hidden="true" class="open-menu astro-5tyokytj astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"></path></svg><svg aria-hidden="true" class="close-menu astro-5tyokytj astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"></path></svg><span class="sr-only astro-5tyokytj">Menu</span></button><script type="module">globalThis.process??={},globalThis.process.env??={};var e=class extends HTMLElement{constructor(){super(),matchMedia(`(min-width: 50em)`).addEventListener(`change`,()=>this.hidePopover()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover="" id="starlight__sidebar" class="sidebar-pane astro-yt7huk7t"><div class="sidebar-content sl-flex astro-yt7huk7t"><sl-sidebar-state-persist data-hash="0l246rv" class="astro-osi3h7p7"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-w5kfzas3"><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Start Here</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../getting-started/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Getting Started</span></a></li><li class="astro-w5kfzas3"><a href="../../existing-project/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Add to an Existing Project</span></a></li><li class="astro-w5kfzas3"><a href="../../upgrade-to-v1/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Upgrade to EmDash 1.0</span></a></li><li class="astro-w5kfzas3"><a href="../../why-emdash/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Why EmDash?</span></a></li><li class="astro-w5kfzas3"><a href="../../docs-mcp/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Docs MCP for AI Tools</span></a></li><li class="astro-w5kfzas3"><a href="../../agent-skills/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Agent Skills</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Coming From...</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../coming-from/wordpress/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">EmDash for WordPress Developers</span></a></li><li class="astro-w5kfzas3"><a href="../../coming-from/astro-for-wp-devs/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Astro for WordPress Developers</span></a></li><li class="astro-w5kfzas3"><a href="../../coming-from/astro/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">EmDash for Astro Developers</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Guides</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../guides/create-a-blog/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Create a Blog</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/working-with-content/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Working with Content</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/querying-content/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Querying Content</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/media-library/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Media Library</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/dark-mode/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Dark Mode</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/taxonomies/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Taxonomies</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/relations/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Relations</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/menus/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Navigation Menus</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/widgets/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Widget Areas</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/page-layouts/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Page Layouts</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/blocks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Blocks</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/sections/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Sections</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/site-settings/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Site Settings</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/change-domain/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Move to a New Domain</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/seo/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Built-in SEO Features</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/authentication/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Authentication</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/email/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Email Setup</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/atmosphere-auth/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Atmosphere Login</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/ai-tools/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">AI Tools</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/x402-payments/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">x402 Payments</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/preview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Preview Mode</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/backups/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Backups</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/site-transfer/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Site Transfer</span></a></li><li class="astro-w5kfzas3"><a href="../../guides/internationalization/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Internationalization (i18n)</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../plugins/overview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Overview</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/installing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Installing Plugins</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/registry/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Registry</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/migrate-from-marketplace/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrate from Marketplace</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/upgrading-sites/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Upgrading Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Migration</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../migration/from-wordpress/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrate from WordPress</span></a></li><li class="astro-w5kfzas3"><a href="../../migration/content-import/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Import</span></a></li><li class="astro-w5kfzas3"><a href="../../migration/porting-plugins/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Porting WordPress Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Plugin Development</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/choosing-a-format/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Choosing a Plugin Format</span></a></li><li class="astro-w5kfzas3"><details class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Sandboxed Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="6"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/your-first-plugin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Your First Plugin</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/manifest/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Manifest</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Plugin CLI</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/hooks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Hooks</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/api-routes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">API Routes</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/storage/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Storage</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/settings/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Settings</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/block-kit/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Block Kit</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/capabilities/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Capabilities &amp; Security</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/publishing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Bundling &amp; Publishing</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/delegated-releases/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Automated Releases</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-plugins/migrating-to-the-cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Migrating to the CLI</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Native Plugins</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="7"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../plugins/creating-native-plugins/your-first-native-plugin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Your First Native Plugin</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-native-plugins/react-admin/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">React Admin Pages &amp; Widgets</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-native-plugins/portable-text-components/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Portable Text Components</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-native-plugins/page-fragments/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Page Fragments</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/creating-native-plugins/distributing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Distributing Native Plugins</span></a></li></ul></details></li><li class="astro-w5kfzas3"><a href="../../plugins/registry-client/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Querying the Registry</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/field-kit/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Field Kit</span></a></li><li class="astro-w5kfzas3"><a href="../../plugins/ai-search/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">AI Search</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Contributing</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="8"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../contributing/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Contributor Guide</span></a></li><li class="astro-w5kfzas3"><a href="../../contributing/architecture/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Architecture (internals)</span></a></li><li class="astro-w5kfzas3"><a href="../../contributing/docs-style-guide/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Documentation Style Guide</span></a></li><li class="astro-w5kfzas3"><a href="../../contributing/translating/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Translating EmDash</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Themes</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="9"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../themes/overview/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Themes Overview</span></a></li><li class="astro-w5kfzas3"><a href="../../themes/creating-themes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Creating Themes</span></a></li><li class="astro-w5kfzas3"><a href="../../themes/seed-files/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Seed File Format</span></a></li><li class="astro-w5kfzas3"><a href="../../themes/porting-wp-themes/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Porting WordPress Themes</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Deployment</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="10"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../deployment/cloudflare/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Deploy to Cloudflare</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/nodejs/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Deploy to Node.js</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/updating/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Update EmDash</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/core-migrations/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Core Database Migrations</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/schema-evolution/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Evolving a Deployed Site</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/database/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Database Options</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/storage/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Storage Options</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/object-cache/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Object Cache</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/route-caching/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Route Caching</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/plugin-sandbox/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Plugin Sandbox</span></a></li><li class="astro-w5kfzas3"><a href="../../deployment/secrets/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Secrets &amp; Key Management</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Concepts</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="11"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../../concepts/architecture/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Architecture</span></a></li><li class="astro-w5kfzas3"><a href="../../concepts/collections/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Collections</span></a></li><li class="astro-w5kfzas3"><a href="../../concepts/content-model/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Model</span></a></li><li class="astro-w5kfzas3"><a href="../../concepts/admin-panel/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">The Admin Panel</span></a></li></ul></details></li><li class="astro-w5kfzas3"><details open="" class="astro-w5kfzas3"><summary class="astro-w5kfzas3"><span class="group-label astro-w5kfzas3"><span class="large astro-w5kfzas3">Reference</span></span><svg aria-hidden="true" class="caret astro-w5kfzas3 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></summary><sl-sidebar-restore data-index="12"></sl-sidebar-restore><ul class="astro-w5kfzas3"><li class="astro-w5kfzas3"><a href="../configuration/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Configuration</span></a></li><li class="astro-w5kfzas3"><a href="../cli/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">CLI Commands</span></a></li><li class="astro-w5kfzas3"><a href="../content-lifecycle/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Content Lifecycle</span></a></li><li class="astro-w5kfzas3"><a href="../api/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">API Reference</span></a></li><li class="astro-w5kfzas3"><a href="../field-types/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Field Types</span></a></li><li class="astro-w5kfzas3"><a href="../hooks/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">Hook Reference</span></a></li><li class="astro-w5kfzas3"><a href="index.html" aria-current="page" class="astro-w5kfzas3"><span class="astro-w5kfzas3">REST API</span></a></li><li class="astro-w5kfzas3"><a href="../mcp-server/index.html" class="astro-w5kfzas3"><span class="astro-w5kfzas3">MCP Server</span></a></li></ul></details></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-h25g4d7i"><div class="social-icons astro-h25g4d7i"><a href="https://github.com/emdash-cms/emdash" rel="me" class="sl-flex astro-us5k3yqb"><span class="sr-only astro-us5k3yqb">GitHub</span><svg aria-hidden="true" class="astro-us5k3yqb astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"></path></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-mr6hoze4"><span class="sr-only astro-mr6hoze4">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"></path></svg><select autocomplete="off" class="astro-mr6hoze4"><option value="dark" class="astro-mr6hoze4">Dark</option><option value="light" class="astro-mr6hoze4">Light</option><option value="auto" selected="" class="astro-mr6hoze4">Auto</option></select><svg aria-hidden="true" class="icon caret astro-mr6hoze4 astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"></path></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script></div></div></div></sl-sidebar-pane></nav><div class="main-frame astro-yt7huk7t"><script type="module">globalThis.process??={},globalThis.process.env??={};var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-w7w3dzri"><aside class="right-sidebar-container print:hidden astro-w7w3dzri"><div class="right-sidebar astro-w7w3dzri"><div class="lg:sl-hidden astro-pk3u54ys"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-khxcspzp"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-khxcspzp"><details id="starlight__mobile-toc" class="astro-khxcspzp"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-khxcspzp"><span class="toggle sl-flex astro-khxcspzp">On this page<svg aria-hidden="true" class="caret astro-khxcspzp astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"></path></svg></span><span class="display-current astro-khxcspzp"></span></summary><div class="dropdown astro-khxcspzp"><ul class="isMobile astro-5cws5vfn" style="--depth: 0;"><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Overview</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Public contract boundary</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Authentication and authorization</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Cross-site request forgery protection</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Response envelopes</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Endpoint inventory</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Content</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Schema</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Comments</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Taxonomies</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Menus</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Sections</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Widgets</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Settings</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Search</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Redirects</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Users</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Transfer</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Content lifecycle and bylines</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Read and update an entry</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Entry edit lock</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Reference selections</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Translations</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Media endpoints</span></a><ul class="isMobile astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">List and inspect media</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Direct multipart upload</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Upload target flow</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Upload errors</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media folders</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Repair media usage</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Site transfer</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Pagination</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Search tokenizers</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Comments and redirects</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="../../_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.BC4YkNnQ.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-pk3u54ys"><div class="sl-container astro-pk3u54ys"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-5cws5vfn" style="--depth: 0;"><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Overview</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Public contract boundary</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Authentication and authorization</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Cross-site request forgery protection</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Response envelopes</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Endpoint inventory</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Content</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Schema</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Comments</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Taxonomies</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Menus</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Sections</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Widgets</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Settings</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Search</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Redirects</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Users</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Transfer</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Content lifecycle and bylines</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Read and update an entry</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Entry edit lock</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Reference selections</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Translations</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Media endpoints</span></a><ul class="astro-5cws5vfn" style="--depth: 1;"><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">List and inspect media</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Direct multipart upload</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Upload target flow</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Upload errors</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Media folders</span></a></li><li style="--depth: 1;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 1;" class="astro-5cws5vfn"><span style="--depth: 1;" class="astro-5cws5vfn">Repair media usage</span></a></li></ul></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Site transfer</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Pagination</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Search tokenizers</span></a></li><li style="--depth: 0;" class="astro-5cws5vfn"><a href="index.html" style="--depth: 0;" class="astro-5cws5vfn"><span style="--depth: 0;" class="astro-5cws5vfn">Comments and redirects</span></a></li></ul></nav></starlight-toc><script type="module" src="../../_astro/TableOfContents.astro_astro_type_script_index_0_lang.BP64OFl3.js"></script></div></div></div></aside><div class="main-pane astro-w7w3dzri"><main data-pagefind-body="" class="astro-wnr2sy5k" lang="en" dir="ltr"><div class="content-panel astro-dmd24nna"><div class="sl-container astro-dmd24nna"><h1 id="_top" class="astro-ud6vd3vr">REST API Reference</h1></div></div><div class="content-panel astro-dmd24nna"><div class="sl-container astro-dmd24nna"><div class="sl-markdown-content">
+<p>EmDash exposes its supported application programming interface (API) under <code dir="auto">/_emdash/api/</code>. Use the generated OpenAPI 3.1 document for request parameters, bodies, response schemas, status codes, and client generation:</p>
+<div class="expressive-code"><link rel="stylesheet" href="../../_astro/ec.w36nc.css"><script type="module" src="../../_astro/ec.0vx5m.js"></script><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">GET</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/openapi.json</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="GET /_emdash/api/openapi.json"><div></div></button></div></figure></div>
+<p>The document is generated from the same Zod schemas used by the API. It also reflects the configured maximum media upload size.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="public-contract-boundary">Public contract boundary</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Public contract boundary”</span></a></div>
+<p>The OpenAPI document is the boundary of the supported REST API. EmDash also has routes for its admin interface and protocol workflows. A route that exists in the source tree but is absent from OpenAPI is not a supported REST operation for external clients.</p>
+<p>This distinction applies to backup, byline administration, relation traversal, plugin management, setup, import, and authentication routes. Use the <a href="../../guides/backups/index.html">backup guide</a> for backups and the <a href="../mcp-server/index.html">MCP byline tools</a> for supported byline management. OAuth endpoints are protocol endpoints; discover them from the metadata described in the <a href="../mcp-server/index.html">MCP OAuth section</a> instead of treating them as application REST endpoints.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="authentication-and-authorization">Authentication and authorization</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Authentication and authorization”</span></a></div>
+<p>Most operations accept either an EmDash session cookie or a Bearer token. Send a personal access token or OAuth access token in the <code dir="auto">Authorization</code> header:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="Authorization: Bearer $EMDASH_TOKEN"><div></div></button></div></figure></div>
+<p>Bearer tokens are limited by their scopes and the associated user’s role. Session requests use the user’s role. See <a href="../../guides/authentication/index.html">user roles</a> and <a href="../mcp-server/index.html">token scopes</a> for the authorization model.</p>
+<p><code dir="auto">GET</code> and <code dir="auto">POST /_emdash/api/comments/{collection}/{contentId}</code> are public. The <code dir="auto">GET</code> operation returns approved comments; the <code dir="auto">POST</code> operation submits a comment for moderation. The remaining comment-moderation operations require authentication.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="cross-site-request-forgery-protection">Cross-site request forgery protection</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Cross-site request forgery protection”</span></a></div>
+<p>For a state-changing request authenticated by a session cookie, include this header:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">X-EmDash-Request</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">1</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="X-EmDash-Request: 1"><div></div></button></div></figure></div>
+<p>Bearer-token requests do not require the header because they do not use ambient browser credentials. Browser requests to a public write operation must either send the header or have an <code dir="auto">Origin</code> that matches the EmDash site’s public or request origin.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="response-envelopes">Response envelopes</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Response envelopes”</span></a></div>
+<p>A successful JSON response sets <code dir="auto">success</code> to <code dir="auto">true</code> and places the operation-specific result in <code dir="auto">data</code>:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"success"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"items"</span><span style="--0:#D6DEEB;--1:#403F53">: []</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;success&quot;: true,  &quot;data&quot;: {    &quot;items&quot;: []  }}"><div></div></button></div></figure></div>
+<p>An error sets <code dir="auto">success</code> to <code dir="auto">false</code> and includes a stable machine-readable code and a message. Some errors also include structured <code dir="auto">details</code>:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"success"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">false</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"error"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"code"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">NOT_FOUND</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"message"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Content item not found</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;success&quot;: false,  &quot;error&quot;: {    &quot;code&quot;: &quot;NOT_FOUND&quot;,    &quot;message&quot;: &quot;Content item not found&quot;  }}"><div></div></button></div></figure></div>
+<p>Use the status codes and error schemas on each OpenAPI operation. Common statuses are <code dir="auto">400</code> for invalid input, <code dir="auto">401</code> for missing or invalid credentials, <code dir="auto">403</code> for insufficient scope or permission, <code dir="auto">404</code> for a missing resource, <code dir="auto">409</code> for a state conflict, <code dir="auto">413</code> for an oversized upload, <code dir="auto">422</code> for a save rejected by a plugin, and <code dir="auto">500</code> for an internal failure.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="endpoint-inventory">Endpoint inventory</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Endpoint inventory”</span></a></div>
+<p>The operation ID is stable within the generated contract and is commonly used as the method name by OpenAPI client generators. The following inventory is checked against the generated OpenAPI document.</p>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="content">Content</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Content”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}</code></td>
+<td><code dir="auto">listContent</code></td>
+<td>List content items</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}</code></td>
+<td><code dir="auto">createContent</code></td>
+<td>Create a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}</code></td>
+<td><code dir="auto">getContent</code></td>
+<td>Get a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}</code></td>
+<td><code dir="auto">updateContent</code></td>
+<td>Update a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}</code></td>
+<td><code dir="auto">deleteContent</code></td>
+<td>Delete a content item (soft delete)</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/publish</code></td>
+<td><code dir="auto">publishContent</code></td>
+<td>Publish a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/unpublish</code></td>
+<td><code dir="auto">unpublishContent</code></td>
+<td>Unpublish a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/schedule</code></td>
+<td><code dir="auto">scheduleContent</code></td>
+<td>Schedule content for future publishing</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/schedule</code></td>
+<td><code dir="auto">unscheduleContent</code></td>
+<td>Cancel scheduled publishing</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/duplicate</code></td>
+<td><code dir="auto">duplicateContent</code></td>
+<td>Duplicate a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/restore</code></td>
+<td><code dir="auto">restoreContent</code></td>
+<td>Restore a content item from trash</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/permanent</code></td>
+<td><code dir="auto">permanentDeleteContent</code></td>
+<td>Permanently delete a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/compare</code></td>
+<td><code dir="auto">compareContent</code></td>
+<td>Compare live and draft revisions</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/discard-draft</code></td>
+<td><code dir="auto">discardDraft</code></td>
+<td>Discard draft changes</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/lock</code></td>
+<td><code dir="auto">getEntryLock</code></td>
+<td>Read the entry’s edit lock</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/lock</code></td>
+<td><code dir="auto">acquireEntryLock</code></td>
+<td>Take or refresh the entry’s edit lock</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/lock</code></td>
+<td><code dir="auto">releaseEntryLock</code></td>
+<td>Release the caller’s edit lock</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/translations</code></td>
+<td><code dir="auto">getContentTranslations</code></td>
+<td>Get translations for a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/terms/{taxonomy}</code></td>
+<td><code dir="auto">getContentTerms</code></td>
+<td>Get taxonomy terms assigned to a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/{id}/terms/{taxonomy}</code></td>
+<td><code dir="auto">setContentTerms</code></td>
+<td>Set taxonomy terms on a content item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/authors</code></td>
+<td><code dir="auto">listContentAuthors</code></td>
+<td>List distinct authors of a collection’s content</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/content/{collection}/trash</code></td>
+<td><code dir="auto">listTrashedContent</code></td>
+<td>List trashed content items</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="media">Media</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Media”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/media</code></td>
+<td><code dir="auto">listMedia</code></td>
+<td>List media items</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/media</code></td>
+<td><code dir="auto">uploadMedia</code></td>
+<td>Upload a media item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/media/folders</code></td>
+<td><code dir="auto">listMediaFolders</code></td>
+<td>List media folders</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/media/folders</code></td>
+<td><code dir="auto">createMediaFolder</code></td>
+<td>Create a media folder</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/media/folders/{id}</code></td>
+<td><code dir="auto">getMediaFolder</code></td>
+<td>Get a media folder</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/media/folders/{id}</code></td>
+<td><code dir="auto">updateMediaFolder</code></td>
+<td>Update a media folder</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/media/folders/{id}</code></td>
+<td><code dir="auto">deleteMediaFolder</code></td>
+<td>Delete a media folder</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}</code></td>
+<td><code dir="auto">getMedia</code></td>
+<td>Get a media item</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}</code></td>
+<td><code dir="auto">updateMedia</code></td>
+<td>Update media metadata</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}</code></td>
+<td><code dir="auto">deleteMedia</code></td>
+<td>Delete a media item</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}/usage</code></td>
+<td><code dir="auto">getMediaUsage</code></td>
+<td>Get media usage details</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}/replace</code></td>
+<td><code dir="auto">replaceMediaImage</code></td>
+<td>Replace a media image</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/repair</code></td>
+<td><code dir="auto">repairMediaUsage</code></td>
+<td>Repair media usage indexes</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/progress</code></td>
+<td><code dir="auto">getMediaUsageProgress</code></td>
+<td>Get media usage indexing progress</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/progress</code></td>
+<td><code dir="auto">advanceMediaUsageProgress</code></td>
+<td>Advance media usage indexing</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/work</code></td>
+<td><code dir="auto">listMediaUsageWork</code></td>
+<td>List durable media usage work</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/activation</code></td>
+<td><code dir="auto">getMediaUsageActivation</code></td>
+<td>Get media usage activation status</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/activation</code></td>
+<td><code dir="auto">advanceMediaUsageActivation</code></td>
+<td>Advance media usage activation</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/work/retry</code></td>
+<td><code dir="auto">retryMediaUsageWork</code></td>
+<td>Retry one durable media usage job</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/collection-deletions</code></td>
+<td><code dir="auto">listMediaUsageCollectionDeletions</code></td>
+<td>List durable collection deletions</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/media-usage/collection-deletions/retry</code></td>
+<td><code dir="auto">retryMediaUsageCollectionDeletion</code></td>
+<td>Retry one collection deletion</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/media/upload-url</code></td>
+<td><code dir="auto">getMediaUploadUrl</code></td>
+<td>Get a media upload target</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}/confirm</code></td>
+<td><code dir="auto">confirmMediaUpload</code></td>
+<td>Confirm a media upload</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/media/{id}/upload</code></td>
+<td><code dir="auto">uploadPendingMedia</code></td>
+<td>Upload a pending media file through EmDash</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="schema">Schema</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Schema”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/block-types</code></td>
+<td><code dir="auto">listBlockTypes</code></td>
+<td>List block types</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/block-types</code></td>
+<td><code dir="auto">createBlockType</code></td>
+<td>Create a block type</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/block-types/{slug}</code></td>
+<td><code dir="auto">getBlockType</code></td>
+<td>Get a block type</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/schema/block-types/{slug}</code></td>
+<td><code dir="auto">updateBlockType</code></td>
+<td>Update a block type</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/block-types/{slug}/versions/{version}/activate</code></td>
+<td><code dir="auto">activateBlockTypeVersion</code></td>
+<td>Activate a block type version</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections</code></td>
+<td><code dir="auto">listCollections</code></td>
+<td>List all collections</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections</code></td>
+<td><code dir="auto">createCollection</code></td>
+<td>Create a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}</code></td>
+<td><code dir="auto">getCollection</code></td>
+<td>Get a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}</code></td>
+<td><code dir="auto">updateCollection</code></td>
+<td>Update a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}</code></td>
+<td><code dir="auto">deleteCollection</code></td>
+<td>Delete a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields</code></td>
+<td><code dir="auto">listFields</code></td>
+<td>List fields for a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields</code></td>
+<td><code dir="auto">createField</code></td>
+<td>Create a field</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields/{fieldSlug}</code></td>
+<td><code dir="auto">getField</code></td>
+<td>Get a field</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields/{fieldSlug}</code></td>
+<td><code dir="auto">updateField</code></td>
+<td>Update a field</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields/{fieldSlug}</code></td>
+<td><code dir="auto">deleteField</code></td>
+<td>Delete a field</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/reorder</code></td>
+<td><code dir="auto">reorderCollections</code></td>
+<td>Reorder collections in the admin sidebar</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/collections/{slug}/fields/reorder</code></td>
+<td><code dir="auto">reorderFields</code></td>
+<td>Reorder fields in a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/schema/orphans</code></td>
+<td><code dir="auto">listOrphanedTables</code></td>
+<td>List orphaned content tables</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/schema/orphans/{slug}</code></td>
+<td><code dir="auto">registerOrphanedTable</code></td>
+<td>Register an orphaned table as a collection</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="comments">Comments</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Comments”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/comments/{collection}/{contentId}</code></td>
+<td><code dir="auto">listPublicComments</code></td>
+<td>List approved comments for content</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/comments/{collection}/{contentId}</code></td>
+<td><code dir="auto">createComment</code></td>
+<td>Submit a new comment</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments</code></td>
+<td><code dir="auto">listAdminComments</code></td>
+<td>List comments for moderation</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments/counts</code></td>
+<td><code dir="auto">getCommentCounts</code></td>
+<td>Get comment status counts</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments/bulk</code></td>
+<td><code dir="auto">bulkCommentAction</code></td>
+<td>Bulk approve, spam, trash, or delete comments</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments/{id}</code></td>
+<td><code dir="auto">getComment</code></td>
+<td>Get a single comment</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments/{id}</code></td>
+<td><code dir="auto">deleteComment</code></td>
+<td>Permanently delete a comment</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/admin/comments/{id}/status</code></td>
+<td><code dir="auto">updateCommentStatus</code></td>
+<td>Change comment status</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="taxonomies">Taxonomies</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Taxonomies”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies</code></td>
+<td><code dir="auto">listTaxonomies</code></td>
+<td>List all taxonomy definitions</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}</code></td>
+<td><code dir="auto">getTaxonomy</code></td>
+<td>Get a taxonomy definition</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}</code></td>
+<td><code dir="auto">updateTaxonomy</code></td>
+<td>Update a taxonomy definition</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}</code></td>
+<td><code dir="auto">deleteTaxonomy</code></td>
+<td>Delete a taxonomy, its terms, and their content assignments</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/translations</code></td>
+<td><code dir="auto">listTaxonomyTranslations</code></td>
+<td>List every locale variant of a taxonomy definition</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/reorder</code></td>
+<td><code dir="auto">reorderTerms</code></td>
+<td>Set the manual order of one sibling group of terms</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/terms</code></td>
+<td><code dir="auto">listTerms</code></td>
+<td>List terms for a taxonomy</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/terms</code></td>
+<td><code dir="auto">createTerm</code></td>
+<td>Create a term</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/terms/{slug}</code></td>
+<td><code dir="auto">getTerm</code></td>
+<td>Get a term by slug</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/terms/{slug}</code></td>
+<td><code dir="auto">updateTerm</code></td>
+<td>Update a term</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/taxonomies/{name}/terms/{slug}</code></td>
+<td><code dir="auto">deleteTerm</code></td>
+<td>Delete a term</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="menus">Menus</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Menus”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/menus</code></td>
+<td><code dir="auto">listMenus</code></td>
+<td>List all menus with item counts</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/menus</code></td>
+<td><code dir="auto">createMenu</code></td>
+<td>Create a menu</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}</code></td>
+<td><code dir="auto">getMenu</code></td>
+<td>Get a menu with all items</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}</code></td>
+<td><code dir="auto">updateMenu</code></td>
+<td>Update a menu</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}</code></td>
+<td><code dir="auto">deleteMenu</code></td>
+<td>Delete a menu and its items</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}/items</code></td>
+<td><code dir="auto">createMenuItem</code></td>
+<td>Add an item to a menu</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}/items/{id}</code></td>
+<td><code dir="auto">updateMenuItem</code></td>
+<td>Update a menu item</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}/items/{id}</code></td>
+<td><code dir="auto">deleteMenuItem</code></td>
+<td>Delete a menu item and its nested items</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/menus/{name}/reorder</code></td>
+<td><code dir="auto">reorderMenuItems</code></td>
+<td>Batch reorder menu items</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="sections">Sections</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Sections”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/sections</code></td>
+<td><code dir="auto">listSections</code></td>
+<td>List sections</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/sections</code></td>
+<td><code dir="auto">createSection</code></td>
+<td>Create a section</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/sections/{slug}</code></td>
+<td><code dir="auto">getSection</code></td>
+<td>Get a section by slug</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/sections/{slug}</code></td>
+<td><code dir="auto">updateSection</code></td>
+<td>Update a section</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/sections/{slug}</code></td>
+<td><code dir="auto">deleteSection</code></td>
+<td>Delete a section</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="widgets">Widgets</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Widgets”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas</code></td>
+<td><code dir="auto">listWidgetAreas</code></td>
+<td>List all widget areas</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas</code></td>
+<td><code dir="auto">createWidgetArea</code></td>
+<td>Create a widget area</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}</code></td>
+<td><code dir="auto">getWidgetArea</code></td>
+<td>Get a widget area with widgets</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}</code></td>
+<td><code dir="auto">deleteWidgetArea</code></td>
+<td>Delete a widget area and its widgets</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}/widgets</code></td>
+<td><code dir="auto">createWidget</code></td>
+<td>Add a widget to an area</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}/widgets/{id}</code></td>
+<td><code dir="auto">updateWidget</code></td>
+<td>Update a widget</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}/widgets/{id}</code></td>
+<td><code dir="auto">deleteWidget</code></td>
+<td>Delete a widget</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/widget-areas/{name}/reorder</code></td>
+<td><code dir="auto">reorderWidgets</code></td>
+<td>Reorder widgets in an area</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="settings">Settings</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Settings”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/settings</code></td>
+<td><code dir="auto">getSettings</code></td>
+<td>Get site settings</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/settings</code></td>
+<td><code dir="auto">updateSettings</code></td>
+<td>Update site settings</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="search">Search</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Search”</span></a></div>
+<p>SQLite full-text search requires FTS5. Search, suggestions, and enabling search return <code dir="auto">503</code> with error code <code dir="auto">SEARCH_UNAVAILABLE</code> when the SQLite build lacks FTS5. Rebuilding an already enabled index reports the same error; rebuilding a collection whose search setup never succeeded returns <code dir="auto">400 SEARCH_NOT_ENABLED</code>. See the <a href="../../deployment/nodejs/index.html">Node.js deployment prerequisites</a> for a capability check and recovery steps. A successful response with an empty <code dir="auto">items</code> list means there are no matches or no enabled collections, not that FTS5 is missing.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/search</code></td>
+<td><code dir="auto">search</code></td>
+<td>Full-text search across collections</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/search/suggest</code></td>
+<td><code dir="auto">searchSuggest</code></td>
+<td>Autocomplete search suggestions</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/search/rebuild</code></td>
+<td><code dir="auto">rebuildSearchIndex</code></td>
+<td>Rebuild the search index for a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/search/enable</code></td>
+<td><code dir="auto">enableSearch</code></td>
+<td>Enable or disable search for a collection</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/search/stats</code></td>
+<td><code dir="auto">getSearchStats</code></td>
+<td>Get search index statistics</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="redirects">Redirects</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Redirects”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/redirects</code></td>
+<td><code dir="auto">listRedirects</code></td>
+<td>List redirects</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/redirects</code></td>
+<td><code dir="auto">createRedirect</code></td>
+<td>Create a redirect rule</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/redirects/{id}</code></td>
+<td><code dir="auto">getRedirect</code></td>
+<td>Get a redirect</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/redirects/{id}</code></td>
+<td><code dir="auto">updateRedirect</code></td>
+<td>Update a redirect</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/redirects/{id}</code></td>
+<td><code dir="auto">deleteRedirect</code></td>
+<td>Delete a redirect</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/redirects/404s</code></td>
+<td><code dir="auto">listNotFoundEntries</code></td>
+<td>List 404 log entries</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/redirects/404s</code></td>
+<td><code dir="auto">pruneNotFoundLog</code></td>
+<td>Prune old 404 log entries</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/redirects/404s</code></td>
+<td><code dir="auto">clearNotFoundLog</code></td>
+<td>Clear all 404 log entries</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/redirects/404s/summary</code></td>
+<td><code dir="auto">getNotFoundSummary</code></td>
+<td>Get 404 summary grouped by path</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="users">Users</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Users”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/users</code></td>
+<td><code dir="auto">listUsers</code></td>
+<td>List users</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/users/{id}</code></td>
+<td><code dir="auto">getUser</code></td>
+<td>Get user details</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/admin/users/{id}</code></td>
+<td><code dir="auto">updateUser</code></td>
+<td>Update a user</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/users/{id}/disable</code></td>
+<td><code dir="auto">disableUser</code></td>
+<td>Disable a user account</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/users/{id}/enable</code></td>
+<td><code dir="auto">enableUser</code></td>
+<td>Enable a user account</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/allowed-domains</code></td>
+<td><code dir="auto">listAllowedDomains</code></td>
+<td>List allowed email domains</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/allowed-domains</code></td>
+<td><code dir="auto">createAllowedDomain</code></td>
+<td>Add an allowed email domain</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/admin/allowed-domains/{domain}</code></td>
+<td><code dir="auto">updateAllowedDomain</code></td>
+<td>Update an allowed domain</td>
+</tr>
+<tr>
+<td><code dir="auto">DELETE</code></td>
+<td><code dir="auto">/_emdash/api/admin/allowed-domains/{domain}</code></td>
+<td><code dir="auto">deleteAllowedDomain</code></td>
+<td>Remove an allowed domain</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="transfer">Transfer</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Transfer”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Operation</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/capabilities</code></td>
+<td><code dir="auto">getTransferCapabilities</code></td>
+<td>Get site transfer capabilities</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports</code></td>
+<td><code dir="auto">listTransferImports</code></td>
+<td>List site imports</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports</code></td>
+<td><code dir="auto">createTransferImport</code></td>
+<td>Create a site import</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}</code></td>
+<td><code dir="auto">getTransferImport</code></td>
+<td>Get a site import</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/missing</code></td>
+<td><code dir="auto">listTransferImportMissingFiles</code></td>
+<td>List package files still to upload</td>
+</tr>
+<tr>
+<td><code dir="auto">PUT</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/files/{path}</code></td>
+<td><code dir="auto">uploadTransferImportFile</code></td>
+<td>Upload one package file</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/analyze</code></td>
+<td><code dir="auto">analyzeTransferImport</code></td>
+<td>Advance import analysis</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/plan</code></td>
+<td><code dir="auto">getTransferImportPlan</code></td>
+<td>Get an import plan</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/cancel</code></td>
+<td><code dir="auto">cancelTransferImport</code></td>
+<td>Cancel a site import</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/abandon</code></td>
+<td><code dir="auto">abandonTransferImport</code></td>
+<td>Abandon a failed or cancelled import</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/execute</code></td>
+<td><code dir="auto">executeTransferImport</code></td>
+<td>Start a planned import</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/advance</code></td>
+<td><code dir="auto">advanceTransferImport</code></td>
+<td>Advance an executing import</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/imports/{id}/receipt</code></td>
+<td><code dir="auto">getTransferImportReceipt</code></td>
+<td>Get an import receipt</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports</code></td>
+<td><code dir="auto">listTransferExports</code></td>
+<td>List site exports</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports</code></td>
+<td><code dir="auto">createTransferExport</code></td>
+<td>Start a site export</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports/{id}</code></td>
+<td><code dir="auto">getTransferExport</code></td>
+<td>Get a site export</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports/{id}/advance</code></td>
+<td><code dir="auto">advanceTransferExport</code></td>
+<td>Advance a site export</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports/{id}/manifest</code></td>
+<td><code dir="auto">getTransferExportManifest</code></td>
+<td>Download an export manifest</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports/{id}/files/{path}</code></td>
+<td><code dir="auto">downloadTransferExportFile</code></td>
+<td>Download one export file</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/exports/{id}/archive</code></td>
+<td><code dir="auto">downloadTransferExportArchive</code></td>
+<td>Download an export archive</td>
+</tr>
+<tr>
+<td><code dir="auto">GET</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/approvals</code></td>
+<td><code dir="auto">listTransferApprovals</code></td>
+<td>List transfer approvals</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/approvals/{id}/approve</code></td>
+<td><code dir="auto">approveTransferApproval</code></td>
+<td>Approve a transfer request</td>
+</tr>
+<tr>
+<td><code dir="auto">POST</code></td>
+<td><code dir="auto">/_emdash/api/admin/transfer/approvals/{id}/deny</code></td>
+<td><code dir="auto">denyTransferApproval</code></td>
+<td>Deny a transfer request</td>
+</tr>
+</tbody>
+</table>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="content-lifecycle-and-bylines">Content lifecycle and bylines</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Content lifecycle and bylines”</span></a></div>
+<p>The <a href="../content-lifecycle/index.html">content lifecycle reference</a> defines the state, revision,
+permission, conflict, and hook behavior shared by REST, MCP, the CLI, and the admin panel.</p>
+<p>Content reads return an opaque <code dir="auto">_rev</code> token when one is available. Send <code dir="auto">_rev</code> with <code dir="auto">PUT /content/{collection}/{id}</code> to prevent overwriting a change made since the read. A stale token produces a conflict; read the item again before retrying. The CLI makes this check mandatory for <code dir="auto">content update</code>, while the REST field remains optional for clients that deliberately choose an unconditional write.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="read-and-update-an-entry">Read and update an entry</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Read and update an entry”</span></a></div>
+<p>Read the entry before changing it:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">GET</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/content/articles/01JARTICLE0000000000000000</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="GET /_emdash/api/content/articles/01JARTICLE0000000000000000Authorization: Bearer $EMDASH_TOKEN"><div></div></button></div></figure></div>
+<p>The response contains its fields, publication state, and revision token:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"success"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"item"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"id"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">01JARTICLE0000000000000000</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"type"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">articles</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"slug"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">launch-notes</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"status"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">published</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"title"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Launch notes</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> }</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">    </span></span><span style="--0:#D6DEEB;--1:#403F53">},</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"_rev"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">opaque-revision-token</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;success&quot;: true,  &quot;data&quot;: {    &quot;item&quot;: {      &quot;id&quot;: &quot;01JARTICLE0000000000000000&quot;,      &quot;type&quot;: &quot;articles&quot;,      &quot;slug&quot;: &quot;launch-notes&quot;,      &quot;status&quot;: &quot;published&quot;,      &quot;data&quot;: { &quot;title&quot;: &quot;Launch notes&quot; }    },    &quot;_rev&quot;: &quot;opaque-revision-token&quot;  }}"><div></div></button></div></figure></div>
+<p>Send only the fields that need to change, together with the token from that read:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">PUT</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/content/articles/01JARTICLE0000000000000000</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Content-Type</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">application/json</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"title"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Updated launch notes</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> },</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"_rev"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">opaque-revision-token</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="PUT /_emdash/api/content/articles/01JARTICLE0000000000000000Authorization: Bearer $EMDASH_TOKENContent-Type: application/json{  &quot;data&quot;: { &quot;title&quot;: &quot;Updated launch notes&quot; },  &quot;_rev&quot;: &quot;opaque-revision-token&quot;}"><div></div></button></div></figure></div>
+<p>Changing a published entry creates a draft while the previous version stays live. Call the compare operation to review both versions, then publish the draft or discard it. Unpublishing keeps the content and its publication date, cancels any pending schedule, and removes the entry from the live site.</p>
+<p>Creation and update bodies accept byline credits, and content responses include the primary byline and ordered credits. The content list can filter by stored byline IDs and optionally include an author’s inferred byline. Creating and managing the byline records themselves is available through the <a href="../mcp-server/index.html">MCP byline tools</a>, not the public REST contract.</p>
+<p>The lifecycle operations distinguish a soft delete from permanent deletion. Restore returns trashed content as a draft with no schedule; permanent deletion removes a trashed item and cannot be undone. Publish, unpublish, schedule, unschedule, compare, discard-draft, and duplicate are separate operations so clients can request one state transition at a time.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="entry-edit-lock">Entry edit lock</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Entry edit lock”</span></a></div>
+<p>Collections can take a seven-minute edit lock when an editor opens an entry. Use the three operations on <code dir="auto">/content/{collection}/{id}/lock</code> to read, acquire or refresh, and release the lease.</p>
+<p>A read or acquire response shows whether locking is enabled, whether the caller holds the lease, and who currently holds it:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="json"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"success"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"enabled"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">true</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"heldByCaller"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#FF6A83;--1:#A24848">false</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#096E72">"holder"</span><span style="--0:#D6DEEB;--1:#403F53">: {</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"userId"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">01JUSER000000000000000000</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"userName"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Ada</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"acquiredAt"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">2026-05-01T09:12:04.117Z</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">      </span><span style="--0:#7FDBCA;--1:#096E72">"expiresAt"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">2026-05-01T09:19:04.117Z</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">    </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="{  &quot;success&quot;: true,  &quot;data&quot;: {    &quot;enabled&quot;: true,    &quot;heldByCaller&quot;: false,    &quot;holder&quot;: {      &quot;userId&quot;: &quot;01JUSER000000000000000000&quot;,      &quot;userName&quot;: &quot;Ada&quot;,      &quot;acquiredAt&quot;: &quot;2026-05-01T09:12:04.117Z&quot;,      &quot;expiresAt&quot;: &quot;2026-05-01T09:19:04.117Z&quot;    }  }}"><div></div></button></div></figure></div>
+<p>When a collection has edit locking disabled, <code dir="auto">enabled</code> is <code dir="auto">false</code> and no lease is taken. Acquiring the same lock again and saving the entry both extend a lease held by the caller.</p>
+<p>The acquire body can include an opaque <code dir="auto">token</code> that identifies one editing session and <code dir="auto">takeover: true</code> when the user chooses to replace another editor’s lease. Pass the same token as a query parameter when releasing the lock. A second tab from the same account then cannot release the first tab’s lease accidentally.</p>
+<p>When another user holds the lease, protected content writes return <code dir="auto">409 ENTRY_LOCKED</code>. The error details identify the holder and expiry. To override the lock, send <code dir="auto">"overrideLock": true</code> in the JSON body for a write that has a body, or <code dir="auto">?overrideLock=true</code> for a <code dir="auto">DELETE</code> operation that has no body.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="reference-selections">Reference selections</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Reference selections”</span></a></div>
+<p>A <a href="../field-types/index.html"><code dir="auto">reference</code> field</a> links an entry to entries in another collection through a relation. Its value is not part of <code dir="auto">data</code>, and it is keyed by translation group, so every translation of an entry shares one selection.</p>
+<p>Creation and update bodies carry selections under <code dir="auto">references</code>, keyed by field slug, each an array of at most 1000 entry IDs in display order. EmDash writes the selection in the same transaction as the entry. The following update replaces the entry’s author:</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">PUT</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/content/articles/01JARTICLE0000000000000000</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Content-Type</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">application/json</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"data"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"title"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">Updated launch notes</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> },</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"references"</span><span style="--0:#D6DEEB;--1:#403F53">: { </span><span style="--0:#7FDBCA;--1:#096E72">"author"</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">01JAUTHOR00000000000000000</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">] },</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"_rev"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">opaque-revision-token</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="PUT /_emdash/api/content/articles/01JARTICLE0000000000000000Authorization: Bearer $EMDASH_TOKENContent-Type: application/json{  &quot;data&quot;: { &quot;title&quot;: &quot;Updated launch notes&quot; },  &quot;references&quot;: { &quot;author&quot;: [&quot;01JAUTHOR00000000000000000&quot;] },  &quot;_rev&quot;: &quot;opaque-revision-token&quot;}"><div></div></button></div></figure></div>
+<p>A field bound to the child end of its relation selects the entries pointing at the one being written, which carry no order of their own. Relation limits are enforced on both ends, so a selection that would give a linked entry more parents than the relation allows is rejected alongside one that links too many entries itself.</p>
+<p>On a collection that keeps revisions, a selection changed on a published entry is staged in the draft with the entry’s other pending edits. It becomes live when the entry is published and is discarded with the draft. Publishing re-checks the whole selection against the relation’s limits.</p>
+<p>A single-entry read returns <code dir="auto">references</code> keyed by field slug. Each field holds the first page of its linked entries, 50 of them, with a <code dir="auto">nextCursor</code> when the field holds more, and reports each entry’s ID, slug, collection, display title, resolved locale, and translation group. A caller who may read drafts sees a staged selection where the draft carries one. The content list operation does not include references.</p>
+<p>Relation definitions and link traversal are admin routes, absent from OpenAPI and outside the public contract. Write and read selections through the content operations above, and render them on a site with <a href="../api/index.html"><code dir="auto">getEmDashEntry()</code></a> and <a href="../api/index.html"><code dir="auto">getEmDashReferences()</code></a>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="translations">Translations</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Translations”</span></a></div>
+<p>The public REST contract exposes content translations and taxonomy-definition translations. Content creation accepts <code dir="auto">translationOf</code>, and taxonomy creation uses the same field to add a locale variant. The content-term operations return locale-aware assignments.</p>
+<p><code dir="auto">GET /taxonomies/{name}</code> returns the site’s default-locale definition when <code dir="auto">locale</code> is omitted, falling back to the lowest locale code only when the default locale has no definition. An update behaves differently: when <code dir="auto">locale</code> is omitted, it changes the definition with the lowest locale code. Pass <code dir="auto">locale</code> so a translated-taxonomy update reaches the intended definition. If that locale has no definition, the update returns <code dir="auto">NOT_FOUND</code> instead of falling back to another locale. The translations operation returns every definition in the shared group and supplies the IDs accepted by <code dir="auto">translationOf</code>.</p>
+<p><code dir="auto">label</code> and <code dir="auto">labelSingular</code> belong to one locale’s definition. <code dir="auto">hierarchical</code> and <code dir="auto">collections</code> belong to the taxonomy: every locale returns the same values, and an update that sends either changes it for every locale. Creating a definition for a name that already exists in another locale adds it to that taxonomy, whether or not the request sends <code dir="auto">translationOf</code>. The new definition takes the taxonomy’s <code dir="auto">hierarchical</code> and <code dir="auto">collections</code>, and a create that sends different values returns <code dir="auto">VALIDATION_ERROR</code>.</p>
+<p>Deleting a taxonomy removes every locale of its definition, all its terms, and all assignments of those terms to content. It does not delete the content entries themselves.</p>
+<p>The term-reorder operation changes one sibling group. The <code dir="auto">ids</code> array may contain only part of that group; listed terms exchange their existing positions and omitted terms stay where they are. For example, reordering <code dir="auto">[A, B, C]</code> with <code dir="auto">ids: ["C", "A"]</code> produces <code dir="auto">[C, B, A]</code>. Reordering does not change parent relationships, and one term order applies across every locale in its translation group.</p>
+<p>Menu, taxonomy-term, and byline translation routes are not in the public REST contract. Their supported translation listings are available through <code dir="auto">menu_translations</code>, <code dir="auto">taxonomy_term_translations</code>, and <code dir="auto">byline_translations</code> on the <a href="../mcp-server/index.html">MCP server</a>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="media-endpoints">Media endpoints</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Media endpoints”</span></a></div>
+<p>Media operations cover listing, upload, metadata updates, image replacement, folders, usage information, and usage-index maintenance. The <a href="../../guides/media-library/index.html">media library guide</a> explains the user-facing workflow and the meaning of usage coverage.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="list-and-inspect-media">List and inspect media</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “List and inspect media”</span></a></div>
+<p><code dir="auto">GET /media</code> supports cursor or numbered-page pagination, MIME-type and filename filters, folders, and optional usage summaries. Omit <code dir="auto">folderId</code> to include every folder, or pass <code dir="auto">folderId=unfiled</code> to return only the Main library. Set <code dir="auto">includeUsage=1</code> on a list or single-item read to include usage information; any other value is invalid.</p>
+<p><code dir="auto">usage.count</code> counts distinct active content rows or locales whose current indexed source references the media item, plus each site setting that selects it (<code dir="auto">logo</code>, <code dir="auto">favicon</code>, <code dir="auto">seo.defaultOgImage</code>). Repeated references in one entry count once, and trashed entries do not count. The number is visible only to callers who may read drafts; other authorized media readers receive <code dir="auto">count: null</code> because the count could reveal draft content.</p>
+<p><code dir="auto">GET /media/{id}/usage</code> returns the referencing content entries in pages. Every page also includes <code dir="auto">siteSettings</code>, the site settings that select the media item, for example <code dir="auto">[{ "setting": "favicon" }]</code>. Site settings are read from the stored settings on each request and do not depend on usage indexing.</p>
+<p>Every usage result includes a coverage status:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">complete</code></td>
+<td>Every registered collection has current usage coverage.</td>
+</tr>
+<tr>
+<td><code dir="auto">never</code></td>
+<td>No registered collection has completed an initial usage repair.</td>
+</tr>
+<tr>
+<td><code dir="auto">running</code></td>
+<td>A repair is in progress.</td>
+</tr>
+<tr>
+<td><code dir="auto">partial</code></td>
+<td>Only part of the registered collection set has current coverage.</td>
+</tr>
+<tr>
+<td><code dir="auto">failed</code></td>
+<td>Coverage failed across the registered collection set.</td>
+</tr>
+<tr>
+<td><code dir="auto">stale</code></td>
+<td>The index is older than the content it describes.</td>
+</tr>
+<tr>
+<td><code dir="auto">unknown</code></td>
+<td>The stored state is not recognized by this EmDash version.</td>
+</tr>
+</tbody>
+</table>
+<p>Only <code dir="auto">complete</code> supports treating a zero count as complete within the indexed field types. Counts are advisory during concurrent writes; they do not lock the media item or guarantee that deletion is safe. Usage indexing covers image and file fields, repeater image fields, Portable Text image, gallery, and video blocks, and media declared by retained block versions in EmDash collections. The site logo, favicon, and default social image settings are also reported. Usage does not include custom Portable Text blocks, application code, rendered HTML, other settings, menus, widgets, plugin data, external sites, or provider-only assets.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="direct-multipart-upload">Direct multipart upload</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Direct multipart upload”</span></a></div>
+<p>Send a file through EmDash by posting it as the <code dir="auto">file</code> field of a multipart request:</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">curl</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--request</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">POST</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">\</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#82AAFF;--1:#3B61B0">--header</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">Authorization: Bearer </span><span style="--0:#C5E478;--1:#3B61B0">$EMDASH_TOKEN</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">\</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#82AAFF;--1:#3B61B0">--form</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">file=@./cover.jpg;type=image/jpeg</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">\</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#ECC48D;--1:#3B61B0">https://example.com/_emdash/api/media</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="curl --request POST \  --header &quot;Authorization: Bearer $EMDASH_TOKEN&quot; \  --form &quot;file=@./cover.jpg;type=image/jpeg&quot; \  https://example.com/_emdash/api/media"><div></div></button></div></figure></div>
+<p><code dir="auto">curl</code> adds the multipart boundary. Do not set the <code dir="auto">Content-Type</code> header manually. The OpenAPI <code dir="auto">MediaDirectUploadBody</code> schema lists the optional metadata fields and the response schemas distinguish a new upload from a deduplicated existing item.</p>
+<p>The multipart body can also include <code dir="auto">alt</code> text and a <code dir="auto">caption</code> for the new media item, image <code dir="auto">width</code> and <code dir="auto">height</code>, a <code dir="auto">fieldId</code> whose MIME-type allowlist should be applied, and a downscaled <code dir="auto">thumbnail</code> used to create a low-quality placeholder. An omitted or empty <code dir="auto">alt</code> or <code dir="auto">caption</code> field is stored as <code dir="auto">null</code>. A new file returns <code dir="auto">201 Created</code> and is ready immediately. Identical bytes return the existing media item with <code dir="auto">200 OK</code> and <code dir="auto">deduplicated: true</code>; the <code dir="auto">alt</code> and <code dir="auto">caption</code> sent with the upload are not applied to it.</p>
+<p>For an image or file field inside a block, send <code dir="auto">fieldId</code> as <code dir="auto">&lt;outerFieldId&gt;:&lt;blockKey&gt;:&lt;fieldSlug&gt;</code>, where <code dir="auto">outerFieldId</code> is the database ID of the collection’s blocks field. Also send <code dir="auto">blockType</code> (the block type slug) and <code dir="auto">blockVersion</code> (the block’s retained version number). Use a string for <code dir="auto">blockVersion</code> in multipart requests and a number in upload-target JSON requests. EmDash applies the nested field’s <code dir="auto">allowedMimeTypes</code> only when the block type is allowed or retired on the outer field and the version contains that image or file field. Missing or unresolvable context falls back to the default upload allowlist.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="upload-target-flow">Upload target flow</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Upload target flow”</span></a></div>
+<p>Use the upload-target flow when the client can upload directly to S3-compatible storage. The media item remains pending and does not appear in the standard library until the confirmation succeeds.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Request an upload target</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">POST</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/media/upload-url</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Content-Type</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">application/json</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"filename"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">cover.jpg</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"contentType"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#C789D6;--1:#7C5686">image/jpeg</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"size"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#F78C6C;--1:#AA0982">102400</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="POST /_emdash/api/media/upload-urlAuthorization: Bearer $EMDASH_TOKENContent-Type: application/json{  &quot;filename&quot;: &quot;cover.jpg&quot;,  &quot;contentType&quot;: &quot;image/jpeg&quot;,  &quot;size&quot;: 102400}"><div></div></button></div></figure></div>
+<p>The response supplies <code dir="auto">uploadUrl</code>, <code dir="auto">method</code>, <code dir="auto">headers</code>, <code dir="auto">mediaId</code>, <code dir="auto">storageKey</code>, and an expiry. When <code dir="auto">contentHash</code> matches an existing file with the same MIME type and size, the response instead sets <code dir="auto">existing: true</code>; use that media item and do not upload or confirm another copy.</p>
+</li>
+<li>
+<p>Upload the bytes</p>
+<p>Use the returned method and headers. Resolve a root-relative URL against the EmDash site and include the Bearer token. Send only the returned upload headers to an absolute URL on another origin.</p>
+</li>
+<li>
+<p>Confirm the upload</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="http"><code><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">POST</span><span style="--0:#D6DEEB;--1:#403F53"> /_emdash/api/media/01JMEDIA000000000000000000/confirm</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Authorization</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">Bearer $EMDASH_TOKEN</span></div></div><div class="ec-line"><div class="code"><span style="--1:#8844AE"><span style="--0:#CAECE6">Content-Type</span><span style="--0:#C792EA">:</span></span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">application/json</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"size"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#F78C6C;--1:#AA0982">102400</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"width"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#F78C6C;--1:#AA0982">1920</span><span style="--0:#D6DEEB;--1:#403F53">,</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#096E72">"height"</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#F78C6C;--1:#AA0982">1080</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="POST /_emdash/api/media/01JMEDIA000000000000000000/confirmAuthorization: Bearer $EMDASH_TOKENContent-Type: application/json{  &quot;size&quot;: 102400,  &quot;width&quot;: 1920,  &quot;height&quot;: 1080}"><div></div></button></div></figure></div>
+<p>Confirmation verifies the stored object and changes the item from <code dir="auto">pending</code> to <code dir="auto">ready</code>. Supplied size and dimensions must match the uploaded file.</p>
+</li>
+</ol>
+<p>Local storage and native R2 return a same-origin EmDash upload target. S3-compatible storage may return a signed external URL. Pending items stay out of the standard media list until confirmation succeeds.</p>
+<aside aria-label="Caution" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Caution</p><div class="starlight-aside__content"><p>Do not send the EmDash Bearer token to an upload URL on another origin. The signed URL already authorizes the storage request; adding the token discloses it to the storage host.</p></div></aside>
+<div class="sl-heading-wrapper level-h3"><h3 id="upload-errors">Upload errors</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Upload errors”</span></a></div>
+<p>The following errors require a different recovery action:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Code</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">NO_FILE</code></td>
+<td>Add the <code dir="auto">file</code> field to a multipart request, or send the missing upload body.</td>
+</tr>
+<tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">INVALID_TYPE</code></td>
+<td>Use an allowed MIME type that matches the pending media item.</td>
+</tr>
+<tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">VALIDATION_ERROR</code></td>
+<td>Correct the missing or invalid metadata, including values above the configured size limit.</td>
+</tr>
+<tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">FILE_NOT_FOUND</code></td>
+<td>Upload the object to the returned target before confirming it.</td>
+</tr>
+<tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">UPLOAD_SIZE_MISMATCH</code></td>
+<td>Restart the flow with the correct size; the declared, uploaded, and confirmed sizes must agree.</td>
+</tr>
+<tr>
+<td><code dir="auto">400</code> or <code dir="auto">409</code></td>
+<td><code dir="auto">INVALID_STATE</code></td>
+<td>Read the media item before retrying. It may no longer be pending, or another request may have changed it during confirmation.</td>
+</tr>
+<tr>
+<td><code dir="auto">404</code></td>
+<td><code dir="auto">NOT_FOUND</code></td>
+<td>Use an existing pending media ID.</td>
+</tr>
+<tr>
+<td><code dir="auto">413</code></td>
+<td><code dir="auto">PAYLOAD_TOO_LARGE</code></td>
+<td>Reduce the file size or increase <a href="../configuration/index.html"><code dir="auto">maxUploadSize</code></a> before starting another upload.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="media-folders">Media folders</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Media folders”</span></a></div>
+<p>Folder names are trimmed, limited to 200 characters, and compared after Unicode normalization and lowercasing. Names such as <code dir="auto">Photos</code>, <code dir="auto">photos</code>, and <code dir="auto">ＰＨＯＴＯＳ</code> therefore conflict. Deleting a folder returns its media to the Main library; it does not delete media, change media IDs or URLs, or change usage records.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="repair-media-usage">Repair media usage</h3><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Repair media usage”</span></a></div>
+<p>Media usage activation, progress, work queues, deletion cleanup, and repair are operator operations under <code dir="auto">/_emdash/api/admin/media-usage/</code>. Session users need <code dir="auto">schema:manage</code>; Bearer tokens also need the <code dir="auto">admin</code> scope.</p>
+<p>If tracking is off, pause direct database writers before activation. EmDash temporarily blocks content and schema writes sent through its APIs while setup runs, but it cannot stop another process that writes directly to the database.</p>
+<ol role="list" class="sl-steps">
+<li>Stop direct database writers and wait for their in-progress writes to finish.</li>
+<li>Read the activation state. <code dir="auto">expanded</code> means tracking is off, <code dir="auto">activating</code> means EmDash is preparing collections, and <code dir="auto">active</code> means new media-reference changes are tracked.</li>
+<li>Send one activation request with <code dir="auto">{ "writersDrained": true }</code>.</li>
+<li>Send progress requests one at a time, waiting for each returned <code dir="auto">nextRequestInMs</code>, until activation is <code dir="auto">active</code>.</li>
+<li>Resume direct database writes.</li>
+<li>Continue progress requests until historical indexing is <code dir="auto">ready</code> and <code dir="auto">nextRequestInMs</code> is <code dir="auto">null</code>.</li>
+</ol>
+<p>If a write request times out or returns <code dir="auto">409</code> or <code dir="auto">500</code>, read the activation and progress state before retrying. Completed batches remain recorded. When <code dir="auto">lastErrorCode</code> is set, keep direct writers stopped, resolve the reported problem, and send one confirmed retry. Activation cannot be cancelled or reset after it starts, so test this procedure against a staging copy and keep a current database backup.</p>
+<p>The work-list operations expose failed or delayed entry indexing without returning content, media references, lease tokens, raw database errors, or an exact backlog count. Retrying one item is idempotent. <code dir="auto">409 WORK_LEASE_ACTIVE</code> means a worker is still processing the item; the response includes <code dir="auto">details.leaseExpiresAt</code>, so wait until that time and read the item again before retrying. <code dir="auto">409 WORK_CHANGED</code> means another request changed the work item; read its current state rather than overwriting the newer work.</p>
+<p>The repair operation accepts either <code dir="auto">{ "scope": "collection", "collection": "articles" }</code> or <code dir="auto">{ "scope": "all" }</code>. An all-collection repair runs synchronously and sequentially, so it can take a long time on a large site. A <code dir="auto">200</code> response can still report <code dir="auto">partial</code>, <code dir="auto">failed</code>, or <code dir="auto">stale</code>; inspect <code dir="auto">data.status</code>, the per-collection status, and the source counts before treating the repair as complete.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="site-transfer">Site transfer</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Site transfer”</span></a></div>
+<p>The transfer operations under <code dir="auto">/_emdash/api/admin/transfer/</code> export a site as a site package and import one into an empty site. The <a href="../../guides/site-transfer/index.html">site transfer guide</a> describes the export, upload, analysis, execution, and receipt workflow.</p>
+<p>Session users need the <code dir="auto">transfer:export</code> or <code dir="auto">transfer:import</code> permission, which only administrators hold. Bearer tokens need <code dir="auto">admin</code> or the <code dir="auto">transfer:export</code>, <code dir="auto">transfer:analyze</code>, or <code dir="auto">transfer:execute</code> scope named by each operation. The approval operations accept signed-in sessions only. They decide requests made by the MCP <code dir="auto">site_export_start</code> and <code dir="auto">site_import_start</code> tools; the REST export and execute operations do not take an approval.</p>
+<p>While an import is executing, and after it fails or is cancelled until it is abandoned, most other write operations return <code dir="auto">503 TRANSFER_IMPORT_IN_PROGRESS</code>. The guide lists the <a href="../../guides/site-transfer/index.html">operations that stay available</a>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="pagination">Pagination</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Pagination”</span></a></div>
+<p>List operations describe their pagination parameters in OpenAPI. Most cursor-paginated operations accept an opaque <code dir="auto">cursor</code> and a <code dir="auto">limit</code> from 1 to 100, defaulting to 50. Return the previous response’s <code dir="auto">nextCursor</code> unchanged; do not inspect or construct it. Some specialized lists use different limits, so generated clients should follow each operation’s schema.</p>
+<p><code dir="auto">GET /media</code>, <code dir="auto">GET /content/{collection}</code>, and <code dir="auto">GET /content/{collection}/trash</code> also accept a 1-based <code dir="auto">page</code> instead of <code dir="auto">cursor</code>. A numbered page has no <code dir="auto">nextCursor</code> and reports how many items match: <code dir="auto">totalCount</code> for media, <code dir="auto">total</code> for content. Sending both <code dir="auto">page</code> and <code dir="auto">cursor</code> returns a <code dir="auto">400</code> validation error.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="search-tokenizers">Search tokenizers</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Search tokenizers”</span></a></div>
+<p>The search-enable operation stores a tokenizer for each collection. Changing it on an enabled collection rebuilds that collection’s index.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">porter unicode61</code></td>
+<td>The default for English content that benefits from Porter stemming.</td>
+</tr>
+<tr>
+<td><code dir="auto">unicode61</code></td>
+<td>Languages that use word separators but should not use English stemming.</td>
+</tr>
+<tr>
+<td><code dir="auto">trigram</code></td>
+<td>Text without spaces, including Japanese, Chinese, Thai, Khmer, Lao, and Burmese, or collections that need substring matching. Queries shorter than three Unicode characters return no matches.</td>
+</tr>
+</tbody>
+</table>
+<p>Disabling search preserves the stored tokenizer for the next enable operation. The rebuild operation uses the collection’s stored tokenizer and field weights.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="comments-and-redirects">Comments and redirects</h2><a class="sl-anchor-link" href="index.html"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Comments and redirects”</span></a></div>
+<p>Public comment submissions enter the moderation queue. Admin comment operations list all statuses, return counts, update one status, perform bulk moderation, and permanently delete a comment. A <code dir="auto">429</code> response means the submission rate limit was reached.</p>
+<p>Redirect operations manage redirect rules and the recorded 404 log separately. Pruning removes entries selected by the request body, while <code dir="auto">DELETE /redirects/404s</code> clears the entire log. Neither operation deletes redirect rules.</p>
+<aside aria-label="Caution" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Caution</p><div class="starlight-aside__content"><p>Schema deletion, permanent content deletion, comment deletion, redirect-log clearing, and several media maintenance operations can remove data. Resolve the exact target and keep a current backup before sending an irreversible request.</p></div></aside></div><footer class="sl-flex astro-kpffynsd"><div class="meta sl-flex astro-kpffynsd"><a href="https://github.com/emdash-cms/emdash/tree/main/docs/src/content/docs/reference/rest-api.mdx" class="sl-flex print:hidden astro-csk3o3jv"><svg aria-hidden="true" class="astro-csk3o3jv astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.2em;"><path d="M22 7.24a1 1 0 0 0-.29-.71l-4.24-4.24a1 1 0 0 0-1.1-.22 1 1 0 0 0-.32.22l-2.83 2.83L2.29 16.05a1 1 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.1-.1.17-.2.22-.33a1 1 0 0 0 0-.24v-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"></path></svg>Edit page</a></div><div class="pagination-links print:hidden astro-b5a5xgmk" dir="ltr"><a href="../hooks/index.html" rel="prev" class="astro-b5a5xgmk"><svg aria-hidden="true" class="astro-b5a5xgmk astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"></path></svg><span class="astro-b5a5xgmk">Previous<br class="astro-b5a5xgmk"><span class="link-title astro-b5a5xgmk">Hook Reference</span></span></a><a href="../mcp-server/index.html" rel="next" class="astro-b5a5xgmk"><svg aria-hidden="true" class="astro-b5a5xgmk astro-anoh5s2p" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"></path></svg><span class="astro-b5a5xgmk">Next<br class="astro-b5a5xgmk"><span class="link-title astro-b5a5xgmk">MCP Server</span></span></a></div></footer></div></div></main></div></div></div></div><chat-bubble-snippet api-url="https://489e01e7-ef28-414f-9fec-15e1736fd9b2.search.ai.cloudflare.com/" placeholder="Ask about EmDash…" translations="{&quot;chatTitle&quot;:&quot;Ask the docs&quot;,&quot;chatEmptyTitle&quot;:&quot;Ask a question about EmDash&quot;,&quot;chatEmptyDescription&quot;:&quot;Answers are generated from the EmDash documentation and can be wrong. Check the linked pages.&quot;}"></chat-bubble-snippet><script type="module" src="../../_astro/AskAI.astro_astro_type_script_index_0_lang.BmA8m48Q.js"></script></body>
