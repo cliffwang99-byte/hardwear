@@ -6,9 +6,45 @@ import RecentlyViewed from '../components/RecentlyViewed.astro';
 import { getProducts } from '../lib/shop';
 
 const featuredProducts = await getProducts();
+
+
+const homeFaqs = [
+  {
+    question: 'How do I request a quote for bulk orders?',
+    answer: 'Simply add the items you need to your cart and select "Request a Quote" at checkout, or contact our B2B sales team directly via the contact page. For orders over $500, we provide free shipping and competitive bulk pricing.'
+  },
+  {
+    question: 'What is your delivery timeframe for building materials?',
+    answer: 'Most in-stock items are dispatched within 24 hours and delivered within 3–5 business days. Large bulk orders may require 5–7 business days depending on your location and the products ordered.'
+  },
+  {
+    question: 'Can I return materials if they are not what I expected?',
+    answer: 'Yes. We offer a hassle-free 30-day return policy on unused items in their original packaging. Just contact our support team with your order number and we will arrange pickup or a replacement.'
+  },
+  {
+    question: 'Do you offer trade or contractor pricing?',
+    answer: 'Absolutely. Our trade account program provides exclusive discounts, priority support, and flexible payment terms for contractors and builders. Sign up through the contact page or reach out to our sales team.'
+  },
+  {
+    question: 'Are your products certified for quality and safety?',
+    answer: 'All our products meet industry safety and quality standards, and we are ISO 9001 certified. Every batch is inspected to ensure it meets our quality guarantee before dispatch.'
+  },
+  {
+    question: 'How can I track my order?',
+    answer: 'Once your order ships, you will receive a tracking number by email. You can also log in to your account to view live delivery status and estimated arrival date at any time.'
+  }
+];
 ---
 
-<BaseLayout title="BuildMart - Premium Building Materials">
+<BaseLayout
+  title="Kitchen & Bath Hardware Wholesale | B2B Supply Chain Integrator"
+  description="Your trusted B2B kitchen & bath plumbing hardware supplier. We offer wholesale cabinets, vanities, faucets, and showers with strict QC inspection, consistent finishing, and one-stop FCL consolidation."
+  keywords="kitchen hardware wholesale, bath hardware, B2B supplier, plumbing hardware, wholesale cabinets, vanities, faucets, showers, FCL consolidation, bathroom fixtures, kitchen & bath supply chain"
+  canonical="https://www.buildmart.com/"
+  ogTitle="Kitchen & Bath Hardware Wholesale | B2B Supply Chain Integrator"
+  ogDescription="Your trusted B2B kitchen & bath plumbing hardware supplier. Wholesale cabinets, vanities, faucets, and showers with strict QC inspection and one-stop FCL consolidation."
+  ogImage="https://www.buildmart.com/og-home.jpg"
+>
   <!-- Hero Section - Flagship Quality with 5-Layer Background - Mobile Optimized -->
   <section class="relative text-white overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[650px] flex items-center">
     <!-- Layer 1: Deep Gradient Base -->
@@ -73,11 +109,11 @@ const featuredProducts = await getProducts();
 
         <!-- Headline - Flagship Typography with Staggered Animation - Mobile Optimized -->
         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-5 sm:mb-7 leading-[0.95] tracking-tighter relative z-10">
-          <span class="block mb-2 sm:mb-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.3s both;">Build with</span>
+          <span class="block mb-2 sm:mb-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.3s both;">Your One-Term B2B Partner</span>
           <span class="block bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style="animation: fadeInUp 0.8s ease-in-out 0.45s both, shimmer 3s linear infinite;">
-            Unmatched Quality
+            for Spec-Grade
           </span>
-          <span class="block mt-2 sm:mt-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.6s both;">& Trust</span>
+          <span class="block mt-2 sm:mt-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.6s both;">Kitchen & Bath Fixtures</span>
         </h1>
         
         <!-- Subheadline - Refined Hierarchy - Mobile Optimized -->
@@ -451,4 +487,48 @@ const featuredProducts = await getProducts();
 
   <!-- Recently Viewed Products -->
   <RecentlyViewed />
+    <!-- FAQ -->
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-on-scroll">Frequently Asked Questions</h2>
+      <p class="text-gray-600 dark:text-gray-400 animate-on-scroll">Quick answers about quotes, delivery and returns</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto space-y-4">
+      {homeFaqs.map((faq) => (
+        <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden animate-on-scroll">
+          <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white pr-4">{faq.question}</span>
+            <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div class="faq-content hidden px-6 pb-5">
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-10 animate-on-scroll">
+      <a href="/faq" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors">
+        <span>View All FAQs</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
 </BaseLayout>
