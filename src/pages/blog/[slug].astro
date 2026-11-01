@@ -83,7 +83,7 @@ const pageContext = createPublicPageContext({
         <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">{post.excerpt}</p>
       )}
 
-      <article class="prose prose-lg max-w-none prose-gray dark:prose-invert [&>p]:mb-5">
+      <article class="richtext">
         <PortableText value={post.content as any} />
       </article>
     </div>

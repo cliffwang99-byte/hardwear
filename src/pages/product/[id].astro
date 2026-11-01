@@ -171,7 +171,7 @@ const pageContext = createPublicPageContext({
         {product.featuresRich && (
           <div class="mb-6 bg-gray-50 dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-2xl p-6">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Key Features</h3>
-            <div class="prose prose-lg max-w-none prose-gray dark:prose-invert text-gray-700 dark:text-gray-300">
+            <div class="richtext">
               <PortableText value={product.featuresRich as any} />
             </div>
           </div>
@@ -232,7 +232,7 @@ const pageContext = createPublicPageContext({
         <div class="bg-white dark:bg-dark-800 rounded-2xl p-8 border border-gray-200 dark:border-dark-700">
           <h3 class="text-2xl font-bold mb-4">Product Description</h3>
           {product.descriptionRich ? (
-            <div class="prose prose-lg max-w-none prose-gray dark:prose-invert text-gray-700 dark:text-gray-300">
+            <div class="richtext">
               <PortableText value={product.descriptionRich as any} />
             </div>
           ) : (

@@ -73,7 +73,7 @@
   }
 }
 
-/* Rich text (EmDash PortableText) typography for category long descriptions.
+/* Rich text (EmDash PortableText) typography.
    @tailwindcss/typography is not installed, so `prose` classes have no effect;
    these rules style the raw tags emitted by PortableText instead. */
 .richtext {
