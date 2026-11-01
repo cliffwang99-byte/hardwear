@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
-import { getPostBySlug, getPosts } from '../../../lib/blog';
+import { getPostBySlug, getPosts } from '../../lib/blog';
 
 const slug = decodeSlug(Astro.params.slug ?? '');
 const post = await getPostBySlug(slug);
