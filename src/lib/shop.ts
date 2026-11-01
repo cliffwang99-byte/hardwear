@@ -120,6 +120,8 @@ export interface ShopProductDetail extends ShopProduct {
 	brand: string;
 	description: string;
 	features: string[];
+	descriptionRich?: unknown;
+	featuresRich?: unknown;
 	specifications: Record<string, string>;
 	seoTitle: string;
 	seoDescription: string;
@@ -201,6 +203,8 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection) ?? fallbackDetail.category,
 		brand: typeof d.brand === "string" ? d.brand : fallbackDetail.brand,
 		description: typeof d.description === "string" ? d.description : fallbackDetail.description,
+		descriptionRich: Array.isArray(d.description) ? d.description : undefined,
+		featuresRich: Array.isArray(d.features) ? d.features : undefined,
 		features:
 			Array.isArray(d.features) && d.features.every((f) => typeof f === "string")
 				? (d.features as string[])
