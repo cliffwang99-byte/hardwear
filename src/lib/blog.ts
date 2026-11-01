@@ -1,5 +1,17 @@
 import { getEmDashCollection, getEmDashEntry } from "emdash";
 
+export interface BlogProduct {
+	id: string;
+	name: string;
+	price: number;
+	originalPrice?: number;
+	image: string;
+	rating: number;
+	reviews: number;
+	badge?: string;
+	inStock: boolean;
+}
+
 export interface BlogPost {
 	id: string;
 	entryId: string;
@@ -9,6 +21,7 @@ export interface BlogPost {
 	image: string;
 	category?: string;
 	date: string;
+	products?: BlogProduct[];
 	seoTitle?: string;
 	seoDescription?: string;
 	seoImage?: string;
@@ -85,6 +98,21 @@ export function toPost(entry: Record<string, unknown>): BlogPost {
 	};
 }
 
+function toBlogProduct(entry: Record<string, unknown>): BlogProduct {
+	const d = (entry.data && typeof entry.data === "object" ? entry.data : {}) as Record<string, unknown>;
+	return {
+		id: typeof entry.slug === "string" ? entry.slug : String(entry.id ?? ""),
+		name: typeof d.name === "string" ? d.name : "",
+		price: Number(d.price) || 0,
+		originalPrice: d.originalPrice != null ? Number(d.originalPrice) || undefined : undefined,
+		image: mediaUrl(d.image),
+		rating: Number(d.rating) || 5,
+		reviews: Number(d.reviews) || 0,
+		badge: typeof d.badge === "string" ? d.badge : undefined,
+		inStock: d.inStock !== false,
+	};
+}
+
 // 已发布文章，最新在前
 export async function getPosts(): Promise<BlogPost[]> {
 	let result: { entries?: unknown[] | undefined; error?: unknown };
@@ -102,12 +130,22 @@ export async function getPosts(): Promise<BlogPost[]> {
 
 // 单篇文章
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-	let result: { entry?: unknown; error?: unknown };
+	let result: {
+		entry?: { references?: Record<string, { entries?: unknown[] }> } & Record<string, unknown>;
+		error?: unknown;
+	};
 	try {
-		result = (await getEmDashEntry("posts" as never, slug)) as {
-			entry?: unknown; error?: unknown;
-		};
+		result = (await getEmDashEntry("posts" as never, slug, {
+			references: { products: true },
+		})) as typeof result;
 	} catch { return null; }
 	if (result.error || !result.entry) return null;
-	return toPost(result.entry as Record<string, unknown>);
+	const post = toPost(result.entry as Record<string, unknown>);
+	const productEntries = result.entry.references?.products?.entries;
+	if (Array.isArray(productEntries) && productEntries.length > 0) {
+		post.products = productEntries
+			.map((entry) => toBlogProduct(entry as Record<string, unknown>))
+			.filter((p) => p.name !== "");
+	}
+	return post;
 }
