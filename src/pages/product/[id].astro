@@ -167,15 +167,6 @@ const pageContext = createPublicPageContext({
           )}
         </div>
 
-        <!-- Description -->
-        {product.descriptionRich ? (
-          <div class="mb-6 text-gray-600 dark:text-gray-400 prose prose-lg max-w-none prose-gray dark:prose-invert">
-            <PortableText value={product.descriptionRich as any} />
-          </div>
-        ) : (
-          <p class="text-gray-600 dark:text-gray-400 mb-6 text-lg">{product.description}</p>
-        )}
-
         <!-- Features -->
         {product.featuresRich && (
           <div class="mb-6 bg-gray-50 dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-2xl p-6">
