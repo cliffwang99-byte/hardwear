@@ -61,7 +61,6 @@ const pageContext = createPublicPageContext({
     { name: 'Home', url: '/' },
     { name: 'Products', url: '/products' },
     { name: product.category, url: `/categories/${product.category.toLowerCase()}` },
-    { name: product.name, url: Astro.url.pathname },
   ],
 });
 ---
@@ -75,8 +74,6 @@ const pageContext = createPublicPageContext({
       <a href="/products" class="text-gray-600 dark:text-gray-400 hover:text-primary-600">Products</a>
       <span class="text-gray-400">/</span>
       <a href={`/categories/${product.category.toLowerCase()}`} class="text-gray-600 dark:text-gray-400 hover:text-primary-600">{product.category}</a>
-      <span class="text-gray-400">/</span>
-      <span class="text-gray-900 dark:text-white font-semibold">{product.name}</span>
     </nav>
 
     <!-- Product Details -->
