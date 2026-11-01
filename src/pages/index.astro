@@ -5,7 +5,8 @@ import RecentlyViewed from '../components/RecentlyViewed.astro';
 
 import { getProducts } from '../lib/shop';
 
-const featuredProducts = await getProducts();
+const allFeatured = (await getProducts()).filter((p) => p.featured);
+const featuredProducts = [...allFeatured].sort(() => Math.random() - 0.5).slice(0, 8);
 
 
 const homeFaqs = [
@@ -118,9 +119,9 @@ const homeFaqs = [
         
         <!-- Subheadline - Refined Hierarchy - Mobile Optimized -->
         <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 text-white/70 leading-relaxed max-w-3xl mx-auto font-light px-4" style="animation: fadeInUp 0.8s ease-in-out 0.75s both;">
-          Professional-grade construction materials trusted by 
-          <span class="font-semibold text-white">50,000+ contractors</span> nationwide. 
-          <span class="block mt-2">Premium quality, competitive prices, expert support.</span>
+          Streamlines project procurement with factory-direct pricing, 
+          <span class="font-semibold text-white">independent QA/QC,</span>  and finishing consistency,nationwide. 
+          <span class="block mt-2">featuring ready-to-ship certified stock and comprehensive OEM/ODM support.</span>
         </p>
         
         <!-- CTA Buttons - Enhanced with 60px Glow and Staggered Animation - Mobile Optimized -->

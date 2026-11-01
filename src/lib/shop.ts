@@ -10,6 +10,7 @@ export interface ShopProduct {
 	reviews: number;
 	badge?: string;
 	inStock: boolean;
+	featured?: boolean;
 	category?: string;
 	topic?: string;
 }
@@ -24,10 +25,10 @@ export interface ShopCategory {
 }
 
 const fallbackProducts: ShopProduct[] = [
-	{ id: "1", name: "Premium Portland Cement - 50kg Bag", price: 12.99, originalPrice: 15.99, image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=500&fit=crop", rating: 4.8, reviews: 234, badge: "Best Seller", inStock: true },
-	{ id: "2", name: "Steel Reinforcement Bars (Rebar) - Grade 60", price: 45.5, image: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=500&h=500&fit=crop", rating: 4.9, reviews: 189, inStock: true },
-	{ id: "3", name: "Premium Pine Lumber 2x4x8", price: 8.99, originalPrice: 11.99, image: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&h=500&fit=crop", rating: 4.7, reviews: 456, badge: "Sale", inStock: true },
-	{ id: "4", name: "Professional Power Drill Set", price: 129.99, originalPrice: 179.99, image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&h=500&fit=crop", rating: 4.9, reviews: 678, badge: "Hot Deal", inStock: true },
+	{ id: "1", name: "Premium Portland Cement - 50kg Bag", price: 12.99, originalPrice: 15.99, image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=500&fit=crop", rating: 4.8, reviews: 234, badge: "Best Seller", inStock: true, featured: true },
+	{ id: "2", name: "Steel Reinforcement Bars (Rebar) - Grade 60", price: 45.5, image: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=500&h=500&fit=crop", rating: 4.9, reviews: 189, inStock: true, featured: true },
+	{ id: "3", name: "Premium Pine Lumber 2x4x8", price: 8.99, originalPrice: 11.99, image: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&h=500&fit=crop", rating: 4.7, reviews: 456, badge: "Sale", inStock: true, featured: true },
+	{ id: "4", name: "Professional Power Drill Set", price: 129.99, originalPrice: 179.99, image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&h=500&fit=crop", rating: 4.9, reviews: 678, badge: "Hot Deal", inStock: true, featured: true },
 	{ id: "5", name: "Copper Electrical Wire - 100ft Roll", price: 89.99, image: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500&h=500&fit=crop", rating: 4.6, reviews: 123, inStock: true },
 	{ id: "6", name: "PVC Plumbing Pipe Kit", price: 34.99, image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop", rating: 4.5, reviews: 234, inStock: false },
 	{ id: "7", name: "Exterior Paint - Premium Weather Shield", price: 54.99, originalPrice: 69.99, image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&h=500&fit=crop", rating: 4.8, reviews: 345, inStock: true },
@@ -84,6 +85,10 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		reviews: Number(d.reviews) || 0,
 		badge: typeof d.badge === "string" ? d.badge : undefined,
 		inStock: d.inStock !== false,
+		featured:
+			d.featured === true ||
+			d.featured_products === true ||
+			(typeof d.featured_products === "object" && d.featured_products !== null),
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection),
 		topic: referenceSlug((d.terms as Record<string, unknown> | undefined)?.topic),
 	};
