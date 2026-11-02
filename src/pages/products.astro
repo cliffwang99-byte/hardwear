@@ -3,9 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import FilterSidebar from '../components/FilterSidebar.astro';
 
-import { getProducts } from '../lib/shop';
+import { getProducts, getCategories, getTopics } from '../lib/shop';
 
 const products = await getProducts();
+const categories = await getCategories();
+const topics = await getTopics();
 ---
 
 <BaseLayout title="Products - BuildMart">
@@ -19,7 +21,7 @@ const products = await getProducts();
 
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Filters -->
-      <FilterSidebar />
+      <FilterSidebar categories={categories} topics={topics} />
 
       <!-- Products Grid -->
       <div class="flex-1">

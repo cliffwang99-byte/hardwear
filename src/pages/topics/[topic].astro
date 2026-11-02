@@ -6,7 +6,7 @@ import FilterSidebar from '../../components/FilterSidebar.astro';
 import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
-import { getTopicPageData, getProductsByTopic, getProducts } from '../../lib/shop';
+import { getTopicPageData, getProductsByTopic, getProducts, getCategories, getTopics } from '../../lib/shop';
 
 const { topic } = Astro.params;
 
@@ -14,6 +14,8 @@ const { topic } = Astro.params;
 const taxTopicSlug = decodeSlug(topic ?? '');
 const topicMeta = await getTopicPageData(taxTopicSlug);
 const taxProducts = topicMeta ? await getProductsByTopic(taxTopicSlug) : [];
+const categories = await getCategories();
+const topics = await getTopics();
 
 // Topic data (fallback when the CMS has no data yet)
 const topicData: Record<string, any> = {
@@ -197,7 +199,7 @@ const pageContext = createPublicPageContext({
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Sidebar Filters -->
       <aside class="lg:w-64 flex-shrink-0">
-        <FilterSidebar />
+        <FilterSidebar categories={categories} topics={topics} />
       </aside>
 
       <!-- Products Grid -->

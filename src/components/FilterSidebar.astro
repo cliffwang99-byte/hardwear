@@ -1,4 +1,10 @@
 ---
+interface Props {
+  categories: { slug: string; name: string; totalProducts: number }[];
+  topics: { slug: string; name: string; totalProducts: number }[];
+}
+
+const { categories = [], topics = [] } = Astro.props;
 ---
 
 <!-- Mobile Filter Toggle Button -->
@@ -60,25 +66,27 @@
   <div class="bg-white dark:bg-dark-800 rounded-xl p-5 sm:p-6 border border-gray-200 dark:border-dark-700">
     <h3 class="font-bold text-base sm:text-lg mb-4">Categories</h3>
     <div class="space-y-3">
-      {['Cement & Concrete', 'Steel & Metal', 'Lumber & Wood', 'Tools & Equipment', 'Electrical', 'Plumbing', 'Paint & Finishes', 'Roofing'].map(category => (
+      {categories.length > 0 ? categories.map(category => (
         <label class="flex items-center gap-3 cursor-pointer group py-1">
-          <input type="checkbox" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
-          <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{category}</span>
+          <input type="checkbox" value={category.slug} data-filter="category" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
+          <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{category.name}</span>
+          <span class="ml-auto text-xs text-gray-400">{category.totalProducts}</span>
         </label>
-      ))}
+      )) : <p class="text-sm text-gray-400">No categories</p>}
     </div>
   </div>
 
-  <!-- Brands - Touch-Friendly -->
+  <!-- Topics - Touch-Friendly -->
   <div class="bg-white dark:bg-dark-800 rounded-xl p-5 sm:p-6 border border-gray-200 dark:border-dark-700">
-    <h3 class="font-bold text-base sm:text-lg mb-4">Brands</h3>
+    <h3 class="font-bold text-base sm:text-lg mb-4">Topics</h3>
     <div class="space-y-3">
-      {['BuildPro', 'ConstructMax', 'SteelCraft', 'WoodMaster', 'ElectroTech', 'PlumbPro'].map(brand => (
+      {topics.length > 0 ? topics.map(topic => (
         <label class="flex items-center gap-3 cursor-pointer group py-1">
-          <input type="checkbox" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
-          <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{brand}</span>
+          <input type="checkbox" value={topic.slug} data-filter="topic" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
+          <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{topic.name}</span>
+          <span class="ml-auto text-xs text-gray-400">{topic.totalProducts}</span>
         </label>
-      ))}
+      )) : <p class="text-sm text-gray-400">No topics</p>}
     </div>
   </div>
 

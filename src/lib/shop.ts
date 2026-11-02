@@ -239,6 +239,20 @@ export async function getCategories(): Promise<ShopCategory[]> {
 	}));
 }
 
+// Product topics: taxonomy term `topic`, used to populate the sidebar Topics
+// filter panel (same shape as categories for a uniform filter experience).
+export async function getTopics(): Promise<ShopCategory[]> {
+	const terms = await getTaxonomyTerms("topic", { includeCounts: true });
+	return terms.map((term) => ({
+		slug: term.slug,
+		name: term.label,
+		icon: "",
+		description: term.description ?? "",
+		banner: "",
+		totalProducts: term.count ?? 0,
+	}));
+}
+
 export async function getCategoryBySlug(slug: string): Promise<ShopCategory | null> {
 	const term = await getTerm("collection", slug);
 	if (!term) return null;
