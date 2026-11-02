@@ -6,7 +6,7 @@ import FilterSidebar from '../../components/FilterSidebar.astro';
 import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
-import { getCategoryPageData, getProductsByCategory, getCategories, getTopics } from '../../lib/shop';
+import { getCategoryPageData, getProductsByCategory, getCategories, getTopics, faqBlocksToItems } from '../../lib/shop';
 
 const { category } = Astro.params;
 
@@ -89,6 +89,9 @@ const currentCategory = catMeta
 
 const longtextBlocks = catMeta?.longDescriptionBlocks ?? [];
 const hasLongtext = longtextBlocks.length > 0;
+const faqBlocks = catMeta?.faqBlocks ?? [];
+const faqItems = faqBlocksToItems(faqBlocks);
+const hasFaq = faqItems.length > 0;
 
 // Mock products by category
 const productsByCategory: Record<string, any[]> = {
@@ -655,6 +658,28 @@ const pageContext = createPublicPageContext({
           }
         </div>
 
+        <!-- FAQ -->
+        {hasFaq && (
+          <div class="mt-10">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h3>
+            <div class="space-y-4">
+              {faqItems.map((item) => (
+                <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+                  <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                    <span class="font-semibold text-gray-900 dark:text-white pr-4">{item.question}</span>
+                    <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div class="faq-content hidden px-6 pb-5 richtext max-w-none">
+                    <PortableText value={item.answerBlocks as any} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <!-- Features -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {[
@@ -672,4 +697,16 @@ const pageContext = createPublicPageContext({
       </div>
     </div>
   </section>
+
+  <script>
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
 </BaseLayout>

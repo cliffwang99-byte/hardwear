@@ -348,6 +348,7 @@ export interface CategoryMeta {
 	termDescription: string;
 	longDescription: string;
 	longDescriptionBlocks: unknown[];
+	faqBlocks: unknown[];
 	totalProducts: number;
 	entryId: string;
 	// Actual content-collection slug the entry was read from. Pages pass this to
@@ -384,6 +385,92 @@ function ptToText(node: unknown): string {
 		if (text) paragraphs.push(text);
 	}
 	return paragraphs.join("\n\n");
+}
+
+// Split a rich-text longDescription into an ordered list of mixed sections.
+// The editor uses `h2`/`h3` headings as FAQ questions and the following
+// block(s) as answers, but the same document may also contain ordinary rich
+// text (paragraphs, lists, images…) that should render flat. To support both,
+// we walk the blocks in order and emit either a `plain` run or an `faq` item.
+// This lets category & topic pages keep their free-form rich text and still
+// get an FAQ accordion for the heading-based sections.
+export interface LongtextSection {
+	type: "plain" | "faq";
+	// `plain`: the raw blocks to render with PortableText.
+	blocks: unknown[];
+	// `faq`: the heading text, plus the answer blocks rendered with PortableText.
+	question?: string;
+	answerBlocks?: unknown[];
+}
+
+export function splitLongtextSections(blocks: unknown[]): LongtextSection[] {
+	if (!Array.isArray(blocks)) return [];
+
+	const isHeading = (block: Record<string, unknown>): boolean => {
+		const style = typeof block.style === "string" ? block.style : "";
+		return style === "h2" || style === "h3" || style === "h4";
+	};
+
+	const sections: LongtextSection[] = [];
+	const plainRun: unknown[] = [];
+	let current: { question: string; answerBlocks: unknown[] } | null = null;
+
+	const flushPlain = (): void => {
+		if (plainRun.length > 0) {
+			sections.push({ type: "plain", blocks: plainRun.splice(0) });
+		}
+	};
+	const flushFaq = (): void => {
+		if (current && current.answerBlocks.length > 0) {
+			sections.push({
+				type: "faq",
+				question: current.question,
+				answerBlocks: current.answerBlocks,
+			});
+		}
+		current = null;
+	};
+
+	for (const raw of blocks) {
+		if (!raw || typeof raw !== "object") continue;
+		const block = raw as Record<string, unknown>;
+
+		if (isHeading(block)) {
+			const q = ptToText(block);
+			// Close any pending run/item exactly where a new heading starts.
+			flushFaq();
+			flushPlain();
+			if (q) current = { question: q, answerBlocks: [] };
+			continue;
+		}
+
+		// Non-heading block: inside an active FAQ item it's its answer,
+		// otherwise it belongs to the current plain run.
+		if (current) {
+			current.answerBlocks.push(raw);
+		} else {
+			plainRun.push(raw);
+		}
+	}
+	flushFaq();
+	flushPlain();
+
+	return sections;
+}
+
+// Extract (question, answer) pairs from a rich-text longDescription. The
+// editor keeps a Portable Text document where each question is an `h2`/`h3`
+// heading and the following block(s) form the answer. This lets category &
+// topic pages render their rich text as an FAQ accordion instead of flat text.
+export interface FaqItem {
+	question: string;
+	answerBlocks: unknown[];
+}
+
+export function faqBlocksToItems(blocks: unknown[]): FaqItem[] {
+	return splitLongtextSections(blocks)
+		.filter((s) => s.type === "faq")
+		.map((s) => ({ question: s.question ?? "", answerBlocks: s.answerBlocks ?? [] }));
 }
 
 // Try several candidate collection slugs in order and return the first entry
@@ -424,6 +511,7 @@ async function getTermPageData(
 
 	const seo = (d.seo && typeof d.seo === "object" ? d.seo : {}) as Record<string, unknown>;
 	const longtext = Array.isArray(d.longtext) ? d.longtext : null;
+	const faq = Array.isArray(d.faq) ? d.faq : null;
 
 	return {
 		name:
@@ -439,6 +527,7 @@ async function getTermPageData(
 		termDescription: term?.description ?? "",
 		longDescription: longtext ? ptToText(longtext) : "",
 		longDescriptionBlocks: longtext ?? [],
+		faqBlocks: faq ?? [],
 		totalProducts: term?.count ?? 0,
 		entryId: typeof entry?.id === "string" ? entry.id : "",
 		collection,
