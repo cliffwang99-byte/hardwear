@@ -397,7 +397,7 @@ function ptToText(node: unknown): string {
 export interface LongtextSection {
 	type: "plain" | "faq";
 	// `plain`: the raw blocks to render with PortableText.
-	blocks: unknown[];
+	blocks?: unknown[];
 	// `faq`: the heading text, plus the answer blocks rendered with PortableText.
 	question?: string;
 	answerBlocks?: unknown[];
@@ -549,4 +549,59 @@ export async function getTopicPageData(slug: string): Promise<CategoryMeta | nul
 		"topicimage",
 		slug,
 	);
+}
+
+export interface HomeCategoryChild {
+	slug: string;
+	name: string;
+	count: number;
+}
+
+export interface HomeCategory {
+	slug: string;
+	name: string;
+	image: string;
+	count: number;
+	children: HomeCategoryChild[];
+}
+
+// Homepage "Shop by Category": map real `collection` taxonomy terms to display
+// cards, limited to two levels (top-level terms plus their direct children).
+// Card images come from the `categories` collection entry's `categoryimage`
+// field, matched to the term by slug.
+export async function getHomeCategories(): Promise<HomeCategory[]> {
+	const [terms, result] = await Promise.all([
+		getTaxonomyTerms("collection", { includeCounts: true }),
+		getEmDashCollection("categories" as never) as Promise<{
+			entries?: unknown[] | undefined;
+			error?: unknown;
+		}>,
+	]);
+
+	const entries =
+		result && !result.error && Array.isArray(result.entries)
+			? (result.entries as Record<string, unknown>[])
+			: [];
+
+	const imageBySlug = new Map<string, string>();
+	for (const entry of entries) {
+		const slug = typeof entry.slug === "string" ? entry.slug : "";
+		const d =
+			entry.data && typeof entry.data === "object"
+				? (entry.data as Record<string, unknown>)
+				: {};
+		if (slug) imageBySlug.set(slug, mediaUrl(d.categoryimage));
+	}
+
+	return terms.map((term) => ({
+		slug: term.slug,
+		name: term.label,
+		image: imageBySlug.get(term.slug) ?? "",
+		count: term.count ?? 0,
+		children: (Array.isArray(term.children) ? term.children : []).map((child) => ({
+			slug: child.slug,
+			name: child.label,
+			count: child.count ?? 0,
+		})),
+	}));
 }
