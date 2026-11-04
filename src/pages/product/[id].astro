@@ -13,7 +13,7 @@ const relatedProducts = (await getProducts())
   .slice(0, 4);
 
 const siteSettings = await getSiteSettings();
-const siteTitle = siteSettings.title || 'BuildMart';
+const siteTitle = siteSettings.title || 'Kitchen & Bath Hardware';
 const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
 const siteUrl = siteSettings.url || Astro.url.origin;
 

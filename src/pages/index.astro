@@ -3,7 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import RecentlyViewed from '../components/RecentlyViewed.astro';
 
+import { getSiteSettings } from 'emdash';
 import { getProducts } from '../lib/shop';
+
+const siteSettings = await getSiteSettings();
+const siteUrl = siteSettings.url || Astro.url.origin;
 
 const allFeatured = (await getProducts()).filter((p) => p.featured);
 const featuredProducts = [...allFeatured].sort(() => Math.random() - 0.5).slice(0, 8);
@@ -41,10 +45,10 @@ const homeFaqs = [
   title="Kitchen & Bath Hardware Wholesale | B2B Supply Chain Integrator"
   description="Your trusted B2B kitchen & bath plumbing hardware supplier. We offer wholesale cabinets, vanities, faucets, and showers with strict QC inspection, consistent finishing, and one-stop FCL consolidation."
   keywords="kitchen hardware wholesale, bath hardware, B2B supplier, plumbing hardware, wholesale cabinets, vanities, faucets, showers, FCL consolidation, bathroom fixtures, kitchen & bath supply chain"
-  canonical="https://www.buildmart.com/"
+  canonical={siteUrl + '/'}
   ogTitle="Kitchen & Bath Hardware Wholesale | B2B Supply Chain Integrator"
   ogDescription="Your trusted B2B kitchen & bath plumbing hardware supplier. Wholesale cabinets, vanities, faucets, and showers with strict QC inspection and one-stop FCL consolidation."
-  ogImage="https://www.buildmart.com/og-home.jpg"
+  ogImage={siteUrl + '/og-home.jpg'}
 >
   <!-- Hero Section - Flagship Quality with 5-Layer Background - Mobile Optimized -->
   <section class="relative text-white overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[650px] flex items-center">
@@ -184,7 +188,7 @@ const homeFaqs = [
   <!-- Value Proposition with Animated Icons and Enhanced Hover -->
   <section class="container mx-auto px-4 py-16">
     <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose BuildMart?</h2>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose Kitchen & Bath Hardware?</h2>
       <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Industry-leading service and quality that contractors trust</p>
     </div>
     
@@ -406,7 +410,7 @@ const homeFaqs = [
           { 
             name: 'John Smith', 
             role: 'General Contractor', 
-            text: 'Best quality materials at competitive prices. Fast delivery and excellent customer service! Been using BuildMart for all my projects.',
+            text: 'Best quality materials at competitive prices. Fast delivery and excellent customer service! Been using Kitchen & Bath Hardware for all my projects.',
             rating: 5,
             image: 'https://i.pravatar.cc/150?img=12',
             verified: true
@@ -422,7 +426,7 @@ const homeFaqs = [
           { 
             name: 'Mike Davis', 
             role: 'Construction Manager', 
-            text: 'Been ordering from BuildMart for years. Consistent quality and reliability every time. Their bulk pricing is unbeatable.',
+            text: 'Been ordering from Kitchen & Bath Hardware for years. Consistent quality and reliability every time. Their bulk pricing is unbeatable.',
             rating: 5,
             image: 'https://i.pravatar.cc/150?img=33',
             verified: true
