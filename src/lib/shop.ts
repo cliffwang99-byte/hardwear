@@ -413,6 +413,9 @@ export interface CategoryMeta {
 	// `createPublicPageContext` so the SEO layer can resolve the entry — the slug
 	// is typed at the CMS, so it is reported back instead of assumed.
 	collection: string;
+	// Category references (slugs) attached to the content entry — used to filter
+	// the featured products on wholesale landing pages. Empty when not provided.
+	categories: string[];
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
@@ -595,6 +598,7 @@ async function getTermPageData(
 		totalProducts: term?.count ?? 0,
 		entryId: typeof entry?.id === "string" ? entry.id : "",
 		collection,
+		categories: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.collection),
 	};
 }
 
@@ -613,6 +617,45 @@ export async function getTopicPageData(slug: string): Promise<CategoryMeta | nul
 		"topicimage",
 		slug,
 	);
+}
+
+// Wholesale / OEM landing pages. Unlike categories & topics these have no
+// taxonomy term — the page is backed entirely by a rich `landing` content
+// collection entry keyed by slug. We probe the likely collection spellings so
+// the page keeps working regardless of the editor's exact naming.
+export async function getLandingPageData(slug: string): Promise<CategoryMeta | null> {
+	const collections = ["wholesales", "landing", "landings", "wholesale_oem", "wholesale_landing", "landing_page"];
+	const { entry, collection } = await getEntryFromCandidates(collections, slug);
+	if (!entry || !entry.data || typeof entry.data !== "object") return null;
+
+	const d = entry.data as Record<string, unknown>;
+	const seo = (d.seo && typeof d.seo === "object" ? d.seo : {}) as Record<string, unknown>;
+	const longtext = Array.isArray(d.longtext) ? d.longtext : null;
+	const faq = Array.isArray(d.faq) ? d.faq : null;
+
+	return {
+		name: typeof d.name === "string" && d.name.trim() ? d.name.trim() : "",
+		banner: mediaUrl(d.banner ?? d.image),
+		customizationH1:
+			typeof d.customization_h1 === "string" && d.customization_h1.trim()
+				? d.customization_h1.trim()
+				: typeof d.customizationH1 === "string" && d.customizationH1.trim()
+					? d.customizationH1.trim()
+					: "",
+		seoTitle: typeof seo.title === "string" ? seo.title : "",
+		seoDescription: typeof seo.description === "string" ? seo.description : "",
+		seoImage: mediaUrl(seo.image),
+		seoCanonical: typeof seo.canonical === "string" ? seo.canonical : "",
+		seoNoIndex: seo.noIndex === true,
+		termDescription: typeof d.description === "string" ? d.description : "",
+		longDescription: longtext ? ptToText(longtext) : "",
+		longDescriptionBlocks: longtext ?? [],
+		faqBlocks: faq ?? [],
+		totalProducts: 0,
+		entryId: typeof entry.id === "string" ? entry.id : "",
+		collection,
+		categories: referenceSlugs(d.categories),
+	};
 }
 
 export interface HomeCategory {
