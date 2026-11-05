@@ -11,9 +11,8 @@ interface Props {
   inStock: boolean;
 }
 
-const { id, name, price, originalPrice, image, rating, reviews, badge, inStock } = Astro.props;
+const { id, name, price, originalPrice, image, rating, badge, inStock } = Astro.props;
 const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
-const estimatedDelivery = 'Est. delivery: 2-3 days';
 ---
 
 <div class={`group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-500 hover:shadow-2xl hover:scale-[1.03] animate-on-scroll ${!inStock ? 'opacity-60' : ''}`}>
@@ -73,19 +72,6 @@ const estimatedDelivery = 'Est. delivery: 2-3 days';
       </button>
       <span class="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Wishlist</span>
     </div>
-    
-    <div class="relative group/tooltip">
-      <button
-        data-compare-toggle={id}
-        class="w-11 h-11 bg-white/95 dark:bg-dark-900/95 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all duration-300 shadow-xl hover:scale-110 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] active:scale-95 border border-gray-200 dark:border-dark-700"
-        aria-label="Add to compare"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      </button>
-      <span class="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Compare</span>
-    </div>
   </div>
 
   <!-- Image with Enhanced Zoom (110%) and Gradient Overlay -->
@@ -115,7 +101,6 @@ const estimatedDelivery = 'Est. delivery: 2-3 days';
           </svg>
         ))}
       </div>
-      <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">({reviews})</span>
     </div>
 
     <!-- Name - Mobile Optimized -->
@@ -125,38 +110,12 @@ const estimatedDelivery = 'Est. delivery: 2-3 days';
       </h3>
     </a>
 
-    <!-- Price - Mobile Optimized -->
-    <div class="flex items-baseline gap-2 mb-2 sm:mb-3">
-      <span class="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400">
-        ${price.toFixed(2)}
-      </span>
-      {originalPrice && (
-        <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-through">
-          ${originalPrice.toFixed(2)}
-        </span>
-      )}
-    </div>
-
-    <!-- Stock & Delivery Info - Mobile Optimized -->
-    <div class="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
-      {inStock ? (
-        <>
-          <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-green-600 dark:text-green-400 font-medium">
-            <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span>In Stock - Ready to Ship</span>
-          </div>
-          <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">
-            <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{estimatedDelivery}</span>
-          </div>
-        </>
-      ) : (
-        <span class="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-medium">Currently Unavailable</span>
-      )}
+    <!-- Project-Based Pricing Info - Mobile Optimized -->
+    <div class="flex items-center gap-1 sm:gap-1.5 mb-3 sm:mb-4 text-[10px] sm:text-xs text-primary-600 dark:text-primary-400 font-medium">
+      <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <span>Project-Based Pricing Available</span>
     </div>
 
     <!-- Multi-Layer Request a Quote Button with Enhanced Animation - Mobile Optimized -->
@@ -300,69 +259,14 @@ const estimatedDelivery = 'Est. delivery: 2-3 days';
     });
   });
 
-  // Compare toggle with max 4 products alert
-  document.querySelectorAll('[data-compare-toggle]').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const target = e.currentTarget as HTMLElement;
-      const id = target.dataset.compareToggle!;
-      
-      const compare = JSON.parse(localStorage.getItem('compare') || '[]');
-      const index = compare.indexOf(id);
-      
-      if (index > -1) {
-        compare.splice(index, 1);
-        target.classList.remove('!bg-blue-500', '!text-white', '!border-blue-500');
-        
-        // Remove animation
-        target.classList.remove('animate-pulse');
-      } else {
-        if (compare.length >= 4) {
-          // Show alert with better styling
-          const alertDiv = document.createElement('div');
-          alertDiv.className = 'fixed top-4 right-4 z-50 bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl animate-slide-in-right';
-          alertDiv.innerHTML = `
-            <div class="flex items-center gap-3">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <div>
-                <p class="font-bold">Maximum Reached</p>
-                <p class="text-sm">You can compare up to 4 products</p>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(alertDiv);
-          setTimeout(() => alertDiv.remove(), 3000);
-          return;
-        }
-        compare.push(id);
-        target.classList.add('!bg-blue-500', '!text-white', '!border-blue-500');
-        
-        // Add pulse animation
-        target.classList.add('animate-pulse');
-        setTimeout(() => target.classList.remove('animate-pulse'), 1000);
-      }
-      
-      localStorage.setItem('compare', JSON.stringify(compare));
-    });
-  });
-
-  // Initialize wishlist and compare states on page load
+  // Initialize wishlist states on page load
   document.addEventListener('DOMContentLoaded', () => {
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    const compare = JSON.parse(localStorage.getItem('compare') || '[]');
     
     wishlist.forEach((id: string) => {
       const button = document.querySelector(`[data-wishlist-toggle="${id}"]`);
       if (button) {
         button.classList.add('!bg-red-500', '!text-white', '!border-red-500');
-      }
-    });
-    
-    compare.forEach((id: string) => {
-      const button = document.querySelector(`[data-compare-toggle="${id}"]`);
-      if (button) {
-        button.classList.add('!bg-blue-500', '!text-white', '!border-blue-500');
       }
     });
   });

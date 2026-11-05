@@ -57,6 +57,27 @@ function mediaUrl(value: unknown): string {
 	return "";
 }
 
+function referenceSlugs(value: unknown): string[] {
+	if (value == null) return [];
+	if (Array.isArray(value)) return value.flatMap((item) => referenceSlugs(item));
+	if (typeof value === "string") {
+		const slug = value.split("/").pop();
+		return slug ? [slug] : [];
+	}
+	if (typeof value === "object") {
+		const rec = value as Record<string, unknown>;
+		if (typeof rec.slug === "string") {
+			const slug = rec.slug.split("/").pop();
+			return slug ? [slug] : [];
+		}
+		if (typeof rec.id === "string") {
+			const slug = rec.id.split("/").pop();
+			return slug ? [slug] : [];
+		}
+	}
+	return [];
+}
+
 function referenceSlug(value: unknown): string | undefined {
 	if (value == null) return undefined;
 	if (Array.isArray(value)) {
@@ -122,7 +143,9 @@ export interface ShopProductDetail extends ShopProduct {
 	images: string[];
 	sku: string;
 	category: string;
+	categorySlug: string;
 	brand: string;
+	topics: { slug: string; name: string }[];
 	description: string;
 	features: string[];
 	descriptionRich?: unknown;
@@ -152,7 +175,9 @@ const fallbackDetail: ShopProductDetail = {
 	],
 	sku: "CEM-PORT-50",
 	category: "Cement & Concrete",
+	categorySlug: "cement-concrete",
 	brand: "BuildPro",
+	topics: [],
 	description:
 		"High-quality Portland cement perfect for all construction projects. Provides excellent strength and durability for foundations, walls, and structural applications.",
 	features: [
@@ -179,6 +204,21 @@ const fallbackDetail: ShopProductDetail = {
 	entryId: "",
 };
 
+async function taxonomyLabelMap(taxonomy: string): Promise<Map<string, string>> {
+	const terms = await getTaxonomyTerms(taxonomy, { includeCounts: false });
+	const map = new Map<string, string>();
+	const walk = (nodes: { slug: string; label?: string; children?: unknown[] }[]): void => {
+		for (const node of nodes) {
+			if (node.slug) map.set(node.slug, node.label ?? node.slug);
+			if (Array.isArray(node.children)) {
+				walk(node.children as { slug: string; label?: string; children?: unknown[] }[]);
+			}
+		}
+	};
+	walk(terms as { slug: string; label?: string; children?: unknown[] }[]);
+	return map;
+}
+
 export async function getProductDetail(slug: string): Promise<ShopProductDetail> {
 	const result = (await getEmDashEntry("products" as never, slug)) as {
 		entry?: unknown;
@@ -200,13 +240,29 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 		return p.image ? [p.image, ...fallbackDetail.images.slice(1)] : fallbackDetail.images;
 	};
 
+	const topicSlugs = referenceSlugs((d.terms as Record<string, unknown> | undefined)?.topic);
+	let topics: { slug: string; name: string }[] = [];
+	if (topicSlugs.length) {
+		const labelBySlug = await taxonomyLabelMap("topic");
+		topics = topicSlugs.map((slug) => ({ slug, name: labelBySlug.get(slug) ?? slug }));
+	}
+
+	const categorySlug = referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection);
+	let categoryName = categorySlug ?? fallbackDetail.category;
+	if (categorySlug) {
+		const labelBySlug = await taxonomyLabelMap("collection");
+		categoryName = labelBySlug.get(categorySlug) ?? categorySlug;
+	}
+
 	return {
 		...fallbackDetail,
 		...p,
 		images: resolveImages(),
 		sku: typeof d.sku === "string" ? d.sku : fallbackDetail.sku,
-		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection) ?? fallbackDetail.category,
+		category: categoryName,
+		categorySlug: categorySlug ?? fallbackDetail.category.toLowerCase(),
 		brand: typeof d.brand === "string" ? d.brand : fallbackDetail.brand,
+		topics,
 		description: typeof d.description === "string" ? d.description : fallbackDetail.description,
 		descriptionRich: Array.isArray(d.description) ? d.description : undefined,
 		featuresRich: Array.isArray(d.features) ? d.features : undefined,

@@ -85,7 +85,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{method.time}</p>
                   </div>
                 </div>
-                <span class="font-bold text-sm sm:text-base">${method.price.toFixed(2)}</span>
+                <span class="font-bold text-sm sm:text-base">$？？</span>
               </label>
             ))}
           </div>
@@ -129,20 +129,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="space-y-2 sm:space-y-3 mb-4 sm:mb-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-dark-700">
             <div class="flex justify-between text-sm sm:text-base">
               <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
-              <span id="checkout-subtotal" class="font-semibold">$0.00</span>
+              <span id="checkout-subtotal" class="font-semibold">$？？</span>
             </div>
             <div class="flex justify-between text-sm sm:text-base">
               <span class="text-gray-600 dark:text-gray-400">Shipping</span>
-              <span id="checkout-shipping" class="font-semibold">$25.00</span>
+              <span id="checkout-shipping" class="font-semibold">$？？</span>
             </div>
             <div class="flex justify-between text-sm sm:text-base">
               <span class="text-gray-600 dark:text-gray-400">Tax</span>
-              <span id="checkout-tax" class="font-semibold">$0.00</span>
+              <span id="checkout-tax" class="font-semibold">$？？</span>
             </div>
             <div class="border-t border-gray-200 dark:border-dark-700 pt-2 sm:pt-3">
               <div class="flex justify-between text-base sm:text-lg">
                 <span class="font-bold">Total</span>
-                <span id="checkout-total" class="font-bold text-primary-600 dark:text-primary-400">$0.00</span>
+                <span id="checkout-total" class="font-bold text-primary-600 dark:text-primary-400">$？？</span>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
         <div class="flex-1">
           <p class="font-semibold text-sm line-clamp-2">${item.name}</p>
-          <p class="text-primary-600 dark:text-primary-400 font-bold">$${(item.price * item.quantity).toFixed(2)}</p>
+          <p class="text-primary-600 dark:text-primary-400 font-bold">$？？</p>
         </div>
       </div>
     `).join('');
@@ -190,10 +190,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const tax = subtotal * 0.08;
     const total = subtotal + shipping + tax;
 
-    document.getElementById('checkout-subtotal')!.textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('checkout-shipping')!.textContent = `$${shipping.toFixed(2)}`;
-    document.getElementById('checkout-tax')!.textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('checkout-total')!.textContent = `$${total.toFixed(2)}`;
+    document.getElementById('checkout-subtotal')!.textContent = `$？？`;
+    document.getElementById('checkout-shipping')!.textContent = `$？？`;
+    document.getElementById('checkout-tax')!.textContent = `$？？`;
+    document.getElementById('checkout-total')!.textContent = `$？？`;
   }
 
   renderCheckout();
