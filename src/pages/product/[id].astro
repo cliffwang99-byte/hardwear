@@ -46,54 +46,205 @@ const b2bCapabilities = [
     icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
     tint: 'text-green-600 dark:text-green-400',
     bg: 'bg-green-50 dark:bg-green-900/20',
+    accent: 'bg-green-600 hover:bg-green-700 ring-green-600/30',
   },
   {
     title: 'Private-Label & OEM Customization',
     detail:
       'We support proprietary brand registration. Unbranded technical CAD drawings, material spectroscopy reports (DZR Brass), and factory authorization deeds can be provided to accelerate your local IAPMO/CSA filing.',
+    popover: {
+      heading: 'About Private-Label & OEM Customization',
+      lead:
+        'We support proprietary brand registration for regional specifiers, importers, and mid-to-large wholesalers building their own local brand.',
+      bullets: [
+        {
+          label: 'Brand Registration Support',
+          text:
+            'Unbranded technical CAD drawings, neutral product photography, and blind-ship packaging are released for your private-label program.',
+        },
+        {
+          label: 'Material Documentation',
+          text:
+            'DZR brass and lead-free material spectroscopy reports are issued per production batch for your local compliance filing.',
+        },
+        {
+          label: 'Factory Authorization',
+          text:
+            'Notarized factory authorization deeds and audit summaries accelerate your IAPMO/CSA certification applications.',
+        },
+      ],
+      footer:
+        'Request an NDA before sharing brand assets. Our OEM desk returns a full private-label feasibility pack within 12 business hours.',
+    },
     icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z',
     tint: 'text-blue-600 dark:text-blue-400',
     bg: 'bg-blue-50 dark:bg-blue-900/20',
+    accent: 'bg-blue-600 hover:bg-blue-700 ring-blue-600/30',
   },
   {
     title: 'Custom Finishes & Colors',
     detail:
       'Support uniform surface finish synchronization (PVD Brushed Gold, Matte Black, etc.) across kitchen & bath collections to ensure 100% zero color variation in full-room specifications.',
+    popover: {
+      heading: 'About Custom Finishes & Colors',
+      lead:
+        'Surface finishes are synchronized across the entire kitchen & bath collection to guarantee 100% zero color variation in full-room specifications.',
+      bullets: [
+        {
+          label: 'PVD Finish Range',
+          text:
+            'Brushed Gold, Champagne Bronze, Matte Black, Gunmetal, and custom RAL-matched PVD colors are available on request.',
+        },
+        {
+          label: 'Cross-Category Synchronization',
+          text:
+            'Faucets, shower systems, accessories, and cabinet hardware are plated under the same bath protocol for a single matched batch.',
+        },
+        {
+          label: 'Sample Approval',
+          text:
+            'Physical finish swatches and gloss-level certificates are shipped for sign-off before bulk production is released.',
+        },
+      ],
+      footer:
+        'Add your target finish codes to the quote cart and our finishing engineer will confirm plating feasibility and lead time.',
+    },
     icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
     tint: 'text-purple-600 dark:text-purple-400',
     bg: 'bg-purple-50 dark:bg-purple-900/20',
+    accent: 'bg-purple-600 hover:bg-purple-700 ring-purple-600/30',
   },
   {
     title: 'US Warehouse Quick-Ship',
     detail:
       'For urgent engineering contracts, ready-to-ship inventory is available directly via our US East/West Coast local logistics hubs for rapid LTL truck dispatch.',
+    popover: {
+      heading: 'About US Warehouse Quick-Ship',
+      lead:
+        'For urgent engineering contracts, ready-to-ship inventory is available directly through our US East and West Coast logistics hubs.',
+      bullets: [
+        {
+          label: 'LTL Truck Dispatch',
+          text:
+            'Pallets are staged for next-day LTL pickup and delivered curbside or directly to the job site.',
+        },
+        {
+          label: 'Split Allocation',
+          text:
+            'Inventory can be split across multiple job sites or phased construction schedules without extra handling fees.',
+        },
+        {
+          label: 'Live Stock Visibility',
+          text:
+            'Available SKU quantities are confirmed by our logistics desk before you commit the purchase order.',
+        },
+      ],
+      footer:
+        'Submit your project ZIP Code with the quote request so transit time from the nearest hub can be calculated.',
+    },
     icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0',
     tint: 'text-amber-600 dark:text-amber-400',
     bg: 'bg-amber-50 dark:bg-amber-900/20',
+    accent: 'bg-amber-600 hover:bg-amber-700 ring-amber-600/30',
   },
   {
     title: 'Factory-Direct FCL Consolidation',
     detail:
       'Optimize your procurement margin through factory-direct ocean freight. We support full container load (FCL) mixed consolidation across plumbing fixtures and cabinet portfolios.',
+    popover: {
+      heading: 'About Factory-Direct FCL Consolidation',
+      lead:
+        'Procurement margin is optimized through factory-direct ocean freight instead of layered distributor markups.',
+      bullets: [
+        {
+          label: 'Mixed FCL Consolidation',
+          text:
+            'Faucets, shower systems, sinks, and bathroom vanities can share a single container under one bill of lading.',
+        },
+        {
+          label: 'Loading Optimization',
+          text:
+            'Carton nesting and pallet layout are engineered to maximize container utilization per cubic meter.',
+        },
+        {
+          label: 'Terms Flexibility',
+          text:
+            'Both FOB and DDP contract terms are quoted, with destination port and inland delivery options included.',
+        },
+      ],
+      footer:
+        'Share your target container volume and destination port for a consolidated freight estimate.',
+    },
     icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
     tint: 'text-indigo-600 dark:text-indigo-400',
     bg: 'bg-indigo-50 dark:bg-indigo-900/20',
+    accent: 'bg-indigo-600 hover:bg-indigo-700 ring-indigo-600/30',
   },
   {
     title: '100% Pre-Shipment QA/QC Inspection',
     detail:
       'Every single batch undergoes rigorous 100% independent operational, sealing, and pressure inspection prior to clearing the container terminal.',
+    popover: {
+      heading: 'About 100% Pre-Shipment QA/QC Inspection',
+      lead:
+        'Every batch is inspected before it clears the container terminal, not after it arrives at your warehouse.',
+      bullets: [
+        {
+          label: '100% Operational Check',
+          text:
+            'Cartridge rotation, handle travel, diverter function, and spray pattern are tested on every single unit.',
+        },
+        {
+          label: 'Sealing & Pressure Test',
+          text:
+            'Static and dynamic pressure tests confirm leak-free performance at rated flow conditions.',
+        },
+        {
+          label: 'Inspection Records',
+          text:
+            'Photo and video documentation plus signed inspection reports are attached to each shipment file.',
+        },
+      ],
+      footer:
+        'Third-party inspection (SGS, BV, Intertek) can be scheduled on request at the buyer\u2019s cost.',
+    },
     icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     tint: 'text-teal-600 dark:text-teal-400',
     bg: 'bg-teal-50 dark:bg-teal-900/20',
+    accent: 'bg-teal-600 hover:bg-teal-700 ring-teal-600/30',
   },
   {
     title: 'BIM & CAD Spec Submittals',
     detail:
       'Architect-ready submittal packages, including detailed spec sheets, CAD files, and BIM models, are instantly exportable to streamline your project approval process.',
+    popover: {
+      heading: 'About BIM & CAD Spec Submittals',
+      lead:
+        'Architect-ready submittal packages are exportable on demand so your approval process never waits on documentation.',
+      bullets: [
+        {
+          label: 'Submittal Package',
+          text:
+            'Detailed spec sheets, rough-in dimensions, flow rate data, and compliance declarations delivered as one PDF set.',
+        },
+        {
+          label: 'CAD & BIM Files',
+          text:
+            'DWG drawings and Revit families are provided for coordination with mechanical and architectural trades.',
+        },
+        {
+          label: 'Revision Control',
+          text:
+            'Files are version-stamped so your consultant team always works from the current release.',
+        },
+      ],
+      footer:
+        'Request the submittal package through the quote cart and specify your required Revit version.',
+    },
     icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
     tint: 'text-slate-600 dark:text-slate-300',
     bg: 'bg-slate-100 dark:bg-slate-800',
+    accent: 'bg-slate-600 hover:bg-slate-700 ring-slate-600/30',
   },
 ];
 
@@ -250,7 +401,8 @@ const pageContext = createPublicPageContext({
             {b2bCapabilities.map((capability, index) => (
               <div
                 tabindex="0"
-                class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 hover:border-primary-400 dark:hover:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors"
+                data-b2b-card={index}
+                class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 hover:border-primary-400 dark:hover:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors md:cursor-default cursor-pointer"
               >
                 <span class={`flex-shrink-0 w-8 h-8 rounded-lg ${capability.bg} ${capability.tint} flex items-center justify-center`}>
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,41 +411,35 @@ const pageContext = createPublicPageContext({
                 </span>
                 <span class="flex-1 text-sm font-semibold text-gray-800 dark:text-gray-200 leading-snug">{capability.title}</span>
 
-                {capability.popover ? (
-                  <>
-                    <button
-                      type="button"
-                      data-b2b-info={index}
-                      aria-label={`Details about ${capability.title}`}
-                      class="flex-shrink-0 w-5 h-5 rounded-full border border-gray-300 dark:border-dark-600 text-gray-500 dark:text-gray-400 hover:text-primary-600 hover:border-primary-500 flex items-center justify-center transition-colors"
-                    >
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8h.01M12 12v4" />
-                      </svg>
-                    </button>
-                    <div
-                      class={`pointer-events-none absolute top-full mt-2 w-80 max-w-[85vw] hidden md:block invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity duration-200 z-20 bg-dark-950 text-white rounded-xl p-4 shadow-2xl text-left ${index % 2 === 1 ? 'sm:left-auto sm:right-0' : 'left-0'}`}
-                    >
-                      <p class="text-sm font-bold mb-2">{capability.popover.heading}</p>
-                      <p class="text-xs leading-relaxed text-gray-300 mb-2">{capability.popover.lead}</p>
-                      <ul class="space-y-1.5 mb-2">
-                        {capability.popover.bullets.map((bullet) => (
-                          <li class="text-xs leading-relaxed text-gray-300 flex gap-1.5">
-                            <span class="text-primary-400 flex-shrink-0">•</span>
-                            <span>
-                              <span class="font-semibold text-white">{bullet.label}:</span> {bullet.text}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p class="text-xs leading-relaxed text-gray-300 pt-2 border-t border-white/10">{capability.popover.footer}</p>
-                    </div>
-                  </>
-                ) : (
-                  <span class="absolute left-0 top-full mt-2 hidden group-hover:block group-focus-within:block w-64 max-w-[70vw] bg-dark-950 text-white text-xs leading-relaxed rounded-lg p-3 shadow-xl z-20 pointer-events-none">
-                    {capability.detail}
-                  </span>
-                )}
+                <button
+                  type="button"
+                  data-b2b-info={index}
+                  aria-label={`Details about ${capability.title}`}
+                  aria-haspopup="dialog"
+                  class={`flex-shrink-0 w-6 h-6 rounded-full ${capability.accent} text-white shadow-md ring-2 ring-offset-2 ring-offset-white dark:ring-offset-dark-800 flex items-center justify-center transition-all duration-200 hover:scale-110 focus:outline-none focus-visible:ring-4`}
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8h.01M12 12v4" />
+                  </svg>
+                </button>
+
+                <div
+                  class={`pointer-events-none absolute top-full mt-2 w-80 max-w-[85vw] hidden md:block invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity duration-200 z-20 bg-dark-950 text-white rounded-xl p-4 shadow-2xl text-left ${index % 2 === 1 ? 'sm:left-auto sm:right-0' : 'left-0'}`}
+                >
+                  <p class="text-sm font-bold mb-2">{capability.popover.heading}</p>
+                  <p class="text-xs leading-relaxed text-gray-300 mb-2">{capability.popover.lead}</p>
+                  <ul class="space-y-1.5 mb-2">
+                    {capability.popover.bullets.map((bullet) => (
+                      <li class="text-xs leading-relaxed text-gray-300 flex gap-1.5">
+                        <span class="text-primary-400 flex-shrink-0">•</span>
+                        <span>
+                          <span class="font-semibold text-white">{bullet.label}:</span> {bullet.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="text-xs leading-relaxed text-gray-300 pt-2 border-t border-white/10">{capability.popover.footer}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -423,22 +569,32 @@ const pageContext = createPublicPageContext({
     </section>
   </div>
 
-  <!-- Mobile Bottom Sheet: Project-Based Pricing details -->
+  <!-- Mobile Bottom Sheet: Available Services details -->
   <div id="b2b-sheet-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden opacity-0 transition-opacity duration-300"></div>
   <div
     id="b2b-sheet"
     class="fixed bottom-0 left-0 right-0 z-50 md:hidden translate-y-full transition-transform duration-300 ease-out bg-white dark:bg-dark-900 rounded-t-2xl shadow-2xl max-h-[80vh] overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="b2b-sheet-heading"
     aria-hidden="true"
   >
     <div class="sticky top-0 bg-white dark:bg-dark-900 pt-3 pb-2 px-5 border-b border-gray-200 dark:border-dark-700">
       <div class="w-10 h-1 bg-gray-300 dark:bg-dark-600 rounded-full mx-auto mb-3"></div>
       <div class="flex items-start justify-between gap-4">
-        <h3 id="b2b-sheet-heading" class="text-base font-bold text-gray-900 dark:text-white"></h3>
+        <div class="flex items-start gap-3 min-w-0">
+          <span id="b2b-sheet-icon" class="flex-shrink-0 w-9 h-9 rounded-lg bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path id="b2b-sheet-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="" />
+            </svg>
+          </span>
+          <h3 id="b2b-sheet-heading" class="text-base font-bold text-gray-900 dark:text-white leading-snug"></h3>
+        </div>
         <button
           id="b2b-sheet-close"
           type="button"
           aria-label="Close details"
-          class="flex-shrink-0 w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-dark-800 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-colors"
+          class="flex-shrink-0 w-9 h-9 rounded-full bg-gray-100 dark:bg-dark-800 hover:bg-gray-200 dark:hover:bg-dark-700 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -454,7 +610,7 @@ const pageContext = createPublicPageContext({
   </div>
 </BaseLayout>
 
-<script define:vars={{ product, projectPricingPopover }}>
+<script define:vars={{ product, b2bCapabilities }}>
   // Image gallery - pure JS (thumbnails + prev/next arrows)
   var galleryImages = product.images || [];
   var currentIndex = 0;
@@ -574,19 +730,27 @@ const pageContext = createPublicPageContext({
   var sheetBullets = document.getElementById('b2b-sheet-bullets');
   var sheetFooter = document.getElementById('b2b-sheet-footer');
   var sheetClose = document.getElementById('b2b-sheet-close');
+  var sheetIcon = document.getElementById('b2b-sheet-icon');
+  var sheetIconPath = document.getElementById('b2b-sheet-icon-path');
 
-  function openB2BSheet() {
-    if (!sheet || !sheetOverlay) return;
-    sheetHeading.textContent = projectPricingPopover.heading;
-    sheetLead.textContent = projectPricingPopover.lead;
+  function openB2BSheet(index) {
+    var capability = b2bCapabilities[index];
+    if (!capability || !capability.popover || !sheet || !sheetOverlay) return;
+    var popover = capability.popover;
+
+    sheetHeading.textContent = popover.heading;
+    if (sheetIcon) sheetIcon.className = 'flex-shrink-0 w-9 h-9 rounded-lg ' + capability.bg + ' ' + capability.tint + ' flex items-center justify-center';
+    if (sheetIconPath) sheetIconPath.setAttribute('d', capability.icon);
+
+    sheetLead.textContent = popover.lead;
     sheetBullets.innerHTML = '';
-    for (var b = 0; b < projectPricingPopover.bullets.length; b++) {
-      var bullet = projectPricingPopover.bullets[b];
+    for (var b = 0; b < popover.bullets.length; b++) {
+      var bullet = popover.bullets[b];
       var li = document.createElement('li');
       li.className = 'text-sm leading-relaxed text-gray-600 dark:text-gray-400 flex gap-2';
       var dot = document.createElement('span');
       dot.className = 'text-primary-600 dark:text-primary-400 flex-shrink-0';
-      dot.textContent = '•';
+      dot.textContent = '\u2022';
       var body = document.createElement('span');
       var label = document.createElement('span');
       label.className = 'font-semibold text-gray-900 dark:text-white';
@@ -597,9 +761,11 @@ const pageContext = createPublicPageContext({
       li.appendChild(body);
       sheetBullets.appendChild(li);
     }
-    sheetFooter.textContent = projectPricingPopover.footer;
+    sheetFooter.textContent = popover.footer;
     sheetOverlay.classList.remove('hidden');
     sheet.setAttribute('aria-hidden', 'false');
+    sheet.scrollTop = 0;
+    document.body.classList.add('overflow-hidden');
     requestAnimationFrame(function () {
       sheetOverlay.classList.remove('opacity-0');
       sheet.classList.remove('translate-y-full');
@@ -611,6 +777,7 @@ const pageContext = createPublicPageContext({
     sheetOverlay.classList.add('opacity-0');
     sheet.classList.add('translate-y-full');
     sheet.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
     setTimeout(function () { sheetOverlay.classList.add('hidden'); }, 300);
   }
 
@@ -625,7 +792,23 @@ const pageContext = createPublicPageContext({
     infoButtons[ib].addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (window.matchMedia('(max-width: 767px)').matches) openB2BSheet();
+      var idx = parseInt(this.getAttribute('data-b2b-info'), 10);
+      if (window.matchMedia('(max-width: 767px)').matches) openB2BSheet(idx);
+    });
+  }
+
+  var b2bCards = document.querySelectorAll('[data-b2b-card]');
+  for (var bc = 0; bc < b2bCards.length; bc++) {
+    b2bCards[bc].addEventListener('click', function (e) {
+      if (e.target.closest('[data-b2b-info]')) return;
+      var idx = parseInt(this.getAttribute('data-b2b-card'), 10);
+      if (window.matchMedia('(max-width: 767px)').matches) openB2BSheet(idx);
+    });
+    b2bCards[bc].addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      var idx = parseInt(this.getAttribute('data-b2b-card'), 10);
+      if (window.matchMedia('(max-width: 767px)').matches) openB2BSheet(idx);
     });
   }
 </script>
