@@ -551,22 +551,16 @@ export async function getTopicPageData(slug: string): Promise<CategoryMeta | nul
 	);
 }
 
-export interface HomeCategoryChild {
-	slug: string;
-	name: string;
-	count: number;
-}
-
 export interface HomeCategory {
 	slug: string;
 	name: string;
 	image: string;
 	count: number;
-	children: HomeCategoryChild[];
 }
 
 // Homepage "Shop by Category": map real `collection` taxonomy terms to display
-// cards, limited to two levels (top-level terms plus their direct children).
+// cards. Only level-2 terms are shown — the direct children of every top-level
+// term are flattened into one flat card list, and deeper levels are ignored.
 // Card images come from the `categories` collection entry's `categoryimage`
 // field, matched to the term by slug.
 export async function getHomeCategories(): Promise<HomeCategory[]> {
@@ -593,15 +587,18 @@ export async function getHomeCategories(): Promise<HomeCategory[]> {
 		if (slug) imageBySlug.set(slug, mediaUrl(d.categoryimage));
 	}
 
-	return terms.map((term) => ({
+	const toCard = (term: { slug: string; label: string; count?: number }): HomeCategory => ({
 		slug: term.slug,
 		name: term.label,
 		image: imageBySlug.get(term.slug) ?? "",
 		count: term.count ?? 0,
-		children: (Array.isArray(term.children) ? term.children : []).map((child) => ({
-			slug: child.slug,
-			name: child.label,
-			count: child.count ?? 0,
-		})),
-	}));
+	});
+
+	const level2 = terms.flatMap((term) =>
+		(Array.isArray(term.children) ? term.children : []).map(toCard),
+	);
+
+	// Fall back to the top-level terms when no level-2 terms exist yet, so the
+	// section never renders empty on a freshly seeded site.
+	return level2.length > 0 ? level2 : terms.map(toCard);
 }
