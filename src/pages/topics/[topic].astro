@@ -68,12 +68,13 @@ const defaultTopic = topicData['best-sellers'];
 const currentTopic = topicMeta
   ? {
       name: topicMeta.name || topicData[taxTopicSlug]?.name || defaultTopic.name,
+      customizationH1: topicMeta.customizationH1 || '',
       icon: '🏷️',
       description: topicMeta.termDescription || topicMeta.seoDescription || topicData[taxTopicSlug]?.description || 'Products in this topic.',
       banner: topicMeta.banner || topicData[taxTopicSlug]?.banner || defaultTopic.banner,
       totalProducts: topicMeta.totalProducts || topicData[taxTopicSlug]?.totalProducts || 0
     }
-  : topicData[taxTopicSlug] || defaultTopic;
+  : { ...(topicData[taxTopicSlug] || defaultTopic), customizationH1: '' };
 
 const longtextBlocks = topicMeta?.longDescriptionBlocks ?? [];
 const hasLongtext = longtextBlocks.length > 0;
@@ -176,12 +177,8 @@ const pageContext = createPublicPageContext({
 
       <!-- Topic Header -->
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-4" style="animation: fadeInUp 0.6s ease-in-out 0.1s both;">
-          <span class="text-6xl">{currentTopic.icon}</span>
-          <div>
-            <h1 class="text-4xl md:text-5xl font-black mb-2">{currentTopic.name}</h1>
-            <p class="text-primary-200 text-lg">{currentTopic.totalProducts || products.length}+ Products Available</p>
-          </div>
+        <div style="animation: fadeInUp 0.6s ease-in-out 0.1s both;">
+          <h1 class="text-4xl md:text-5xl font-black mb-2">{currentTopic.customizationH1 || currentTopic.name}</h1>
         </div>
         <p class="text-xl text-white/80 leading-relaxed" style="animation: fadeInUp 0.6s ease-in-out 0.2s both;">
           {currentTopic.description}

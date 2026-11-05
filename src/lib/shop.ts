@@ -395,6 +395,8 @@ export async function getProductsByTopic(slug: string): Promise<ShopProduct[]> {
 
 export interface CategoryMeta {
 	name: string;
+	// Optional custom H1 shown instead of the term name when provided.
+	customizationH1: string;
 	banner: string;
 	seoTitle: string;
 	seoDescription: string;
@@ -575,6 +577,12 @@ async function getTermPageData(
 				? d.name.trim()
 				: (term?.label ?? ""),
 		banner: mediaUrl(d[imageField]),
+		customizationH1:
+			typeof d.customization_h1 === "string" && d.customization_h1.trim()
+				? d.customization_h1.trim()
+				: typeof d.customizationH1 === "string" && d.customizationH1.trim()
+					? d.customizationH1.trim()
+					: "",
 		seoTitle: typeof seo.title === "string" ? seo.title : "",
 		seoDescription: typeof seo.description === "string" ? seo.description : "",
 		seoImage: mediaUrl(seo.image),

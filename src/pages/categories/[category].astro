@@ -548,12 +548,8 @@ const pageContext = createPublicPageContext({
 
       <!-- Category Header -->
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-4" style="animation: fadeInUp 0.6s ease-in-out 0.1s both;">
-          <span class="text-6xl">{currentCategory.icon}</span>
-          <div>
-            <h1 class="text-4xl md:text-5xl font-black mb-2">{currentCategory.name}</h1>
-            <p class="text-primary-200 text-lg">{currentCategory.totalProducts}+ Products Available</p>
-          </div>
+        <div style="animation: fadeInUp 0.6s ease-in-out 0.1s both;">
+          <h1 class="text-4xl md:text-5xl font-black mb-2">{catMeta?.customizationH1 || currentCategory.name}</h1>
         </div>
         <p class="text-xl text-white/80 leading-relaxed" style="animation: fadeInUp 0.6s ease-in-out 0.2s both;">
           {currentCategory.description}
