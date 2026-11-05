@@ -143,7 +143,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
           </svg>
           
           <!-- Text -->
-          <span class="relative z-10 tracking-wide">Request a Quote</span>
+          <span class="relative z-10 tracking-wide">Add to Quote List</span>
           
           <!-- Success Checkmark (hidden by default, shown via JS) -->
           <svg class="w-4 h-4 sm:w-5 sm:h-5 relative z-10 hidden success-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
         cartIcon.classList.add('hidden');
         successIcon.classList.remove('hidden');
         successIcon.classList.add('animate-bounce');
-        textSpan.textContent = 'Added to Quote!';
+        textSpan.textContent = 'Added to Quote List!';
         
         // Add success background
         target.classList.add('!bg-green-600', '!from-green-600', '!to-green-700');
@@ -209,7 +209,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
           cartIcon.classList.remove('hidden');
           successIcon.classList.add('hidden');
           successIcon.classList.remove('animate-bounce');
-          textSpan.textContent = 'Request a Quote';
+          textSpan.textContent = 'Add to Quote List';
           target.classList.remove('!bg-green-600', '!from-green-600', '!to-green-700');
         }, 2000);
       }

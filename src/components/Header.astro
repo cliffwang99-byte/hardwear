@@ -344,12 +344,12 @@ if (navItems.length === 0) {
   const themeToggle = document.getElementById('theme-toggle');
   const html = document.documentElement;
   
-  // Initialize theme on page load
+  // Initialize theme on page load - dark is the default; only explicit 'light' preference opts out
   function initTheme() {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      html.classList.add('dark');
-    } else {
+    if (localStorage.theme === 'light') {
       html.classList.remove('dark');
+    } else {
+      html.classList.add('dark');
     }
   }
   
