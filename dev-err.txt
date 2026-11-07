@@ -1,0 +1,11 @@
+Another astro dev server is already running.
+
+  URL:  http://localhost:4321
+  PID:  10616
+
+Run `astro dev stop` to stop it, or use `astro dev --force` to replace it.
+  [1mLocation:[22m
+    [4mD:\卫浴\hardwear\node_modules\astro\dist\cli\dev\index.js:182:10[24m
+  [1mStack trace:[22m
+[2m    at dev (file:///D:/%E5%8D%AB%E6%B5%B4/hardwear/node_modules/astro/dist/cli/dev/index.js:182:10)
+    at async runCommand (file:///D:/%E5%8D%AB%E6%B5%B4/hardwear/node_modules/astro/dist/cli/index.js:170:19)[22m
