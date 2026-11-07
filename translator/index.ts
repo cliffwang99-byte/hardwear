@@ -301,7 +301,25 @@ export default {
 export const editorActions = {
 	id: "generate-translation",
 	label: "Generate Spanish draft",
-	collections: ["products", "posts", "pages", "categories"],
+	collections: [
+		"products",
+		"posts",
+		"pages",
+		"categories",
+		// 落地页（wholesale-oem）：后端实际用 `wholesales`，其余为兼容变体
+		"wholesales",
+		"landing",
+		"landings",
+		"wholesale_oem",
+		"wholesale_landing",
+		"landing_page",
+		// 主题落地页富门面集合
+		"topicseo",
+		"topicss",
+		"topics",
+		"topic_seo",
+		"topic",
+	],
 	placement: "toolbar",
 	confirm: {
 		title: "Generate Spanish draft?",
