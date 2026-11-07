@@ -1,5 +1,17 @@
+diff --git a/node_modules/emdash/dist/content-Dt0Os_WQ.mjs b/node_modules/emdash/dist/content-Dt0Os_WQ.mjs
+index ca3b4b1..cfaf873 100644
+--- a/node_modules/emdash/dist/content-Dt0Os_WQ.mjs
++++ b/node_modules/emdash/dist/content-Dt0Os_WQ.mjs
+@@ -388,6 +388,7 @@ var ContentRepository = class {
+ 		const valuePlaceholders = values.map((value, index) => {
+ 			const column = columns[index];
+ 			if (translationOf && column === "translation_group") return sql`COALESCE(${sql.ref("translation_source.translation_group")}, ${sql.ref("translation_source.id")})`;
++			if (translationOf && column === "slug") return sql.ref("translation_source.slug");
+ 			if (translationOf && inherited.has(column)) return sql.ref(`translation_source.${column}`);
+ 			return value === null ? sql`NULL` : sql`${value}`;
+ 		});
 diff --git a/node_modules/emdash/src/api/handlers/content.ts b/node_modules/emdash/src/api/handlers/content.ts
-index ce77178..e297d2a 100644
+index ce77178..d61d12a 100644
 --- a/node_modules/emdash/src/api/handlers/content.ts
 +++ b/node_modules/emdash/src/api/handlers/content.ts
 @@ -1347,6 +1347,12 @@ export async function handleContentCreate(
@@ -7,7 +19,7 @@ index ce77178..e297d2a 100644
  
  			let slug: string | null | undefined = body.slug;
 +			if (!slug && body.translationOf) {
-+				// Translations should keep the source entry's (usually English)
++				// Translations keep the source entry's (usually English)
 +				// slug so the URL alias stays in the original language.
 +				const source = await repo.findById(collection, body.translationOf);
 +				if (source?.slug) slug = source.slug;
@@ -15,3 +27,19 @@ index ce77178..e297d2a 100644
  			if (!slug) {
  				const slugSource = getSlugSource(body.data);
  				if (slugSource) {
+diff --git a/node_modules/emdash/src/database/repositories/content.ts b/node_modules/emdash/src/database/repositories/content.ts
+index 2f52ef0..2d3ee4d 100644
+--- a/node_modules/emdash/src/database/repositories/content.ts
++++ b/node_modules/emdash/src/database/repositories/content.ts
+@@ -513,6 +513,11 @@ export class ContentRepository {
+ 			if (translationOf && column === "translation_group") {
+ 				return sql`COALESCE(${sql.ref("translation_source.translation_group")}, ${sql.ref("translation_source.id")})`;
+ 			}
++			if (translationOf && column === "slug") {
++				// Translations keep the source entry's (usually English) slug
++				// so the URL alias stays in the original language.
++				return sql.ref("translation_source.slug");
++			}
+ 			if (translationOf && inherited.has(column)) {
+ 				return sql.ref(`translation_source.${column}`);
+ 			}
