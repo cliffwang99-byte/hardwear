@@ -79,6 +79,20 @@
 .richtext {
   color: var(--color-gray-600);
   line-height: 1.75;
+  text-align: start;
+}
+
+/* RTL 强制对齐（阿拉伯语） */
+[dir="rtl"] .richtext {
+  text-align: right;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+[dir="rtl"] .richtext ul,
+[dir="rtl"] .richtext ol {
+  padding-inline-start: 0;
+  padding-inline-end: 1.5rem;
 }
 
 .dark .richtext {
@@ -127,7 +141,7 @@
 
 .richtext ul,
 .richtext ol {
-  padding-left: 1.5rem;
+  padding-inline-start: 1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -256,4 +270,42 @@
 
 .dark .richtext hr {
   border-top-color: var(--color-dark-700);
+}
+
+/* ============================================================
+   RTL 支持（阿拉伯语等从右到左语种）
+   用 [dir="rtl"] 组合选择器镜像富文本与通用排版方向，
+   不影响 LTR（en/es）默认布局。
+   ============================================================ */
+
+/* 阿语更清晰的字体栈（优先带阿拉伯文形体的字体） */
+html[dir="rtl"] body {
+  font-family: "Segoe UI", Tahoma, "Noto Naskh Arabic", "Noto Sans Arabic",
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 富文本列表：RTL 下缩进在右侧 */
+html[dir="rtl"] .richtext ul,
+html[dir="rtl"] .richtext ol {
+  padding-left: 0;
+  padding-right: 1.5rem;
+}
+
+/* 引用块：边框在右侧 */
+html[dir="rtl"] .richtext blockquote {
+  border-left: 0;
+  border-right: 4px solid var(--color-primary-500);
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+/* 表格单元格：默认按书写方向对齐 */
+html[dir="rtl"] .richtext th,
+html[dir="rtl"] .richtext td {
+  text-align: right;
+}
+
+/* html 根容器的 text-align 兜底（部分组件依赖 text-left 时仍能正确） */
+html[dir="rtl"] body {
+  text-align: right;
 }

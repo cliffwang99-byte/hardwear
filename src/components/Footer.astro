@@ -43,7 +43,7 @@
         <div>
           <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Certifications</p>
           <div class="flex flex-wrap items-center gap-2">
-            {['ISO 9001', 'BBB A+', 'Green Certified', 'CE' ,'cUPC'].map(cert => (
+            {['ISO 9001', 'CE' ,'cUPC'].map(cert => (
               <div class="px-3 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:scale-105 transition-transform duration-500 ease-in-out">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -62,12 +62,12 @@
           {['About Us', 'Contact', 'Careers', 'Blog', 'Press'].map(link => (
             <li>
               <a href={`/${link.toLowerCase().replace(/\s+/g, '-')}`} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
-                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ml-6 group-hover:ml-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ms-6 group-hover:ms-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
                 <span class="relative">
                   {link}
-                  <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 group-hover:w-full transition-all duration-500 ease-in-out"></span>
+                  <span class="absolute bottom-0 start-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 group-hover:w-full transition-all duration-500 ease-in-out"></span>
                 </span>
               </a>
             </li>
@@ -82,12 +82,12 @@
           {['Shipping Info', 'Returns', 'FAQ', 'Support', 'Track Order'].map(link => (
             <li>
               <a href={`/${link.toLowerCase().replace(/\s+/g, '-')}`} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
-                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ml-6 group-hover:ml-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ms-6 group-hover:ms-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
                 <span class="relative">
                   {link}
-                  <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 group-hover:w-full transition-all duration-500 ease-in-out"></span>
+                  <span class="absolute bottom-0 start-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 group-hover:w-full transition-all duration-500 ease-in-out"></span>
                 </span>
               </a>
             </li>
@@ -131,7 +131,7 @@
     <!-- Bottom Bar - Mobile Optimized -->
     <div class="border-t border-gray-300 dark:border-dark-800 pt-6 sm:pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-        <p class="text-center md:text-left">&copy; 2026 Kitchen & Bath Hardware. All rights reserved.</p>
+        <p class="text-center md:text-start">&copy; 2026 Kitchen & Bath Hardware. All rights reserved.</p>
         <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
           <a href="/privacy" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Privacy Policy</a>
           <a href="/terms" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Terms of Service</a>

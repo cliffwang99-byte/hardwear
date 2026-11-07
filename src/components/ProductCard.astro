@@ -18,7 +18,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
 <div class={`group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-500 hover:shadow-2xl hover:scale-[1.03] animate-on-scroll ${!inStock ? 'opacity-60' : ''}`}>
   <!-- Modern Pill Badges with Glow - Mobile Optimized -->
   {badge && (
-    <div class="absolute top-2 sm:top-3 left-2 sm:left-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-[0_0_20px_rgba(251,146,60,0.5)] backdrop-blur-sm border border-primary-400/30">
+    <div class="absolute top-2 sm:top-3 start-2 sm:start-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-[0_0_20px_rgba(251,146,60,0.5)] backdrop-blur-sm border border-primary-400/30">
       <span class="relative z-10 flex items-center gap-1 sm:gap-1.5">
         <span class="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-white rounded-full animate-pulse"></span>
         {badge}
@@ -27,7 +27,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
   )}
   
   {discount > 0 && (
-    <div class="absolute top-2 sm:top-3 right-2 sm:right-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-red-600 to-red-700 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-[0_0_20px_rgba(220,38,38,0.6)] backdrop-blur-sm border border-red-400/30">
+    <div class="absolute top-2 sm:top-3 end-2 sm:end-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-red-600 to-red-700 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-[0_0_20px_rgba(220,38,38,0.6)] backdrop-blur-sm border border-red-400/30">
       <span class="relative z-10 flex items-center gap-0.5 sm:gap-1">
         <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
@@ -39,13 +39,13 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
   )}
 
   {!inStock && (
-    <div class="absolute top-2 sm:top-3 left-2 sm:left-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gray-600/90 dark:bg-gray-700/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-gray-500/30">
+    <div class="absolute top-2 sm:top-3 start-2 sm:start-3 z-30 px-2 sm:px-4 py-1 sm:py-2 bg-gray-600/90 dark:bg-gray-700/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-gray-500/30">
       Out of Stock
     </div>
   )}
 
   <!-- Enhanced Quick Actions with Tooltips - Hidden on Mobile, Show on Hover Desktop -->
-  <div class="absolute top-2 sm:top-3 right-2 sm:right-3 z-30 hidden sm:flex flex-col gap-2.5 opacity-0 group-hover:opacity-100 transform translate-x-6 group-hover:translate-x-0 transition-all duration-300 delay-75">
+  <div class="absolute top-2 sm:top-3 end-2 sm:end-3 z-30 hidden sm:flex flex-col gap-2.5 opacity-0 group-hover:opacity-100 transform translate-x-6 group-hover:translate-x-0 transition-all duration-300 delay-75">
     <div class="relative group/tooltip">
       <button
         data-quick-view={id}
@@ -57,7 +57,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
         </svg>
       </button>
-      <span class="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Quick View</span>
+      <span class="absolute end-full me-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Quick View</span>
     </div>
     
     <div class="relative group/tooltip">
@@ -70,7 +70,7 @@ const discount = originalPrice ? Math.round(((originalPrice - price) / originalP
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
       </button>
-      <span class="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Wishlist</span>
+      <span class="absolute end-full me-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Wishlist</span>
     </div>
   </div>
 

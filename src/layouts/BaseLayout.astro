@@ -28,10 +28,17 @@ const {
   ogImage,
   page,
 } = Astro.props;
+
+// RTL 支持：根据当前 locale 动态输出 lang / dir
+const currentLocale = Astro.currentLocale ?? 'en';
+// RTL 语种集合（目前仅阿拉伯语）
+const RTL_LOCALES = ['ar'];
+const isRtl = RTL_LOCALES.includes(currentLocale);
+const htmlDir = isRtl ? 'rtl' : 'ltr';
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang={currentLocale} dir={htmlDir} class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

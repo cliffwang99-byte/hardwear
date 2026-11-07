@@ -5,16 +5,25 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import emdash from "emdash/astro";
+import { translatorDescriptor } from "./translator/index.ts";
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   adapter: cloudflare(),
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "es"],
+    // fallback: 缺 es 翻译时回退英文
+    fallback: { es: "en" },
+    // 注意：不要启用 routing.prefixDefaultLocale，否则 /_emdash/admin 会 404
+  },
   integrations: [
     react(), // Required — the admin UI is a React app
     emdash({
       database: d1({ binding: "DB" }),
       storage: r2({ binding: "MEDIA" }),
+      plugins: [translatorDescriptor()],
     }),
   ],
   vite: {
