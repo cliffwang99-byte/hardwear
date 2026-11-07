@@ -100,10 +100,12 @@
 		"defaultLocale": "en",
 		"locales": [
 			"en",
-			"es"
+			"es",
+			"ar"
 		],
 		"fallback": {
-			"es": "en"
+			"es": "en",
+			"ar": "en"
 		},
 		"prefixDefaultLocale": false
 	},

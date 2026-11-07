@@ -1,0 +1,17 @@
+diff --git a/node_modules/emdash/src/api/handlers/content.ts b/node_modules/emdash/src/api/handlers/content.ts
+index ce77178..e297d2a 100644
+--- a/node_modules/emdash/src/api/handlers/content.ts
++++ b/node_modules/emdash/src/api/handlers/content.ts
+@@ -1347,6 +1347,12 @@ export async function handleContentCreate(
+ 				: getI18nConfig()?.defaultLocale;
+ 
+ 			let slug: string | null | undefined = body.slug;
++			if (!slug && body.translationOf) {
++				// Translations should keep the source entry's (usually English)
++				// slug so the URL alias stays in the original language.
++				const source = await repo.findById(collection, body.translationOf);
++				if (source?.slug) slug = source.slug;
++			}
+ 			if (!slug) {
+ 				const slugSource = getSlugSource(body.data);
+ 				if (slugSource) {
