@@ -266,7 +266,19 @@ async function handleTranslate(
 	}
 
 	// 4. 合并：翻译字段 + 敏感字段原样
-	const data = { ...translated, ...passThrough };
+	//    注意 seo 需按对象深合并——passThrough.seo 只含非 title/description 字段，
+	//    若整体覆盖会顶掉已翻译的 title/description，导致 SEO 不翻译。
+	const data: Record<string, unknown> = {
+		...translated,
+		...passThrough,
+	};
+	if (
+		isPlainObject(data.seo) &&
+		isPlainObject(passThrough.seo) &&
+		isPlainObject(translated.seo)
+	) {
+		data.seo = { ...(translated.seo as Record<string, unknown>), ...passThrough.seo };
+	}
 
 	// 5. 写入 es 草稿（关联英文行的 translationGroup）
 	if (!ctx.content || !("create" in ctx.content) || !ctx.content.create) {
