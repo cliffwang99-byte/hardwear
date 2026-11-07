@@ -318,8 +318,10 @@ const OVERVIEW_COLLECTIONS = [
 
 interface OverviewRow {
 	collection: string;
+	id: string;
 	title: string;
 	status: string;
+	statusStyle: string;
 	updated: string;
 }
 
@@ -398,19 +400,35 @@ async function handleAdminStatus(
 
 		for (const item of en) {
 			const esStatus = item.translationGroup ? esByGroup.get(item.translationGroup) : undefined;
-			const statusText = !esStatus
-				? "Not translated"
-				: esStatus === "published"
-					? "Published"
-					: "Draft";
+			let status: string;
+			let statusStyle: string;
+			if (!esStatus) {
+				status = "Not translated";
+				statusStyle = "danger";
+			} else if (esStatus === "published") {
+				status = "Published";
+				statusStyle = "primary";
+			} else {
+				status = "Draft";
+				statusStyle = "secondary";
+			}
 			rows.push({
 				collection,
+				id: item.id,
 				title: overviewTitle(item.data, item.slug, item.id),
-				status: statusText,
+				status,
+				statusStyle,
 				updated: item.updatedAt,
 			});
 		}
 	}
+
+	// 每种状态入口固定 action_id，便于侧边栏快速定位对应条目
+	const STATUS_ACTIONS: Record<string, string> = {
+		"Not translated": "translation-open-not-translated",
+		"Draft": "translation-open-draft",
+		"Published": "translation-open-published",
+	};
 
 	return {
 		blocks: [
@@ -421,7 +439,7 @@ async function handleAdminStatus(
 			},
 			{
 				type: "section",
-				text: `English entries vs. their Spanish (es) translations. ${rows.length} English entry(s). Click an item to view its content.`,
+				text: `English entries vs. their Spanish (es) translations. ${rows.length} English entry(s). Click an entry to open its editor.`,
 				block_id: "translation-status-summary",
 			},
 			{
@@ -436,11 +454,44 @@ async function handleAdminStatus(
 					"No entries yet. Generate Spanish drafts from the content editor toolbar.",
 				columns: [
 					{ key: "collection", label: "Collection", format: "badge", sortable: false },
-					{ key: "title", label: "Entry", format: "text", sortable: true },
-					{ key: "status", label: "Spanish", format: "badge", sortable: true },
+					{
+						key: "entry",
+						label: "Entry",
+						format: "element",
+						sortable: true,
+					},
+					{
+						key: "status",
+						label: "Spanish",
+						format: "element",
+						sortable: true,
+					},
 					{ key: "updated", label: "Updated", format: "relative_time", sortable: false },
 				],
-				rows,
+				rows: rows.map((r) => ({
+					collection: r.collection,
+					// 可点击跳转英文条目编辑页（admin content 页）
+					entry: {
+						type: "link",
+						label: r.title,
+						target: {
+							kind: "content",
+							collection: r.collection,
+							id: r.id,
+							locale: "en",
+						},
+						appearance: "primary",
+					},
+					// 不同状态用不同颜色按钮表达（danger=红, primary=蓝, secondary=灰）
+					status: {
+						type: "button",
+						action_id: STATUS_ACTIONS[r.status] ?? "translation-open-entry",
+						label: r.status,
+						style: r.statusStyle as "primary" | "secondary" | "danger",
+						value: { collection: r.collection, id: r.id },
+					},
+					updated: r.updated,
+				})),
 			},
 		],
 	};
@@ -486,10 +537,9 @@ export const editorActions = {
 	placement: "toolbar",
 	confirm: {
 		title: "Generate Spanish draft?",
-		description:
-			"Translates this entry into Spanish and saves it as a draft linked to the current English version. Text fields are translated via AI; prices/SKU/images are copied unchanged.",
-		acceptLabel: "Generate",
-		rejectLabel: "Cancel",
+		text: "Translates this entry into Spanish and saves it as a draft linked to the current English version. Text fields are translated via AI; prices/SKU/images are copied unchanged.",
+		confirm: "Generate",
+		deny: "Cancel",
 	},
 	route: "translate",
 } as const;
@@ -516,9 +566,9 @@ export interface TranslatorEditorAction {
 	placement: string;
 	confirm: {
 		title: string;
-		description: string;
-		acceptLabel: string;
-		rejectLabel: string;
+		text: string;
+		confirm: string;
+		deny: string;
 	};
 	route: string;
 }
