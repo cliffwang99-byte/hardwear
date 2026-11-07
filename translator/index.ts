@@ -277,7 +277,17 @@ async function handleTranslate(
 		translationOf: entryId,
 	});
 
-	// 6. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
+	// 6. 在英文条目上写一个可见标记字段，便于后台识别翻译状态（不阻断草稿生成）
+	try {
+		const updateData =
+			Object.keys(sourceData).length > 0
+				? { ...sourceData, es_status: "draft" }
+				: { es_status: "draft" };
+		await ctx.content.update(collection, entryId, updateData);
+	} catch (e) {
+		ctx.log?.debug?.(`[translator] failed to mark es_status: ${String(e)}`);
+	}
+// 7. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
 	return {
 		toast: {
 			message: `Spanish draft created: ${created.id ?? ""}`,
