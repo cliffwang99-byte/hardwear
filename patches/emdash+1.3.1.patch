@@ -1,3 +1,32 @@
+diff --git a/node_modules/emdash/dist/astro/middleware/request-context.mjs b/node_modules/emdash/dist/astro/middleware/request-context.mjs
+index d5bbc79..dff6403 100644
+--- a/node_modules/emdash/dist/astro/middleware/request-context.mjs
++++ b/node_modules/emdash/dist/astro/middleware/request-context.mjs
+@@ -1861,6 +1861,7 @@ const onRequest = defineMiddleware(async (context, next) => {
+ 		if (!isEditor) return redirectToCanonical(url);
+ 	}
+ 	if (!hasEditCookie && !hasPreviewToken && !isEditor) {
++		const publicLocale = context.currentLocale;
+ 		const render = async () => {
+ 			const response = await next();
+ 			return toolbarMode === "client" ? injectBootstrap(response) : response;
+@@ -1870,11 +1871,15 @@ const onRequest = defineMiddleware(async (context, next) => {
+ 			if (parent?.siteSettings) parent.siteSettings.live = true;
+ 			return runWithContext({
+ 				...parent,
++				locale: publicLocale,
+ 				editMode: false,
+ 				routeCacheFill: true
+ 			}, render);
+ 		}
+-		return render();
++		return runWithContext({
++			...getRequestContext(),
++			locale: publicLocale
++		}, render);
+ 	}
+ 	const editMode = hasEditCookie && isEditor;
+ 	const locale = context.currentLocale;
 diff --git a/node_modules/emdash/dist/content-Dt0Os_WQ.mjs b/node_modules/emdash/dist/content-Dt0Os_WQ.mjs
 index ca3b4b1..cfaf873 100644
 --- a/node_modules/emdash/dist/content-Dt0Os_WQ.mjs
@@ -27,6 +56,31 @@ index ce77178..d61d12a 100644
  			if (!slug) {
  				const slugSource = getSlugSource(body.data);
  				if (slugSource) {
+diff --git a/node_modules/emdash/src/astro/middleware/request-context.ts b/node_modules/emdash/src/astro/middleware/request-context.ts
+index 212dda1..1bf0c0d 100644
+--- a/node_modules/emdash/src/astro/middleware/request-context.ts
++++ b/node_modules/emdash/src/astro/middleware/request-context.ts
+@@ -246,6 +246,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
+ 	// object-cache reads cannot seed a fresh response with stale data; other
+ 	// requests retain the anonymous fast path.
+ 	if (!hasEditCookie && !hasPreviewToken && !isEditor) {
++		// eslint-disable-next-line typescript/no-unsafe-type-assertion -- Astro context includes currentLocale when i18n is configured
++		const publicLocale = (context as { currentLocale?: string }).currentLocale;
+ 		const render = async () => {
+ 			const response = await next();
+ 			return toolbarMode === "client" ? injectBootstrap(response) : response;
+@@ -253,9 +255,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
+ 		if (virtualConfig?.objectCacheEnabled && context.cache?.enabled) {
+ 			const parent = getRequestContext();
+ 			if (parent?.siteSettings) parent.siteSettings.live = true;
+-			return runWithContext({ ...parent, editMode: false, routeCacheFill: true }, render);
++			return runWithContext({ ...parent, locale: publicLocale, editMode: false, routeCacheFill: true }, render);
+ 		}
+-		return render();
++		return runWithContext({ ...getRequestContext(), locale: publicLocale }, render);
+ 	}
+ 
+ 	// Determine edit mode: cookie AND authenticated editor
 diff --git a/node_modules/emdash/src/database/repositories/content.ts b/node_modules/emdash/src/database/repositories/content.ts
 index 2f52ef0..2d3ee4d 100644
 --- a/node_modules/emdash/src/database/repositories/content.ts
