@@ -297,12 +297,165 @@ async function handleTranslate(
 	};
 }
 
+// 供总览页遍历的候选集合（与 editor actions 保持一致，运行时按实际存在过滤）
+const OVERVIEW_COLLECTIONS = [
+	"products",
+	"posts",
+	"pages",
+	"categories",
+	"wholesales",
+	"landing",
+	"landings",
+	"wholesale_oem",
+	"wholesale_landing",
+	"landing_page",
+	"topicseo",
+	"topicss",
+	"topics",
+	"topic_seo",
+	"topic",
+];
+
+interface OverviewRow {
+	collection: string;
+	title: string;
+	status: string;
+	updated: string;
+}
+
+/** 分页拉取某个 collection 指定 locale 的全部条目 */
+async function listAllByLocale(
+	ctx: PluginContext,
+	collection: string,
+	locale: string,
+): Promise<Array<{ id: string; slug: string | null; translationGroup: string | null; status: string; updatedAt: string; data: Record<string, unknown> }>> {
+	const out: Array<{ id: string; slug: string | null; translationGroup: string | null; status: string; updatedAt: string; data: Record<string, unknown> }> = [];
+	if (!ctx.content || !("list" in ctx.content) || !ctx.content.list) return out;
+	let cursor: string | undefined;
+	for (;;) {
+		const res = await ctx.content.list(collection, {
+			limit: 200,
+			cursor,
+			where: { locale },
+		});
+		for (const item of res.items) {
+			out.push({
+				id: item.id,
+				slug: item.slug,
+				translationGroup: item.translationGroup ?? null,
+				status: item.status,
+				updatedAt: item.updatedAt,
+				data: item.data ?? {},
+			});
+		}
+		if (!res.cursor || !res.hasMore) break;
+		cursor = res.cursor;
+	}
+	return out;
+}
+
+/** 从条目数据里提取可读的标题，退化到 slug/id */
+function overviewTitle(
+	data: Record<string, unknown>,
+	slug: string | null,
+	id: string,
+): string {
+	for (const k of ["title", "name", "headline", "label", "seo.title"]) {
+		const v = k.includes(".")
+			? (data.seo as Record<string, unknown> | undefined)?.[k.split(".")[1]]
+			: data[k];
+		if (typeof v === "string" && v.trim()) return v.slice(0, 80);
+	}
+	return slug ?? id;
+}
+
+/**
+ * admin 总览页 handler：一次性列出各集合英文条目 + 对应西语翻译状态。
+ * 返回 Block Kit 结构（HeaderBlock + TableBlock 等），供 admin 侧边栏页面渲染。
+ */
+async function handleAdminStatus(
+	_routeCtx: SandboxedRouteContext,
+	ctx: PluginContext,
+) {
+	const rows: OverviewRow[] = [];
+	const collections = [...new Set([...OVERVIEW_COLLECTIONS])];
+
+	for (const collection of collections) {
+		let en: Awaited<ReturnType<typeof listAllByLocale>>;
+		let es: Awaited<ReturnType<typeof listAllByLocale>>;
+		try {
+			en = await listAllByLocale(ctx, collection, "en");
+			es = await listAllByLocale(ctx, collection, "es");
+		} catch {
+			continue; // 该集合不存在或不可读，跳过
+		}
+
+		// 用 translationGroup 关联：es 行 → 其状态
+		const esByGroup = new Map<string, string>();
+		for (const e of es) {
+			if (e.translationGroup) esByGroup.set(e.translationGroup, e.status);
+		}
+
+		for (const item of en) {
+			const esStatus = item.translationGroup ? esByGroup.get(item.translationGroup) : undefined;
+			const statusText = !esStatus
+				? "Not translated"
+				: esStatus === "published"
+					? "Published"
+					: "Draft";
+			rows.push({
+				collection,
+				title: overviewTitle(item.data, item.slug, item.id),
+				status: statusText,
+				updated: item.updatedAt,
+			});
+		}
+	}
+
+	return {
+		blocks: [
+			{
+				type: "header",
+				text: "Translation Status",
+				block_id: "translation-status-header",
+			},
+			{
+				type: "section",
+				text: `English entries vs. their Spanish (es) translations. ${rows.length} English entry(s). Click an item to view its content.`,
+				block_id: "translation-status-summary",
+			},
+			{
+				type: "divider",
+				block_id: "translation-status-divider",
+			},
+			{
+				type: "table",
+				block_id: "translation-status-table",
+				page_action_id: "translation-status",
+				empty_text:
+					"No entries yet. Generate Spanish drafts from the content editor toolbar.",
+				columns: [
+					{ key: "collection", label: "Collection", format: "badge", sortable: false },
+					{ key: "title", label: "Entry", format: "text", sortable: true },
+					{ key: "status", label: "Spanish", format: "badge", sortable: true },
+					{ key: "updated", label: "Updated", format: "relative_time", sortable: false },
+				],
+				rows,
+			},
+		],
+	};
+}
+
 // standard 插件默认导出：routes（hooks 本插件不需要）
 export default {
 	routes: {
 		translate: {
 			public: false,
 			handler: handleTranslate,
+		},
+		admin: {
+			public: false,
+			handler: handleAdminStatus,
 		},
 	},
 } satisfies SandboxedPlugin;
@@ -378,6 +531,12 @@ export interface TranslatorDescriptor {
 	capabilities: readonly string[];
 	allowedHosts: string[];
 	editorActions: readonly TranslatorEditorAction[];
+	adminPages: readonly {
+		path: string;
+		label: string;
+		icon?: string;
+		group?: string;
+	}[];
 	settingsSchema: Record<string, unknown>;
 }
 
@@ -392,6 +551,14 @@ export function translatorDescriptor(): TranslatorDescriptor {
 		// DeepSeek 出站请求白名单
 		allowedHosts: ["api.deepseek.com"],
 		editorActions: [editorActions],
+		// 注册 admin 侧边栏总览页，路由必须为私有 POST JSON 路由
+		adminPages: [
+			{
+				path: "/admin/translation-status",
+				label: "Translation Status",
+				icon: "translate",
+			},
+		],
 		// 插件设置里暴露 DeepSeek API Key（secret 加密存储）
 		settingsSchema: {
 			deepseekApiKey: {
