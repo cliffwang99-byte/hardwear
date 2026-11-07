@@ -12,8 +12,15 @@ import type { PluginContext, SandboxedPlugin, SandboxedRouteContext } from "emda
  * 全程手动触发、无 cron、无沙箱、无 Workers Paid。
  */
 
-export const TARGET_LOCALE = "es";
 export const SOURCE_LOCALE = "en";
+
+/** 支持并存的目标语种：key=route 名，value=语种元信息 */
+export const TRANSLATION_TARGETS = {
+	translate: { locale: "es", language: "Spanish", htmlLang: "(es)", name: "Spanish" },
+	translateArabic: { locale: "ar", language: "Arabic", htmlLang: "(ar)", name: "Arabic" },
+} as const;
+
+export type TranslationTargetKey = keyof typeof TRANSLATION_TARGETS;
 
 /** 明确原样复制、不进 LLM 的字段（数值/媒体/代码/slug） */
 const PASS_THROUGH_FIELDS = new Set([
@@ -153,17 +160,17 @@ function splitFields(data: Record<string, unknown>): GatherResult {
 }
 
 /** 组装发送给 DeepSeek 的翻译请求体 */
-function buildPrompt(source: Record<string, unknown>): string {
+function buildPrompt(source: Record<string, unknown>, language: string, locale: string): string {
 	const json = JSON.stringify(source, null, 2);
 	return [
 		"You are a professional translator for a bathroom & sanitary hardware e-commerce site.",
-		`Translate the following JSON from English (en) to Spanish (es).`,
+		`Translate the following JSON from English (${SOURCE_LOCALE}) to ${language} (${locale}).`,
 		"Rules:",
 		"- Translate only human-readable text values (product names, descriptions, feature lists, specification values, SEO title/description).",
 		"- Do NOT translate brand names, model numbers, measurements, technical codes, URLs, slugs, or proper nouns.",
 		"- Preserve any HTML tags inside string values exactly (e.g. <strong>, <br>, <p>).",
 		"- Keep object keys unchanged. Only translate string VALUES.",
-		"- Keep keys in specifications keys translated too (translate both key and value into Spanish).",
+		"- Keep keys in specifications keys translated too (translate both key and value).",
 		"- Keep array order and structure identical.",
 		"- Do not invent fields. Do not omit fields. Keep every key present in the source.",
 		"- Output ONLY valid JSON. No markdown fences. No commentary.",
@@ -183,6 +190,8 @@ interface DeepSeekResponse {
 async function translateWithDeepSeek(
 	ctx: PluginContext,
 	source: Record<string, unknown>,
+	language: string,
+	locale: string,
 ): Promise<Record<string, unknown>> {
 	const apiKey = await ctx.settings.get<string>("deepseekApiKey");
 	if (!apiKey) throw new Error("Missing DeepSeek API key. Set it in the plugin settings.");
@@ -198,10 +207,9 @@ async function translateWithDeepSeek(
 			messages: [
 				{
 					role: "system",
-					content:
-						"You translate JSON content faithfully between English and Spanish for a bathroom hardware store. Return only valid JSON.",
+					content: `You translate JSON content faithfully between English and ${language} for a bathroom hardware store. Return only valid JSON.`,
 				},
-				{ role: "user", content: buildPrompt(source) },
+				{ role: "user", content: buildPrompt(source, language, locale) },
 			],
 			temperature: 0.2,
 			response_format: { type: "json_object" },
@@ -219,11 +227,13 @@ async function translateWithDeepSeek(
 	return JSON.parse(content) as Record<string, unknown>;
 }
 
-// 翻译路由 handler（被 editorAction 引用）；standard 插件使用两参形式 (routeCtx, pluginCtx)
-async function handleTranslate(
-	routeCtx: SandboxedRouteContext,
-	ctx: PluginContext,
-) {
+// 翻译路由 handler 工厂（被 editorAction 引用）；standard 插件使用两参形式 (routeCtx, pluginCtx)
+function makeTranslateHandler(targetKey: TranslationTargetKey) {
+	const target = TRANSLATION_TARGETS[targetKey];
+	return async function handleTranslate(
+		routeCtx: SandboxedRouteContext,
+		ctx: PluginContext,
+	) {
 	const input = (routeCtx.input ?? {}) as {
 		collection?: string;
 		id?: string;
@@ -255,7 +265,7 @@ async function handleTranslate(
 	// 3. DeepSeek 翻译
 	let translated: Record<string, unknown>;
 	try {
-		translated = await translateWithDeepSeek(ctx, payload);
+		translated = await translateWithDeepSeek(ctx, payload, target.language, target.locale);
 	} catch (e) {
 		return {
 			toast: {
@@ -280,32 +290,34 @@ async function handleTranslate(
 		data.seo = { ...(translated.seo as Record<string, unknown>), ...passThrough.seo };
 	}
 
-	// 5. 写入 es 草稿（关联英文行的 translationGroup）
+	// 5. 写入目标语种草稿（关联英文行的 translationGroup）
 	if (!ctx.content || !("create" in ctx.content) || !ctx.content.create) {
 		return { toast: { message: "Plugin lacks content:write access", type: "error" } };
 	}
 	const created = await ctx.content.create(collection, data, {
-		locale: TARGET_LOCALE,
+		locale: target.locale,
 		translationOf: entryId,
 	});
 
 	// 6. 在英文条目上写一个可见标记字段，便于后台识别翻译状态（不阻断草稿生成）
+	const statusKey = `${target.locale}_status`;
 	try {
 		const updateData =
 			Object.keys(sourceData).length > 0
-				? { ...sourceData, es_status: "draft" }
-				: { es_status: "draft" };
+				? { ...sourceData, [statusKey]: "draft" }
+				: { [statusKey]: "draft" };
 		await ctx.content.update(collection, entryId, updateData);
 	} catch (e) {
-		ctx.log?.debug?.(`[translator] failed to mark es_status: ${String(e)}`);
+		ctx.log?.debug?.(`[translator] failed to mark ${statusKey}: ${String(e)}`);
 	}
-// 7. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
+	// 7. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
 	return {
 		toast: {
-			message: `Spanish draft created: ${created.id ?? ""}`,
+			message: `${target.name} draft created: ${created.id ?? ""}`,
 			type: "success",
 		},
 		refresh: true,
+	};
 	};
 }
 
@@ -332,8 +344,10 @@ interface OverviewRow {
 	collection: string;
 	id: string;
 	title: string;
-	status: string;
-	statusStyle: string;
+	es: string;
+	esStyle: string;
+	ar: string;
+	arStyle: string;
 	updated: string;
 }
 
@@ -384,56 +398,77 @@ function overviewTitle(
 }
 
 /**
- * admin 总览页 handler：一次性列出各集合英文条目 + 对应西语翻译状态。
- * 返回 Block Kit 结构（HeaderBlock + TableBlock 等），供 admin 侧边栏页面渲染。
+ * admin 总览页 handler：列出各集合英文条目 + ES/AR 翻译状态，支持分页。
+ * 表尾的 「Load more」 会以 page_action_id 触发 block_action，
+ * value.cursor 携带上一页返回的 next_cursor（本处为字符串化的偏移量）。
  */
+const PAGE_SIZE = 50;
+
 async function handleAdminStatus(
-	_routeCtx: SandboxedRouteContext,
+	routeCtx: SandboxedRouteContext,
 	ctx: PluginContext,
 ) {
-	const rows: OverviewRow[] = [];
+	const input = (routeCtx.input ?? {}) as {
+		cursor?: string;
+		sort?: { column?: string; direction?: "asc" | "desc" };
+	};
+	const cursor = Math.max(0, Number(input.cursor ?? "0") || 0);
+
+	const allRows: OverviewRow[] = [];
 	const collections = [...new Set([...OVERVIEW_COLLECTIONS])];
 
 	for (const collection of collections) {
 		let en: Awaited<ReturnType<typeof listAllByLocale>>;
 		let es: Awaited<ReturnType<typeof listAllByLocale>>;
+		let ar: Awaited<ReturnType<typeof listAllByLocale>>;
 		try {
 			en = await listAllByLocale(ctx, collection, "en");
 			es = await listAllByLocale(ctx, collection, "es");
+			ar = await listAllByLocale(ctx, collection, "ar");
 		} catch {
 			continue; // 该集合不存在或不可读，跳过
 		}
 
-		// 用 translationGroup 关联：es 行 → 其状态
-		const esByGroup = new Map<string, string>();
-		for (const e of es) {
-			if (e.translationGroup) esByGroup.set(e.translationGroup, e.status);
-		}
+		// 用 translationGroup 关联：目标语种行 → 其发布状态
+		const byGroup = (list: typeof es) => {
+			const m = new Map<string, string>();
+			for (const e of list) if (e.translationGroup) m.set(e.translationGroup, e.status);
+			return m;
+		};
+		const esByGroup = byGroup(es);
+		const arByGroup = byGroup(ar);
+
+		const badge = (status?: string): [string, string] => {
+			if (!status) return ["Not translated", "danger"];
+			if (status === "published") return ["Published", "primary"];
+			return ["Draft", "secondary"];
+		};
 
 		for (const item of en) {
-			const esStatus = item.translationGroup ? esByGroup.get(item.translationGroup) : undefined;
-			let status: string;
-			let statusStyle: string;
-			if (!esStatus) {
-				status = "Not translated";
-				statusStyle = "danger";
-			} else if (esStatus === "published") {
-				status = "Published";
-				statusStyle = "primary";
-			} else {
-				status = "Draft";
-				statusStyle = "secondary";
-			}
-			rows.push({
+			const [esStatus, esStyle] = badge(
+				item.translationGroup ? esByGroup.get(item.translationGroup) : undefined,
+			);
+			const [arStatus, arStyle] = badge(
+				item.translationGroup ? arByGroup.get(item.translationGroup) : undefined,
+			);
+			allRows.push({
 				collection,
 				id: item.id,
 				title: overviewTitle(item.data, item.slug, item.id),
-				status,
-				statusStyle,
+				es: esStatus,
+				esStyle,
+				ar: arStatus,
+				arStyle,
 				updated: item.updatedAt,
 			});
 		}
 	}
+
+	// 按偏移分页（cursor 即下一页起始偏移）
+	const pageRows = allRows.slice(cursor, cursor + PAGE_SIZE);
+	const total = allRows.length;
+	const nextCursor = cursor + PAGE_SIZE < total ? String(cursor + PAGE_SIZE) : undefined;
+	const rows = pageRows;
 
 	// 每种状态入口固定 action_id，便于侧边栏快速定位对应条目
 	const STATUS_ACTIONS: Record<string, string> = {
@@ -451,7 +486,7 @@ async function handleAdminStatus(
 			},
 			{
 				type: "section",
-				text: `English entries vs. their Spanish (es) translations. ${rows.length} English entry(s). Click an entry to open its editor.`,
+				text: `English entries vs. Spanish (es) & Arabic (ar) translations. ${total} English entry(s), showing ${rows.length}. Click an entry to open its editor.`,
 				block_id: "translation-status-summary",
 			},
 			{
@@ -462,8 +497,9 @@ async function handleAdminStatus(
 				type: "table",
 				block_id: "translation-status-table",
 				page_action_id: "translation-status",
+				next_cursor: nextCursor,
 				empty_text:
-					"No entries yet. Generate Spanish drafts from the content editor toolbar.",
+					"No entries yet. Generate Spanish or Arabic drafts from the content editor toolbar.",
 				columns: [
 					{ key: "collection", label: "Collection", format: "badge", sortable: false },
 					{
@@ -473,8 +509,14 @@ async function handleAdminStatus(
 						sortable: true,
 					},
 					{
-						key: "status",
+						key: "es",
 						label: "Spanish",
+						format: "element",
+						sortable: true,
+					},
+					{
+						key: "ar",
+						label: "Arabic",
 						format: "element",
 						sortable: true,
 					},
@@ -494,13 +536,19 @@ async function handleAdminStatus(
 						},
 						appearance: "primary",
 					},
-					// 不同状态用不同颜色按钮表达（danger=红, primary=蓝, secondary=灰）
-					status: {
+					es: {
 						type: "button",
-						action_id: STATUS_ACTIONS[r.status] ?? "translation-open-entry",
-						label: r.status,
-						style: r.statusStyle as "primary" | "secondary" | "danger",
-						value: { collection: r.collection, id: r.id },
+						action_id: STATUS_ACTIONS[r.es] ?? "translation-open-entry",
+						label: r.es,
+						style: r.esStyle as "primary" | "secondary" | "danger",
+						value: { collection: r.collection, id: r.id, locale: "es" },
+					},
+					ar: {
+						type: "button",
+						action_id: STATUS_ACTIONS[r.ar] ?? "translation-open-entry",
+						label: r.ar,
+						style: r.arStyle as "primary" | "secondary" | "danger",
+						value: { collection: r.collection, id: r.id, locale: "ar" },
 					},
 					updated: r.updated,
 				})),
@@ -514,7 +562,11 @@ export default {
 	routes: {
 		translate: {
 			public: false,
-			handler: handleTranslate,
+			handler: makeTranslateHandler("translate"),
+		},
+		translateArabic: {
+			public: false,
+			handler: makeTranslateHandler("translateArabic"),
 		},
 		admin: {
 			public: false,
@@ -524,37 +576,56 @@ export default {
 } satisfies SandboxedPlugin;
 
 // 编辑器 action 描述（由 descriptor 在 astro.config 中引用）
-export const editorActions = {
-	id: "generate-translation",
-	label: "Generate Spanish draft",
-	collections: [
-		"products",
-		"posts",
-		"pages",
-		"categories",
-		// 落地页（wholesale-oem）：后端实际用 `wholesales`，其余为兼容变体
-		"wholesales",
-		"landing",
-		"landings",
-		"wholesale_oem",
-		"wholesale_landing",
-		"landing_page",
-		// 主题落地页富门面集合
-		"topicseo",
-		"topicss",
-		"topics",
-		"topic_seo",
-		"topic",
-	],
-	placement: "toolbar",
-	confirm: {
-		title: "Generate Spanish draft?",
-		text: "Translates this entry into Spanish and saves it as a draft linked to the current English version. Text fields are translated via AI; prices/SKU/images are copied unchanged.",
-		confirm: "Generate",
-		deny: "Cancel",
+/** 编辑器 action 覆盖的集合（与总览页保持一致） */
+export const ACTION_COLLECTIONS = [
+	"products",
+	"posts",
+	"pages",
+	"categories",
+	// 落地页（wholesale-oem）：后端实际用 `wholesales`，其余为兼容变体
+	"wholesales",
+	"landing",
+	"landings",
+	"wholesale_oem",
+	"wholesale_landing",
+	"landing_page",
+	// 主题落地页富门面集合
+	"topicseo",
+	"topicss",
+	"topics",
+	"topic_seo",
+	"topic",
+] as const;
+
+// 编辑器 action 描述（由 descriptor 在 astro.config 中引用）：西语 + 阿拉伯语并存
+export const editorActions = [
+	{
+		id: "generate-spanish-draft",
+		label: "Generate Spanish draft",
+		collections: ACTION_COLLECTIONS,
+		placement: "toolbar",
+		confirm: {
+			title: "Generate Spanish draft?",
+			text: "Translates this entry into Spanish and saves it as a draft linked to the current English version. Text fields are translated via AI; prices/SKU/images are copied unchanged.",
+			confirm: "Generate",
+			deny: "Cancel",
+		},
+		route: "translate",
 	},
-	route: "translate",
-} as const;
+	{
+		id: "generate-arabic-draft",
+		label: "Generate Arabic draft",
+		collections: ACTION_COLLECTIONS,
+		placement: "toolbar",
+		confirm: {
+			title: "Generate Arabic draft?",
+			text: "Translates this entry into Arabic (RTL) and saves it as a draft linked to the current English version. Text fields are translated via AI; prices/SKU/images are copied unchanged.",
+			confirm: "Generate",
+			deny: "Cancel",
+		},
+		route: "translateArabic",
+	},
+] as const;
 
 // capabilities：content 读写 + 网络请求（DeepSeek）
 export const capabilities = [
@@ -612,7 +683,7 @@ export function translatorDescriptor(): TranslatorDescriptor {
 		capabilities: Object.values(CANONICAL_CAPABILITIES),
 		// DeepSeek 出站请求白名单
 		allowedHosts: ["api.deepseek.com"],
-		editorActions: [editorActions],
+		editorActions: editorActions,
 		// 注册 admin 侧边栏总览页，路由必须为私有 POST JSON 路由
 		adminPages: [
 			{

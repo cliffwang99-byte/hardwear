@@ -13,9 +13,9 @@ export default defineConfig({
   adapter: cloudflare(),
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "es"],
-    // fallback: 缺 es 翻译时回退英文
-    fallback: { es: "en" },
+    locales: ["en", "es", "ar"],
+    // fallback: 缺 es/ar 翻译时回退英文
+    fallback: { es: "en", ar: "en" },
     // 注意：不要启用 routing.prefixDefaultLocale，否则 /_emdash/admin 会 404
   },
   integrations: [
