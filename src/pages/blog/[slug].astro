@@ -4,12 +4,17 @@ import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
 import { getPostBySlug, getPosts } from '../../lib/blog';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 
 const slug = decodeSlug(Astro.params.slug ?? '');
 const post = await getPostBySlug(slug);
 const recent = (await getPosts()).filter((p) => p.id !== post?.id).slice(0, 3);
 
-if (!post) return Astro.redirect('/blog');
+if (!post) return Astro.redirect(localizeUrl('/blog'));
 
 const siteSettings = await getSiteSettings();
 const siteTitle = siteSettings.title || 'Kitchen & Bath Hardware';
@@ -52,8 +57,8 @@ const pageContext = createPublicPageContext({
 	},
 	siteName: siteTitle, siteUrl,
 	breadcrumbs: [
-		{ name: 'Home', url: '/' },
-		{ name: 'Blog', url: '/blog' },
+		{ name: 'Home', url: localizeUrl('/') },
+		{ name: 'Blog', url: localizeUrl('/blog') },
 		{ name: post.title, url: Astro.url.pathname },
 	],
 });
@@ -62,7 +67,7 @@ const pageContext = createPublicPageContext({
 <BaseLayout title={pageContext.title ?? ''} page={pageContext}>
   <div class="container mx-auto px-4 py-10">
     <nav class="text-sm text-gray-500 dark:text-gray-400 mb-6">
-      <a href="/" class="hover:text-primary-600">Home</a> / <a href="/blog" class="hover:text-primary-600">Blog</a> / <span class="text-gray-900 dark:text-white font-medium">{post.title}</span>
+      <a href={localizeUrl("/")} class="hover:text-primary-600">Home</a> / <a href={localizeUrl("/blog")} class="hover:text-primary-600">Blog</a> / <span class="text-gray-900 dark:text-white font-medium">{post.title}</span>
     </nav>
 
     {post.image && (
@@ -97,7 +102,7 @@ const pageContext = createPublicPageContext({
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {post.products.map((p) => (
               <a
-                href={`/product/${p.id}`}
+                href={localizeUrl(`/product/${p.id}`)}
                 class="group bg-white dark:bg-dark-800 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-xl transition-all duration-300"
               >
                 <div class="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 overflow-hidden">
@@ -126,7 +131,7 @@ const pageContext = createPublicPageContext({
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Articles</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {recent.map((p) => (
-            <a href={`/blog/${p.id}`} class="bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all border border-gray-200 dark:border-dark-800 group">
+            <a href={localizeUrl(`/blog/${p.id}`)} class="bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all border border-gray-200 dark:border-dark-800 group">
               {p.image && <img src={p.image} alt={p.title} class="aspect-video object-cover w-full" />}
               <div class="p-5">
                 <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-primary-600 line-clamp-2">{p.title}</h3>

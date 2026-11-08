@@ -5,6 +5,11 @@ import { getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
 import { getProductDetail, getProducts } from '../../lib/shop';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 
 const product = await getProductDetail(Astro.params.id ?? '');
 
@@ -294,9 +299,9 @@ const pageContext = createPublicPageContext({
   siteName: siteTitle,
   siteUrl,
   breadcrumbs: [
-    { name: 'Home', url: '/' },
-    { name: 'Products', url: '/products' },
-    { name: product.category, url: `/categories/${product.categorySlug}` },
+    { name: 'Home', url: localizeUrl('/') },
+    { name: 'Products', url: localizeUrl('/products') },
+    { name: product.category, url: localizeUrl(`/categories/${product.categorySlug}`) },
   ],
 });
 ---
@@ -305,11 +310,11 @@ const pageContext = createPublicPageContext({
   <div class="container mx-auto px-4 py-8">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm mb-8 animate-fade-in">
-      <a href="/" class="text-gray-600 dark:text-gray-400 hover:text-primary-600">Home</a>
+      <a href={localizeUrl("/")} class="text-gray-600 dark:text-gray-400 hover:text-primary-600">Home</a>
       <span class="text-gray-400">/</span>
-      <a href="/products" class="text-gray-600 dark:text-gray-400 hover:text-primary-600">Products</a>
+      <a href={localizeUrl("/products")} class="text-gray-600 dark:text-gray-400 hover:text-primary-600">Products</a>
       <span class="text-gray-400">/</span>
-      <a href={`/categories/${product.categorySlug}`} class="text-gray-600 dark:text-gray-400 hover:text-primary-600">{product.category}</a>
+      <a href={localizeUrl(`/categories/${product.categorySlug}`)} class="text-gray-600 dark:text-gray-400 hover:text-primary-600">{product.category}</a>
     </nav>
 
     <!-- Product Details -->
@@ -490,7 +495,7 @@ const pageContext = createPublicPageContext({
           </div>
           <div class="flex items-center gap-3">
             <span class="text-gray-600 dark:text-gray-400">Category:</span>
-            <a href={`/categories/${product.categorySlug}`} class="font-semibold text-primary-600 dark:text-primary-400 hover:underline">{product.category}</a>
+            <a href={localizeUrl(`/categories/${product.categorySlug}`)} class="font-semibold text-primary-600 dark:text-primary-400 hover:underline">{product.category}</a>
           </div>
           {product.topics.length > 0 && (
             <div class="flex items-start gap-3">
@@ -499,7 +504,7 @@ const pageContext = createPublicPageContext({
                 {product.topics.map((topic, i) => (
                   <>
                     {i > 0 && <span class="text-gray-400">/</span>}
-                    <a href={`/topics/${topic.slug}`} class="font-semibold text-primary-600 dark:text-primary-400 hover:underline">{topic.name}</a>
+                    <a href={localizeUrl(`/topics/${topic.slug}`)} class="font-semibold text-primary-600 dark:text-primary-400 hover:underline">{topic.name}</a>
                   </>
                 ))}
               </div>

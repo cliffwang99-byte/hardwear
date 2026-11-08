@@ -16,6 +16,11 @@ export default defineConfig({
     locales: ["en", "es", "ar"],
     // fallback: 缺 es/ar 翻译时回退英文
     fallback: { es: "en", ar: "en" },
+    // rewrite: 回退时直接渲染英文内容但保留 /es、/ar 路径（不 302 跳回英文）
+    // 这样 Astro.currentLocale 才能保持为 es/ar，内部链接才会正确加语种前缀
+    routing: {
+      fallbackType: "rewrite",
+    },
     // 注意：不要启用 routing.prefixDefaultLocale，否则 /_emdash/admin 会 404
   },
   integrations: [

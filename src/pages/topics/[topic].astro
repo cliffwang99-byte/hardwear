@@ -6,6 +6,11 @@ import FilterSidebar from '../../components/FilterSidebar.astro';
 import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 import { getTopicPageData, getProductsByTopic, getProducts, getCategories, getTopics, faqBlocksToItems } from '../../lib/shop';
 
 const { topic } = Astro.params;
@@ -132,8 +137,8 @@ const pageContext = createPublicPageContext({
   siteName: siteTitle,
   siteUrl,
   breadcrumbs: [
-    { name: 'Home', url: '/' },
-    { name: 'Topics', url: '/topics' },
+    { name: 'Home', url: localizeUrl('/') },
+    { name: 'Topics', url: localizeUrl('/topics') },
     { name: currentTopic.name, url: Astro.url.pathname },
   ],
 });
@@ -164,11 +169,11 @@ const pageContext = createPublicPageContext({
     <div class="container mx-auto px-4 py-16 md:py-20 relative z-10">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
-        <a href="/" class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <a href={localizeUrl("/")} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
         <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <a href="/topics" class="text-primary-300 hover:text-white transition-colors duration-300">Topics</a>
+        <a href={localizeUrl("/topics")} class="text-primary-300 hover:text-white transition-colors duration-300">Topics</a>
         <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>

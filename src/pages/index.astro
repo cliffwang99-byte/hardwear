@@ -41,6 +41,11 @@ const homeFaqs = [
     answer: 'Once your order ships, you will receive a tracking number by email. You can also log in to your account to view live delivery status and estimated arrival date at any time.'
   }
 ];
+import { localizePath } from '../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 ---
 
 <BaseLayout
@@ -132,7 +137,7 @@ const homeFaqs = [
         
         <!-- CTA Buttons - Enhanced with 60px Glow and Staggered Animation - Mobile Optimized -->
         <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-5 mb-10 sm:mb-14 px-4" style="animation: fadeInUp 0.8s ease-in-out 0.9s both;">
-          <a href="/products" class="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white text-primary-600 rounded-2xl font-bold text-base sm:text-lg hover:bg-primary-50 transition-all duration-500 ease-in-out hover:shadow-[0_0_60px_rgba(255,255,255,0.6)] transform hover:scale-105 hover:-translate-y-1 overflow-hidden w-full sm:w-auto">
+          <a href={localizeUrl("/products")} class="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white text-primary-600 rounded-2xl font-bold text-base sm:text-lg hover:bg-primary-50 transition-all duration-500 ease-in-out hover:shadow-[0_0_60px_rgba(255,255,255,0.6)] transform hover:scale-105 hover:-translate-y-1 overflow-hidden w-full sm:w-auto">
             <span class="relative z-10">Shop Now</span>
             <svg class="w-5 h-5 sm:w-6 sm:h-6 relative z-10 group-hover:translate-x-2 transition-transform duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -141,7 +146,7 @@ const homeFaqs = [
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
           </a>
           
-          <a href="/catalog" class="group inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white/10 backdrop-blur-xl hover:bg-white/20 rounded-2xl font-bold text-base sm:text-lg border-2 border-white/30 hover:border-white/50 transition-all duration-500 ease-in-out hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transform hover:scale-105 hover:-translate-y-1 w-full sm:w-auto">
+          <a href={localizeUrl("/catalog")} class="group inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white/10 backdrop-blur-xl hover:bg-white/20 rounded-2xl font-bold text-base sm:text-lg border-2 border-white/30 hover:border-white/50 transition-all duration-500 ease-in-out hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transform hover:scale-105 hover:-translate-y-1 w-full sm:w-auto">
             <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
@@ -250,7 +255,7 @@ const homeFaqs = [
     <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
       {homeCategories.length > 0 ? homeCategories.map((cat, i) => (
         <a
-          href={`/categories/${cat.slug}`}
+          href={localizeUrl(`/categories/${cat.slug}`)}
           class="group relative overflow-hidden rounded-3xl min-h-[220px] text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.03] animate-on-scroll"
           style={`animation-delay: ${i * 0.05}s;`}
         >
@@ -292,7 +297,7 @@ const homeFaqs = [
   <section class="container mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-7">
       <h2 class="text-3xl font-bold animate-on-scroll">Featured Products</h2>
-      <a href="/products" class="text-primary-600 dark:text-primary-400 font-semibold hover:underline animate-on-scroll">
+      <a href={localizeUrl("/products")} class="text-primary-600 dark:text-primary-400 font-semibold hover:underline animate-on-scroll">
         View All →
       </a>
     </div>
@@ -352,7 +357,7 @@ const homeFaqs = [
             ))}
           </div>
           
-          <a href="/deals" class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-primary-50 transition-all duration-300 hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1">
+          <a href={localizeUrl("/deals")} class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-primary-50 transition-all duration-300 hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1">
             <span>Shop Deals Now</span>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -520,7 +525,7 @@ const homeFaqs = [
     </div>
 
     <div class="text-center mt-10 animate-on-scroll">
-      <a href="/faq" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors">
+      <a href={localizeUrl("/faq")} class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors">
         <span>View All FAQs</span>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

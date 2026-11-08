@@ -1,6 +1,13 @@
 ---
 import { getMenu, getTaxonomyTerms, type MenuItem } from "emdash";
 import NavMenu from "./NavMenu.astro";
+import { localizePath } from "../lib/i18n";
+
+const currentLocale = Astro.currentLocale ?? "en";
+
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 
 function termToMenuItem(term: {
   id: string;
@@ -11,16 +18,25 @@ function termToMenuItem(term: {
   return {
     id: term.id,
     label: term.label,
-    url: `/categories/${term.slug}`,
+    url: localizeUrl(`/categories/${term.slug}`),
     children: (term.children ?? []).map(termToMenuItem),
   };
+}
+
+// 递归为所有菜单项 url 添加语种前缀
+function localizeMenuItems(items: MenuItem[]): MenuItem[] {
+  return items.map((item) => ({
+    ...item,
+    url: localizeUrl(item.url),
+    children: item.children ? localizeMenuItems(item.children) : item.children,
+  }));
 }
 
 let navItems: MenuItem[] = [];
 
 try {
   const primary = await getMenu("primary");
-  navItems = primary?.items ?? [];
+  navItems = localizeMenuItems(primary?.items ?? []);
 } catch {
   navItems = [];
 }
@@ -45,8 +61,8 @@ if (navItems.length === 0) {
         <span class="hidden md:inline">✉️ contact@kantongaplikasi.com</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-4">
-        <a href="/track-order" class="hover:underline transition-all duration-300">Track</a>
-        <a href="/help" class="hover:underline transition-all duration-300">Help</a>
+        <a href={localizeUrl("/track-order")} class="hover:underline transition-all duration-300">Track</a>
+        <a href={localizeUrl("/help")} class="hover:underline transition-all duration-300">Help</a>
       </div>
     </div>
   </div>
@@ -64,7 +80,7 @@ if (navItems.length === 0) {
         </button>
 
         <!-- Logo -->
-        <a href="/" class="flex items-center gap-2 group shrink-0">
+        <a href={localizeUrl("/")} class="flex items-center gap-2 group shrink-0">
           <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex items-center justify-center bg-white dark:bg-dark-800 transform group-hover:scale-110 transition-transform duration-500 ease-in-out shadow-md group-hover:shadow-lg">
             <img
               src="https://placehold.co/40x40/1f9d63/ffffff?text=MR"
@@ -117,7 +133,7 @@ if (navItems.length === 0) {
         </button>
 
         <!-- Wishlist with Micro-Interaction - Mobile Optimized -->
-        <a href="/wishlist" class="relative p-2 sm:p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-500 ease-in-out group" aria-label="Wishlist">
+        <a href={localizeUrl("/wishlist")} class="relative p-2 sm:p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-500 ease-in-out group" aria-label="Wishlist">
           <svg class="w-5 h-5 group-hover:scale-110 group-hover:text-red-500 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
@@ -176,7 +192,7 @@ if (navItems.length === 0) {
             <ul class="space-y-1" style="display: block; visibility: visible;">
               <NavMenu items={navItems} variant="mobile" />
               <li>
-                <a href="/cart" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
+                <a href={localizeUrl("/cart")} class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
                   <span class="absolute start-0 top-0 bottom-0 w-1 bg-primary-600 rounded-e opacity-0 group-hover:opacity-100 transition-opacity"></span>
                   <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -193,7 +209,7 @@ if (navItems.length === 0) {
             <p class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Help & Support</p>
             <ul class="space-y-1">
               <li>
-                <a href="/help" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
+                <a href={localizeUrl("/help")} class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
                   <span class="absolute start-0 top-0 bottom-0 w-1 bg-primary-600 rounded-e opacity-0 group-hover:opacity-100 transition-opacity"></span>
                   <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -202,7 +218,7 @@ if (navItems.length === 0) {
                 </a>
               </li>
               <li>
-                <a href="/track-order" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
+                <a href={localizeUrl("/track-order")} class="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-gray-900 dark:text-white relative">
                   <span class="absolute start-0 top-0 bottom-0 w-1 bg-primary-600 rounded-e opacity-0 group-hover:opacity-100 transition-opacity"></span>
                   <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -228,7 +244,7 @@ if (navItems.length === 0) {
       <ul class="flex flex-wrap items-center gap-8 text-sm font-medium overflow-visible">
         <NavMenu items={navItems} variant="desktop" />
         <li>
-          <a href="/cart" class="relative py-2 inline-block font-bold text-primary-600 dark:text-primary-400">
+          <a href={localizeUrl("/cart")} class="relative py-2 inline-block font-bold text-primary-600 dark:text-primary-400">
             <span class="relative z-10 flex items-center gap-2">
               My Quote List
               <span data-cart-count class="px-2 py-0.5 bg-primary-600 text-white text-[10px] rounded-full font-bold normal-case">0</span>

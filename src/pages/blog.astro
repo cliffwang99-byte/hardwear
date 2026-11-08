@@ -4,6 +4,11 @@ import { getPosts } from '../lib/blog';
 
 const posts = await getPosts();
 const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Boolean))]];
+import { localizePath } from '../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 ---
 
 <BaseLayout title="Blog - Construction Tips & Guides | Kitchen & Bath Hardware">
@@ -75,7 +80,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
               class="blog-post bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group border border-gray-200 dark:border-dark-800"
               data-category={post.category}
             >
-              <a href={`/blog/${post.id}`} class="block">
+              <a href={localizeUrl(`/blog/${post.id}`)} class="block">
                 <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 overflow-hidden">
                   {post.image
                     ? <img src={post.image} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -94,7 +99,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
                 </div>
 
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                  <a href={`/blog/${post.id}`}>{post.title}</a>
+                  <a href={localizeUrl(`/blog/${post.id}`)}>{post.title}</a>
                 </h3>
 
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
@@ -102,7 +107,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
                 </p>
 
                 <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-dark-700">
-                  <a href={`/blog/${post.id}`} class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold text-xs">
+                  <a href={localizeUrl(`/blog/${post.id}`)} class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold text-xs">
                     Read →
                   </a>
                 </div>
@@ -157,7 +162,7 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
         </form>
 
         <p class="text-sm text-white/70 mt-4">
-          No spam, unsubscribe anytime. Read our <a href="/privacy" class="underline hover:text-white">Privacy Policy</a>.
+          No spam, unsubscribe anytime. Read our <a href={localizeUrl("/privacy")} class="underline hover:text-white">Privacy Policy</a>.
         </p>
 
         <div id="newsletter-success" class="hidden mt-6 p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30">
@@ -185,10 +190,10 @@ const categories = ['All', ...[...new Set(posts.map((p) => p.category).filter(Bo
           Our team of construction experts is here to help with your project questions and material selection.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="/contact" class="px-8 py-4 bg-gradient-to-r from-primary-600 to-orange-500 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-orange-600 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+          <a href={localizeUrl("/contact")} class="px-8 py-4 bg-gradient-to-r from-primary-600 to-orange-500 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-orange-600 transition-all duration-300 hover:scale-105 hover:shadow-xl">
             Contact Our Experts
           </a>
-          <a href="/products" class="px-8 py-4 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 hover:scale-105">
+          <a href={localizeUrl("/products")} class="px-8 py-4 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 hover:scale-105">
             Browse Products
           </a>
         </div>

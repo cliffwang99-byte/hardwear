@@ -14,6 +14,11 @@ import {
 const { slug } = Astro.params;
 const landingSlug = slug ?? '';
 
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 // ---- CMS content (opt-in). Falls back to the registry below when absent. ----
 const landingMeta = await getLandingPageData(landingSlug);
 
@@ -150,8 +155,8 @@ const pageContext = createPublicPageContext({
   siteName: siteTitle,
   siteUrl,
   breadcrumbs: [
-    { name: 'Home', url: '/' },
-    { name: 'Wholesale & OEM', url: '/wholesale-oem/faucets' },
+    { name: 'Home', url: localizeUrl('/') },
+    { name: 'Wholesale & OEM', url: localizeUrl('/wholesale-oem/faucets') },
     { name: pageName, url: Astro.url.pathname },
   ],
 });
@@ -168,11 +173,11 @@ const pageContext = createPublicPageContext({
     <div class="container mx-auto px-4 py-16 md:py-20 relative z-10">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
-        <a href="/" class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <a href={localizeUrl("/")} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
         <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <a href="/wholesale-oem/faucets" class="text-primary-300 hover:text-white transition-colors duration-300">Wholesale & OEM</a>
+        <a href={localizeUrl("/wholesale-oem/faucets")} class="text-primary-300 hover:text-white transition-colors duration-300">Wholesale & OEM</a>
         <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -187,7 +192,7 @@ const pageContext = createPublicPageContext({
         </p>
         <div class="flex flex-wrap gap-4">
           <a
-            href="/cart"
+            href={localizeUrl("/cart")}
             class="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           >
             Request a Quote
@@ -284,7 +289,7 @@ const pageContext = createPublicPageContext({
         Build your bulk quote list today — we'll respond with a formalized DDP/FOB contract quotation within 12 business hours.
       </p>
       <a
-        href="/cart"
+        href={localizeUrl("/cart")}
         class="inline-block px-10 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
       >
         Request a Quote

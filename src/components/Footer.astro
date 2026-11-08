@@ -1,4 +1,10 @@
 ---
+import { localizePath } from "../lib/i18n";
+
+const currentLocale = Astro.currentLocale ?? "en";
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
 ---
 
 <footer class="bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-dark-900 dark:via-dark-950 dark:to-dark-900 border-t border-gray-200 dark:border-dark-800 mt-20">
@@ -59,9 +65,9 @@
       <div>
         <h3 class="font-bold text-lg mb-4 text-gray-900 dark:text-white">Quick Links</h3>
         <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          {['About Us', 'Contact', 'Careers', 'Blog', 'Press'].map(link => (
+          {['About Us', 'Contact',  'Blog'].map(link => (
             <li>
-              <a href={`/${link.toLowerCase().replace(/\s+/g, '-')}`} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
+              <a href={localizeUrl(`/${link.toLowerCase().replace(/\s+/g, '-')}`)} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ms-6 group-hover:ms-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
@@ -81,7 +87,7 @@
         <ul class="space-y-3 text-gray-600 dark:text-gray-400">
           {['Shipping Info', 'Returns', 'FAQ', 'Support', 'Track Order'].map(link => (
             <li>
-              <a href={`/${link.toLowerCase().replace(/\s+/g, '-')}`} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
+              <a href={localizeUrl(`/${link.toLowerCase().replace(/\s+/g, '-')}`)} class="hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-500 ease-in-out inline-flex items-center gap-2 group">
                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 -ms-6 group-hover:ms-0 transition-all duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
@@ -133,10 +139,10 @@
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
         <p class="text-center md:text-start">&copy; 2026 Kitchen & Bath Hardware. All rights reserved.</p>
         <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-          <a href="/privacy" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Privacy Policy</a>
-          <a href="/terms" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Terms of Service</a>
-          <a href="/cookies" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Cookie Policy</a>
-          <a href="/sitemap" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Sitemap</a>
+          <a href={localizeUrl("/privacy")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Privacy Policy</a>
+          <a href={localizeUrl("/terms")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Terms of Service</a>
+          <a href={localizeUrl("/cookies")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Cookie Policy</a>
+          <a href={localizeUrl("/sitemap")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Sitemap</a>
         </div>
       </div>
     </div>
