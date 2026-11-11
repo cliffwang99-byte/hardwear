@@ -19,12 +19,29 @@ function isActive(url: string): boolean {
 function rel(target?: string): string | undefined {
   return target === "_blank" ? "noopener noreferrer" : undefined;
 }
+
+// A top-level item renders a multi-column mega menu when any of its direct
+// children has children of its own (grandchildren). Otherwise it falls back to
+// the classic single-column dropdown.
+function hasGrandchildren(item: MenuItem): boolean {
+  return (item.children ?? []).some((child) => (child.children ?? []).length > 0);
+}
+
+function viewAllLabel(label: string): string {
+  return `View All ${label}`;
+}
 ---
 
 {
   items.map((item) =>
     variant === "desktop" ? (
-      <li class:list={["relative group", item.cssClasses]}>
+      <li
+        class:list={[
+          "group",
+          hasGrandchildren(item) ? "" : "relative",
+          item.cssClasses,
+        ]}
+      >
         <a
           href={item.url}
           target={item.target}
@@ -43,11 +60,89 @@ function rel(target?: string): string | undefined {
           <span class="absolute inset-0 bg-primary-50 dark:bg-primary-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out -z-10 -mx-2"></span>
         </a>
         {item.children.length > 0 && (
-          <div class="absolute start-0 top-full pt-2 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 transition-all duration-300 ease-in-out z-[100]">
-            <ul class="min-w-[260px] rounded-xl bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 shadow-2xl p-2 space-y-1">
-              <Astro.self items={item.children} variant="desktop-nested" />
-            </ul>
-          </div>
+          hasGrandchildren(item) ? (
+            <div class="absolute left-0 right-0 top-full pt-2 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 transition-all duration-300 ease-in-out z-[100]">
+              <div class="rounded-xl bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 shadow-2xl p-5 sm:p-6">
+                <div class="flex flex-col xl:flex-row gap-6">
+                  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 flex-1">
+                    {item.children.map((child) => (
+                      <div class="mega-column min-w-0">
+                        <a
+                          href={child.url}
+                          target={child.target}
+                          rel={rel(child.target)}
+                          title={child.titleAttr}
+                          class="block font-bold uppercase tracking-wider text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mb-3 pb-2 border-b border-gray-100 dark:border-dark-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300"
+                        >
+                          {child.label}
+                        </a>
+                        <ul class="space-y-2">
+                          {(child.children ?? []).map((grandchild) => (
+                            <li>
+                              <a
+                                href={grandchild.url}
+                                target={grandchild.target}
+                                rel={rel(grandchild.target)}
+                                title={grandchild.titleAttr}
+                                aria-current={isActive(grandchild.url) ? "page" : undefined}
+                                class="block text-sm text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:translate-x-0.5 transition-all duration-300"
+                              >
+                                {grandchild.label}
+                              </a>
+                            </li>
+                          ))}
+                          {child.children.length > 0 && (
+                            <li class="pt-1">
+                              <a
+                                href={child.url}
+                                target={child.target}
+                                rel={rel(child.target)}
+                                class="inline-flex items-center gap-1 text-sm text-primary-600 dark:text-primary-400 font-medium hover:gap-1.5 transition-all duration-300"
+                              >
+                                {viewAllLabel(child.label)}
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                              </a>
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+
+                  {item.url && item.url !== "#" && (
+                    <a
+                      href={item.url}
+                      target={item.target}
+                      rel={rel(item.target)}
+                      class="hidden xl:flex flex-col justify-between w-60 shrink-0 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 p-5 text-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500 ease-in-out"
+                    >
+                      <div>
+                        <p class="font-bold uppercase tracking-wider text-xs opacity-90 mb-1">Featured</p>
+                        <p class="font-bold text-lg leading-tight mb-2">{item.label}</p>
+                        <p class="text-sm opacity-90 leading-relaxed">
+                          Explore the full range of {item.label.toLowerCase()} products and collections.
+                        </p>
+                      </div>
+                      <span class="inline-flex items-center gap-1.5 text-sm font-semibold mt-4">
+                        Shop Now
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div class="absolute start-0 top-full pt-2 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 transition-all duration-300 ease-in-out z-[100]">
+              <ul class="min-w-[260px] rounded-xl bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 shadow-2xl p-2 space-y-1">
+                <Astro.self items={item.children} variant="desktop-nested" />
+              </ul>
+            </div>
+          )
         )}
       </li>
     ) : variant === "desktop-nested" ? (
