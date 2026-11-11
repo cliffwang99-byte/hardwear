@@ -267,22 +267,19 @@ function localizeUrl(url: string): string {
     </div>
     
     {homeCategories.length > 0 ? (
-      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[1fr]">
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[150px] md:auto-rows-[180px]">
         {homeCategories.slice(0, 6).map((cat, i) => {
           const isHero = i === 0;
-          const isWide = i === 4;
           const isFull = i === 5;
           const spanClass = isHero
-            ? 'col-span-2 lg:col-span-2 lg:row-span-2'
-            : isWide
-              ? 'lg:col-span-2'
-              : isFull
-                ? 'col-span-2 lg:col-span-3'
-                : '';
+            ? 'col-span-2 lg:col-span-1 lg:row-span-2'
+            : isFull
+              ? 'col-span-2 lg:col-span-3'
+              : '';
           return (
             <a
               href={localizeUrl(`/categories/${cat.slug}`)}
-              class={`group relative overflow-hidden rounded-3xl text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll ${spanClass} ${isHero ? 'min-h-[320px] lg:min-h-[420px]' : isFull ? 'min-h-[140px]' : 'aspect-square lg:aspect-auto'}`}
+              class={`group relative overflow-hidden rounded-3xl text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll ${spanClass}`}
               style={`animation-delay: ${i * 0.05}s;`}
             >
               {cat.image ? (
@@ -300,8 +297,8 @@ function localizeUrl(url: string): string {
 
               <div class="absolute -inset-1 bg-gradient-to-r from-white/40 to-white/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-in-out -z-10"></div>
 
-              <div class="relative z-10 p-5 md:p-6 h-full flex flex-col">
-                <h3 class={`font-bold leading-tight drop-shadow-md ${isHero ? 'text-2xl md:text-3xl' : isFull ? 'text-xl' : 'text-lg'}`}>{cat.name}</h3>
+              <div class="relative z-10 p-5 md:p-6 h-full flex flex-col justify-end">
+                <h3 class={`font-bold leading-tight drop-shadow-md ${isHero ? 'text-2xl md:text-3xl' : 'text-base md:text-lg'}`}>{cat.name}</h3>
                 {isHero && cat.count > 0 && (
                   <p class="mt-2 text-sm text-white/80">{cat.count} SKUs ready to spec</p>
                 )}
