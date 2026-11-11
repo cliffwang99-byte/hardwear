@@ -1,5 +1,5 @@
 ---
-import type { MenuItem } from "emdash";
+import { getEmDashCollection, type MenuItem } from "emdash";
 
 interface Props {
   items: MenuItem[];
@@ -20,15 +20,55 @@ function rel(target?: string): string | undefined {
   return target === "_blank" ? "noopener noreferrer" : undefined;
 }
 
-// A top-level item renders a multi-column mega menu when any of its direct
-// children has children of its own (grandchildren). Otherwise it falls back to
-// the classic single-column dropdown.
 function hasGrandchildren(item: MenuItem): boolean {
   return (item.children ?? []).some((child) => (child.children ?? []).length > 0);
 }
 
-function viewAllLabel(label: string): string {
-  return `View All ${label}`;
+function mediaUrl(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.length ? mediaUrl(value[0]) : "";
+  if (value && typeof value === "object") {
+    const rec = value as Record<string, unknown>;
+    if (typeof rec.url === "string" && rec.url) return rec.url;
+    if (typeof rec.src === "string" && rec.src) return rec.src;
+    let mediaKey = typeof rec.storageKey === "string" ? rec.storageKey : "";
+    if (rec.meta && typeof rec.meta === "object") {
+      const meta = rec.meta as Record<string, unknown>;
+      if (!mediaKey && typeof meta.storageKey === "string") mediaKey = meta.storageKey;
+      if (!mediaKey && typeof meta.key === "string") mediaKey = meta.key;
+    }
+    if (mediaKey && !/^(https?:)?\/\//i.test(mediaKey)) mediaKey = "/_emdash/api/media/file/" + mediaKey;
+    return mediaKey;
+  }
+  return "";
+}
+
+function extractCategorySlug(url: string): string | undefined {
+  if (!url) return undefined;
+  const parts = url.split("/").filter(Boolean);
+  const idx = parts.indexOf("categories");
+  if (idx >= 0 && idx + 1 < parts.length) return parts[idx + 1];
+  return undefined;
+}
+
+const categoryImages = new Map<string, string>();
+try {
+  const result = (await getEmDashCollection("categories" as never)) as {
+    entries?: unknown[];
+    error?: unknown;
+  };
+  if (!result.error && Array.isArray(result.entries)) {
+    for (const entry of result.entries as Record<string, unknown>[]) {
+      const slug = typeof entry.slug === "string" ? entry.slug : "";
+      const d =
+        entry.data && typeof entry.data === "object"
+          ? (entry.data as Record<string, unknown>)
+          : {};
+      if (slug) categoryImages.set(slug, mediaUrl(d.categoryimage));
+    }
+  }
+} catch {
+  // ignore — images simply won't render
 }
 ---
 
@@ -91,48 +131,31 @@ function viewAllLabel(label: string): string {
                               </a>
                             </li>
                           ))}
-                          {child.children.length > 0 && (
-                            <li class="pt-1">
-                              <a
-                                href={child.url}
-                                target={child.target}
-                                rel={rel(child.target)}
-                                class="inline-flex items-center gap-1 text-sm text-primary-600 dark:text-primary-400 font-medium hover:gap-1.5 transition-all duration-300"
-                              >
-                                {viewAllLabel(child.label)}
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                              </a>
-                            </li>
-                          )}
                         </ul>
                       </div>
                     ))}
                   </div>
 
-                  {item.url && item.url !== "#" && (
-                    <a
-                      href={item.url}
-                      target={item.target}
-                      rel={rel(item.target)}
-                      class="hidden xl:flex flex-col justify-between w-60 shrink-0 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 p-5 text-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500 ease-in-out"
-                    >
-                      <div>
-                        <p class="font-bold uppercase tracking-wider text-xs opacity-90 mb-1">Featured</p>
-                        <p class="font-bold text-lg leading-tight mb-2">{item.label}</p>
-                        <p class="text-sm opacity-90 leading-relaxed">
-                          Explore the full range of {item.label.toLowerCase()} products and collections.
-                        </p>
-                      </div>
-                      <span class="inline-flex items-center gap-1.5 text-sm font-semibold mt-4">
-                        Shop Now
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </span>
-                    </a>
-                  )}
+                  {(() => {
+                    const slug = extractCategorySlug(item.url);
+                    const image = slug ? categoryImages.get(slug) : undefined;
+                    if (!image) return null;
+                    return (
+                      <a
+                        href={item.url}
+                        target={item.target}
+                        rel={rel(item.target)}
+                        class="hidden xl:block w-60 shrink-0 overflow-hidden rounded-xl border border-gray-200 dark:border-dark-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500 ease-in-out"
+                      >
+                        <img
+                          src={image}
+                          alt={item.label}
+                          loading="lazy"
+                          class="w-full h-full object-cover aspect-[3/4]"
+                        />
+                      </a>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
