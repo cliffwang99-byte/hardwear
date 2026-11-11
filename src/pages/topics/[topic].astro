@@ -92,7 +92,7 @@ const fallbackProducts = await getProducts();
 const products = taxProducts.length ? taxProducts : fallbackProducts.slice(0, 12);
 
 const siteSettings = await getSiteSettings();
-const siteTitle = siteSettings.title || 'Kitchen & Bath Hardware';
+const siteTitle = siteSettings.title || 'MrKB';
 const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
 const siteUrl = siteSettings.url || Astro.url.origin;
 

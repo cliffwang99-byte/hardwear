@@ -13,15 +13,21 @@ function localizeUrl(url: string): string {
       <!-- Company Info with Brand Statement - Full Width on Mobile -->
       <div class="sm:col-span-2 lg:col-span-2">
         <div class="flex items-center gap-2 mb-4">
-          <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg flex items-center justify-center bg-white dark:bg-dark-800">
+          <div class="w-12 h-12 flex items-center justify-center">
             <img
-              src="https://placehold.co/48x48/1f9d63/ffffff?text=MR"
-              alt="Kitchen & Bath Hardware logo"
-              class="w-full h-full object-contain"
+              src="https://buildmart.357363320.workers.dev/_emdash/api/media/file/01M74WJRZGC0JR2QEQJZV5KPMS.01M74WJSJYQJ9P667S8GJN850Y.png"
+              alt="MrKB logo"
+              class="w-full h-full object-contain dark:hidden transition-transform duration-500 ease-in-out"
+              loading="lazy"
+            />
+            <img
+              src="https://buildmart.357363320.workers.dev/_emdash/api/media/file/01M74WJS00B99V2PQT9MX0A46W.01M74WJSK1TKNMN9BVRHW2EAEV.png"
+              alt="MrKB logo"
+              class="w-full h-full object-contain hidden dark:block transition-transform duration-500 ease-in-out"
               loading="lazy"
             />
           </div>
-          <span class="text-2xl font-bold text-gray-900 dark:text-white">Kitchen & Bath Hardware</span>
+          <span class="text-2xl font-bold text-gray-900 dark:text-white">MrKB</span>
         </div>
         
         <!-- Brand Statement -->
@@ -33,18 +39,6 @@ function localizeUrl(url: string): string {
           We deliver spec-rated plumbing fixtures and storage systems for large-scale multifamily, hospitality, and private-label projects—backed by active code certifications, batch-consistent finishing, and turnkey FCL cargo consolidation.
         </p>
         
-        <!-- Payment Methods - Mobile Optimized -->
-        <div class="mb-6">
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">We Accept</p>
-          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-            {['💳 Visa', '💳 Mastercard', '💳 Amex', '💰 PayPal', '🏦 Bank'].map(method => (
-              <div class="px-3 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-dark-800 rounded-lg border border-gray-200 dark:border-dark-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-primary-500 hover:shadow-md transition-all duration-500 ease-in-out hover:scale-105">
-                {method}
-              </div>
-            ))}
-          </div>
-        </div>
-
         <!-- Certifications -->
         <div>
           <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Certifications</p>
@@ -137,7 +131,7 @@ function localizeUrl(url: string): string {
     <!-- Bottom Bar - Mobile Optimized -->
     <div class="border-t border-gray-300 dark:border-dark-800 pt-6 sm:pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-        <p class="text-center md:text-start">&copy; 2026 Kitchen & Bath Hardware. All rights reserved.</p>
+        <p class="text-center md:text-start">&copy; 2026 MrKB. All rights reserved.</p>
         <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
           <a href={localizeUrl("/privacy")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Privacy Policy</a>
           <a href={localizeUrl("/terms")} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Terms of Service</a>

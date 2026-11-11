@@ -17,7 +17,7 @@ const recent = (await getPosts()).filter((p) => p.id !== post?.id).slice(0, 3);
 if (!post) return Astro.redirect(localizeUrl('/blog'));
 
 const siteSettings = await getSiteSettings();
-const siteTitle = siteSettings.title || 'Kitchen & Bath Hardware';
+const siteTitle = siteSettings.title || 'MrKB';
 const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
 const siteUrl = siteSettings.url || Astro.url.origin;
 
