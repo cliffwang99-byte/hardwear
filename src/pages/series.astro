@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SeriesSection from '../components/SeriesSection.astro';
+import { localizePath } from '../lib/i18n';
+import { getSeriesWithProducts } from '../lib/shop';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const seriesList = await getSeriesWithProducts();
+const totalSeries = seriesList.filter((s) => s.totalProducts > 0).length;
+---
+
+<BaseLayout
+  title="Bathroom Hardware Collections & Series - MrKB"
+  description="Explore our bathroom hardware series. Each collection spans faucets, showers and accessories, built to a single design language."
+>
+  <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="series-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#series-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+        <a href={localizeUrl('/')} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-white font-medium">Series</span>
+      </nav>
+
+      <div class="max-w-3xl">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3">Explore Bathroom Collections</h1>
+        <p class="text-base text-white/80 leading-relaxed">
+          Each series is a complete design language. Browse the collections below to see how they carry across faucets, showers and hardware accessories.
+        </p>
+        {totalSeries > 0 && (
+          <p class="mt-4 text-xs uppercase tracking-widest text-primary-300">
+            {totalSeries} {totalSeries === 1 ? 'series' : 'series'}
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {seriesList.map((series) => (
+    <SeriesSection series={series} locale={currentLocale} />
+  ))}
+</BaseLayout>

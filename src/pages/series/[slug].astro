@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { localizePath } from '../../lib/i18n';
+import { getProductsBySeries, getProducts, getSeries, getCategories, getSeriesPageData, faqBlocksToItems } from '../../lib/shop';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const { slug } = Astro.params;
+const seriesSlug = slug ?? '';
+
+const [allSeries, seriesProducts, pageMeta, categories] = await Promise.all([
+  getSeries(),
+  getProductsBySeries(seriesSlug),
+  getSeriesPageData(seriesSlug),
+  getCategories(),
+]);
+
+const term = allSeries.find((s) => s.slug === seriesSlug);
+const isKnownSeries = Boolean(term || pageMeta);
+const seriesName = pageMeta?.customizationH1 || term?.name || seriesSlug.replace(/-/g, ' ');
+const seriesDescription = pageMeta?.termDescription || pageMeta?.seoDescription || term?.description || '';
+
+const categoryLabels = new Map(categories.map((c) => [c.slug, c.name]));
+
+// Fallback: an unknown/placeholder series (e.g. the catalog fallback from the
+// index page) still shows the full catalog grouped by category instead of an
+// empty page — same convention as the topic pages.
+const products = seriesProducts.length > 0 ? seriesProducts : isKnownSeries ? [] : await getProducts();
+
+const faqItems = faqBlocksToItems(pageMeta?.faqBlocks ?? []);
+const hasFaq = faqItems.length > 0;
+
+const categoryGroups = new Map<string, typeof products>();
+for (const product of products) {
+  const key = product.category ?? 'other';
+  if (!categoryGroups.has(key)) categoryGroups.set(key, []);
+  (categoryGroups.get(key) as typeof products).push(product);
+}
+---
+
+<BaseLayout
+  title={`${seriesName} Series - MrKB`}
+  description={seriesDescription || `Explore the ${seriesName} bathroom hardware series.`}
+>
+  <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="series-detail-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#series-detail-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+        <a href={localizeUrl('/')} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <a href={localizeUrl('/series')} class="text-primary-300 hover:text-white transition-colors duration-300">Series</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-white font-medium">{seriesName}</span>
+      </nav>
+
+      <div class="max-w-3xl">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3">{seriesName}</h1>
+        {seriesDescription && (
+          <p class="text-base text-white/80 leading-relaxed">{seriesDescription}</p>
+        )}
+        <p class="mt-4 text-xs uppercase tracking-widest text-primary-300">
+          {products.length} {products.length === 1 ? 'product' : 'products'}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      {products.length > 0 ? (
+        [...categoryGroups.entries()].map(([categorySlug, groupProducts]) => (
+          <div class="mb-12">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-dark-700">
+              {categorySlug === 'other' ? 'Other Products' : (categoryLabels.get(categorySlug) ?? categorySlug.replace(/-/g, ' '))}
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {groupProducts.map((product) => (
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  image={product.image}
+                  rating={product.rating}
+                  reviews={product.reviews}
+                  badge={product.badge}
+                  inStock={product.inStock}
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div class="text-center py-16">
+          <p class="text-gray-600 dark:text-gray-400 mb-6">No products have been assigned to this series yet.</p>
+          <a href={localizeUrl('/series')} class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+            Back to All Series
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {hasFaq && (
+    <section class="py-12 sm:py-16 bg-gray-50 dark:bg-dark-800">
+      <div class="container mx-auto px-4 max-w-3xl">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-3">
+          {faqItems.map((item) => (
+            <div class="faq-item bg-white dark:bg-dark-900 rounded-xl border border-gray-200 dark:border-dark-700 overflow-hidden">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-4 text-start">
+                <span class="font-semibold text-sm sm:text-base text-gray-900 dark:text-white">{item.question}</span>
+                <svg class="faq-icon w-5 h-5 flex-shrink-0 text-primary-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {item.answer}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.faq-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const content = trigger.nextElementSibling as HTMLElement | null;
+      const icon = trigger.querySelector('.faq-icon') as HTMLElement | null;
+      if (!content) return;
+      const isHidden = content.classList.contains('hidden');
+      content.classList.toggle('hidden', !isHidden);
+      if (icon) icon.style.transform = isHidden ? 'rotate(180deg)' : '';
+    });
+  });
+</script>

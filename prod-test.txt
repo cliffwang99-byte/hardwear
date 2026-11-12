@@ -1,0 +1,12 @@
+﻿PROD CHECK START
+PAGE / CODE 200 LOC LANG en NONLOCALIZED /track-order , /help , / , /wishlist , /categories/bathroom-hardware-plumbing , /categories/kitchen-hardware-plumbing
+PAGE /es CODE 302 LOC LANG es NONLOCALIZED /product/${e}
+PAGE /ar CODE 302 LOC LANG ar NONLOCALIZED /product/${e}
+PAGE /products CODE 200 LOC LANG en NONLOCALIZED /track-order , /help , / , /wishlist , /categories/bathroom-hardware-plumbing , /categories/kitchen-hardware-plumbing
+PAGE /es/products CODE 302 LOC LANG es NONLOCALIZED 
+PAGE /ar/products CODE 302 LOC LANG ar NONLOCALIZED 
+PAGE /es/faq CODE 302 LOC LANG es NONLOCALIZED 
+PAGE /ar/help CODE 302 LOC LANG ar NONLOCALIZED 
+PAGE /es/about-us CODE 302 LOC LANG es NONLOCALIZED 
+PAGE /ar/contact CODE 302 LOC LANG ar NONLOCALIZED 
+PROD CHECK END

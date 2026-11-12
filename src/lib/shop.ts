@@ -13,6 +13,7 @@ export interface ShopProduct {
 	featured?: boolean;
 	category?: string;
 	topic?: string;
+	series?: string;
 }
 
 export interface ShopCategory {
@@ -112,6 +113,7 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 			(typeof d.featured_products === "object" && d.featured_products !== null),
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection),
 		topic: referenceSlug((d.terms as Record<string, unknown> | undefined)?.topic),
+		series: referenceSlug((d.terms as Record<string, unknown> | undefined)?.series),
 	};
 }
 
@@ -393,6 +395,130 @@ export async function getProductsByTopic(slug: string): Promise<ShopProduct[]> {
 	return products.filter((p) => (p.topic ? termSet.has(p.topic) : false));
 }
 
+// Product series: taxonomy term `series`. A series is a design family that can
+// span several product categories (faucets, showers, accessories…), so the
+// category a series belongs to is derived from the products it holds rather
+// than stored on the term itself.
+export async function getProductsBySeries(slug: string): Promise<ShopProduct[]> {
+	const termSet = await resolveTermSlugSet("series", slug);
+
+	const result = (await getEmDashCollection("products" as never)) as {
+		entries?: unknown[] | undefined;
+		error?: unknown;
+	};
+	if (result.error || !Array.isArray(result.entries) || result.entries.length === 0) {
+		return [];
+	}
+	const products = result.entries
+		.map((entry) => toProduct(entry as Record<string, unknown>))
+		.filter((p) => p.name !== "");
+
+	if (!termSet) return products.filter((p) => p.series === slug);
+	return products.filter((p) => (p.series ? termSet.has(p.series) : false));
+}
+
+export async function getSeries(): Promise<ShopCategory[]> {
+	const terms = await getTaxonomyTerms("series", { includeCounts: true });
+	return terms.map((term) => ({
+		slug: term.slug,
+		name: term.label,
+		icon: "",
+		description: term.description ?? "",
+		banner: "",
+		totalProducts: term.count ?? 0,
+	}));
+}
+
+// One category inside a series, e.g. "Faucets" for the Purist series.
+export interface SeriesCategoryGroup {
+	slug: string;
+	name: string;
+	products: ShopProduct[];
+}
+
+// A series with its products resolved and grouped by category. Category groups
+// are derived from the products each series actually holds, so a series that
+// spans faucets and showers shows both without storing that on the term.
+export interface ShopSeriesDetail {
+	slug: string;
+	name: string;
+	description: string;
+	products: ShopProduct[];
+	categoryGroups: SeriesCategoryGroup[];
+	totalProducts: number;
+}
+
+function groupByCategory(
+	products: ShopProduct[],
+	categoryLabels: Map<string, string>,
+): SeriesCategoryGroup[] {
+	const groups = new Map<string, SeriesCategoryGroup>();
+	for (const product of products) {
+		const slug = product.category ?? "";
+		if (!groups.has(slug)) {
+			groups.set(slug, {
+				slug,
+				name: slug ? (categoryLabels.get(slug) ?? slug) : "Other",
+				products: [],
+			});
+		}
+		(groups.get(slug) as SeriesCategoryGroup).products.push(product);
+	}
+	return [...groups.values()];
+}
+
+export async function getSeriesWithProducts(): Promise<ShopSeriesDetail[]> {
+	const [series, products, categoryLabels] = await Promise.all([
+		getSeries(),
+		getProducts(),
+		taxonomyLabelMap("collection"),
+	]);
+
+	// Fallback: no series terms yet, so surface the catalog as one placeholder
+	// series grouped by category instead of rendering an empty page.
+	if (series.length === 0) {
+		return [
+			{
+				slug: "all",
+				name: "Featured Collections",
+				description: "Browse our full range of bathroom hardware, grouped by category.",
+				products,
+				categoryGroups: groupByCategory(products, categoryLabels),
+				totalProducts: products.length,
+			},
+		];
+	}
+
+	const resolved = series.map((term) => {
+		const seriesProducts = products.filter((p) => p.series === term.slug);
+		return {
+			slug: term.slug,
+			name: term.name,
+			description: term.description,
+			products: seriesProducts,
+			categoryGroups: groupByCategory(seriesProducts, categoryLabels),
+			totalProducts: seriesProducts.length,
+		};
+	});
+
+	// Series exist but no product is assigned to any of them yet: show the
+	// catalog fallback rather than an empty list of sections.
+	if (resolved.every((detail) => detail.totalProducts === 0)) {
+		return [
+			{
+				slug: "all",
+				name: "Featured Collections",
+				description: "Browse our full range of bathroom hardware, grouped by category.",
+				products,
+				categoryGroups: groupByCategory(products, categoryLabels),
+				totalProducts: products.length,
+			},
+		];
+	}
+
+	return resolved;
+}
+
 export interface CategoryMeta {
 	name: string;
 	// Optional custom H1 shown instead of the term name when provided.
@@ -615,6 +741,18 @@ export async function getTopicPageData(slug: string): Promise<CategoryMeta | nul
 		"topic",
 		["topicseo", "topicss", "topics", "topic_seo", "topic"],
 		"topicimage",
+		slug,
+	);
+}
+
+// Product series: taxonomy term `series` + a rich SEO entry collection, mirroring
+// the category/topic pattern. Probe the likely collection spellings so the page
+// keeps working regardless of the editor's exact naming.
+export async function getSeriesPageData(slug: string): Promise<CategoryMeta | null> {
+	return getTermPageData(
+		"series",
+		["seriesseo", "seriess", "series_seo", "series"],
+		"seriesimage",
 		slug,
 	);
 }
