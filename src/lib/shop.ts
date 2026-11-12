@@ -14,6 +14,7 @@ export interface ShopProduct {
 	category?: string;
 	topic?: string;
 	series?: string;
+	sku?: string;
 }
 
 export interface ShopCategory {
@@ -114,6 +115,7 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection),
 		topic: referenceSlug((d.terms as Record<string, unknown> | undefined)?.topic),
 		series: referenceSlug((d.terms as Record<string, unknown> | undefined)?.series),
+		sku: typeof d.sku === "string" ? d.sku : undefined,
 	};
 }
 
