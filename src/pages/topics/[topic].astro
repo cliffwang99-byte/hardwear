@@ -213,7 +213,7 @@ const pageContext = createPublicPageContext({
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-dark-800">
           <div>
             <p class="text-gray-600 dark:text-gray-400">
-              Showing <span class="font-semibold text-gray-900 dark:text-white">{products.length}</span> of
+              Showing <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{products.length}</span> of
               <span class="font-semibold text-gray-900 dark:text-white">{currentTopic.totalProducts || products.length}</span> products
             </p>
           </div>
@@ -232,13 +232,17 @@ const pageContext = createPublicPageContext({
         </div>
 
         <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div data-filter-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {products.map((product, i) => (
             <div style={`animation: fadeInUp 0.6s ease-in-out ${i * 0.05}s both;`}>
               <ProductCard {...product} />
             </div>
           ))}
         </div>
+
+        <p data-filter-empty class="hidden text-center text-gray-500 dark:text-gray-400 py-16">
+          No products match the selected filters.
+        </p>
 
         <!-- Pagination -->
         <div class="flex justify-center items-center gap-2">

@@ -12,7 +12,9 @@ export interface ShopProduct {
 	inStock: boolean;
 	featured?: boolean;
 	category?: string;
+	categories?: string[];
 	topic?: string;
+	topics?: string[];
 	series?: string;
 	sku?: string;
 }
@@ -114,7 +116,9 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 			d.featured_products === true ||
 			(typeof d.featured_products === "object" && d.featured_products !== null),
 		category: referenceSlug((d.terms as Record<string, unknown> | undefined)?.collection),
+		categories: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.collection),
 		topic: referenceSlug((d.terms as Record<string, unknown> | undefined)?.topic),
+		topics: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.topic),
 		series: referenceSlug((d.terms as Record<string, unknown> | undefined)?.series),
 		sku: typeof d.sku === "string" ? d.sku : undefined,
 	};
