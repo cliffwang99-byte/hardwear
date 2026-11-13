@@ -24,6 +24,7 @@ export interface ShopCategory {
 	description: string;
 	banner: string;
 	totalProducts: number;
+	children?: ShopCategory[];
 }
 
 const fallbackProducts: ShopProduct[] = [
@@ -301,16 +302,41 @@ export async function getCategories(): Promise<ShopCategory[]> {
 
 // Product topics: taxonomy term `topic`, used to populate the sidebar Topics
 // filter panel (same shape as categories for a uniform filter experience).
-export async function getTopics(): Promise<ShopCategory[]> {
-	const terms = await getTaxonomyTerms("topic", { includeCounts: true });
-	return terms.map((term) => ({
+// Terms are hierarchical, so level-1 terms come back as section headings and
+// their level-2 terms are the actual filter options.
+function toTopicNode(term: {
+	slug: string;
+	label: string;
+	description?: string;
+	count?: number;
+	children?: unknown[];
+}): ShopCategory {
+	return {
 		slug: term.slug,
 		name: term.label,
 		icon: "",
 		description: term.description ?? "",
 		banner: "",
 		totalProducts: term.count ?? 0,
-	}));
+		children: Array.isArray(term.children)
+			? term.children.map((child) =>
+					toTopicNode(
+						child as {
+							slug: string;
+							label: string;
+							description?: string;
+							count?: number;
+							children?: unknown[];
+						},
+					),
+				)
+			: [],
+	};
+}
+
+export async function getTopics(): Promise<ShopCategory[]> {
+	const terms = await getTaxonomyTerms("topic", { includeCounts: true });
+	return terms.map(toTopicNode);
 }
 
 export async function getCategoryBySlug(slug: string): Promise<ShopCategory | null> {

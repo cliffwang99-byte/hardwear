@@ -1,7 +1,14 @@
 ---
+interface TopicTerm {
+  slug: string;
+  name: string;
+  totalProducts: number;
+  children?: TopicTerm[];
+}
+
 interface Props {
   categories: { slug: string; name: string; totalProducts: number }[];
-  topics: { slug: string; name: string; totalProducts: number }[];
+  topics: TopicTerm[];
 }
 
 const { categories = [], topics = [] } = Astro.props;
@@ -79,13 +86,39 @@ const { categories = [], topics = [] } = Astro.props;
   <!-- Topics - Touch-Friendly -->
   <div class="bg-white dark:bg-dark-800 rounded-xl p-5 sm:p-6 border border-gray-200 dark:border-dark-700">
     <h3 class="font-bold text-base sm:text-lg mb-4">Topics</h3>
-    <div class="space-y-3">
+    <div class="space-y-2">
       {topics.length > 0 ? topics.map(topic => (
-        <label class="flex items-center gap-3 cursor-pointer group py-1">
-          <input type="checkbox" value={topic.slug} data-filter="topic" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
-          <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{topic.name}</span>
-          <span class="ms-auto text-xs text-gray-400">{topic.totalProducts}</span>
-        </label>
+        (topic.children && topic.children.length > 0) ? (
+          <div class="topic-group border-b border-gray-100 dark:border-dark-700 last:border-0 pb-2 last:pb-0" data-topic-group>
+            <button
+              type="button"
+              data-topic-toggle
+              aria-expanded="true"
+              class="w-full flex items-center gap-2 py-2 text-start group"
+            >
+              <span class="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{topic.name}</span>
+              <span class="text-xs text-gray-400">{topic.totalProducts}</span>
+              <svg data-topic-chevron class="w-4 h-4 ms-auto text-gray-400 transition-transform duration-300 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div data-topic-panel class="space-y-2 ps-3 pt-1">
+              {topic.children.map(child => (
+                <label class="flex items-center gap-3 cursor-pointer group py-1">
+                  <input type="checkbox" value={child.slug} data-filter="topic" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
+                  <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{child.name}</span>
+                  <span class="ms-auto text-xs text-gray-400">{child.totalProducts}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <label class="flex items-center gap-3 cursor-pointer group py-1">
+            <input type="checkbox" value={topic.slug} data-filter="topic" class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
+            <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{topic.name}</span>
+            <span class="ms-auto text-xs text-gray-400">{topic.totalProducts}</span>
+          </label>
+        )
       )) : <p class="text-sm text-gray-400">No topics</p>}
     </div>
   </div>
@@ -201,5 +234,19 @@ const { categories = [], topics = [] } = Astro.props;
       mobileFilterOverlay.classList.add('hidden');
       document.body.style.overflow = '';
     }
+  });
+
+  // Topic groups: level-1 term is the heading, level-2 terms are the options.
+  // Delegated so the desktop panel and its cloned mobile copy both respond.
+  document.addEventListener('click', (e) => {
+    const toggle = (e.target as HTMLElement)?.closest('[data-topic-toggle]');
+    if (!toggle) return;
+    const group = toggle.closest('[data-topic-group]');
+    const panel = group?.querySelector('[data-topic-panel]');
+    const chevron = group?.querySelector('[data-topic-chevron]');
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    panel?.classList.toggle('hidden', expanded);
+    chevron?.classList.toggle('rotate-180', !expanded);
   });
 </script>
