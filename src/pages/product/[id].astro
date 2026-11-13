@@ -4,7 +4,7 @@ import ProductCard from '../../components/ProductCard.astro';
 import { getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText } from 'emdash/ui';
-import { getProductDetail, getProducts, getProductsBySeries, getSeries, getCategories } from '../../lib/shop';
+import { getProductDetail, getProducts, getProductsBySeries, getSeries } from '../../lib/shop';
 import { localizePath } from '../../lib/i18n';
 const currentLocale = Astro.currentLocale ?? 'en';
 function localizeUrl(url: string): string {
@@ -17,39 +17,16 @@ const relatedProducts = (await getProducts())
   .filter((p) => p.id !== (Astro.params.id ?? ''))
   .slice(0, 4);
 
-const [allSeries, allCategories, seriesProducts] = await Promise.all([
+const [allSeries, seriesProducts] = await Promise.all([
   getSeries(),
-  getCategories(),
   product.series ? getProductsBySeries(product.series) : Promise.resolve([]),
 ]);
 
 const currentSeries = allSeries.find((s) => s.slug === product.series);
 const seriesName = currentSeries?.name ?? '';
 const seriesDescription = currentSeries?.description ?? '';
-const categoryLabelBySlug = new Map(allCategories.map((c) => [c.slug, c.name]));
 
 const seriesSetProducts = seriesProducts.filter((p) => p.image);
-
-const seriesGroups = (() => {
-  const groups = new Map<string, ShopProduct[]>();
-  for (const item of seriesSetProducts) {
-    const key = item.category ?? '';
-    if (!groups.has(key)) groups.set(key, []);
-    (groups.get(key) as ShopProduct[]).push(item);
-  }
-  let running = 1;
-  return [...groups.entries()].map(([slug, items]) => {
-    const start = running;
-    running += items.length;
-    return {
-      slug,
-      name: slug ? (categoryLabelBySlug.get(slug) ?? slug.replace(/-/g, ' ')) : 'Other',
-      items,
-      start,
-      end: start + items.length - 1,
-    };
-  });
-})();
 
 const seriesQuoteItems = seriesSetProducts.map((item) => ({
   id: item.id,
@@ -584,70 +561,49 @@ const pageContext = createPublicPageContext({
                   Pieces<br />One set
                 </span>
               </div>
-              <div class="mt-3 pt-3 space-y-1.5 border-t border-dashed border-gray-300 dark:border-dark-600">
-                {seriesGroups.map((group) => (
-                  <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
-                    <span class="truncate">{group.name}</span>
-                    <span class="flex-1 border-b border-dotted border-gray-300 dark:border-dark-600"></span>
-                    <span class="tabular-nums">
-                      {String(group.start).padStart(2, '0')}
-                      {group.end > group.start ? `-${String(group.end).padStart(2, '0')}` : ''}
-                    </span>
-                  </div>
-                ))}
+              <div class="mt-3 pt-3 border-t border-dashed border-gray-300 dark:border-dark-600">
+                <p class="text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                  One set · one quotation
+                </p>
               </div>
             </div>
           </div>
 
-          <div class="mt-8 space-y-8">
-            {seriesGroups.map((group) => (
-              <div>
-                <div class="flex items-center gap-2 mb-4">
-                  <span class="text-[10px] uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                    {group.name}
-                  </span>
-                  <span class="flex-1 h-px bg-gray-300 dark:bg-dark-600"></span>
-                </div>
+          <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {seriesSetProducts.map((item, index) => {
+              const isCurrent = item.id === product.id;
+              return (
+                <a href={localizeUrl(`/product/${item.id}`)} class="group block">
+                  <div class={`relative ${isCurrent ? 'border-2 border-gray-900 dark:border-white' : 'border border-transparent'}`}>
+                    {isCurrent && (
+                      <span class="absolute start-0 top-0 z-10 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-semibold uppercase tracking-[0.15em] px-2 py-1">
+                        This piece
+                      </span>
+                    )}
+                    <div class="aspect-square flex items-center justify-center p-3 sm:p-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                  {group.items.map((item, itemIndex) => {
-                    const isCurrent = item.id === product.id;
-                    const position = group.start + itemIndex;
-                    return (
-                      <a href={localizeUrl(`/product/${item.id}`)} class="group block">
-                        <div class={`relative ${isCurrent ? 'border-2 border-gray-900 dark:border-white' : 'border border-transparent'}`}>
-                          {isCurrent && (
-                            <span class="absolute start-0 top-0 z-10 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-semibold uppercase tracking-[0.15em] px-2 py-1">
-                              This piece
-                            </span>
-                          )}
-                          <div class="aspect-square flex items-center justify-center p-3 sm:p-4">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                              loading="lazy"
-                            />
-                          </div>
-                        </div>
-
-                        <div class="mt-3 flex items-start gap-2">
-                          <span class={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${isCurrent ? 'bg-[#C08A6E]' : 'bg-gray-300 dark:bg-dark-600'}`}></span>
-                          <div class="min-w-0">
-                            <p class="text-[10px] uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400 truncate">
-                              {String(position).padStart(2, '0')} {item.sku}
-                            </p>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                              {item.name}
-                            </p>
-                          </div>
-                        </div>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+                  <div class="mt-3 flex items-start gap-2">
+                    <span class={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${isCurrent ? 'bg-[#C08A6E]' : 'bg-gray-300 dark:bg-dark-600'}`}></span>
+                    <div class="min-w-0">
+                      <p class="text-[10px] uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400 truncate">
+                        {String(index + 1).padStart(2, '0')} {item.sku}
+                      </p>
+                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        {item.name}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
           </div>
 
           <div class="mt-8">
