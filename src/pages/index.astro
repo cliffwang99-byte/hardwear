@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard.astro';
 import RecentlyViewed from '../components/RecentlyViewed.astro';
 
 import { getSiteSettings } from 'emdash';
+import { Image } from 'emdash/ui';
 import { getProducts, getHomeCategories } from '../lib/shop';
 
 const siteSettings = await getSiteSettings();
@@ -278,10 +279,11 @@ function localizeUrl(url: string): string {
               style={`animation-delay: ${i * 0.05}s;`}
             >
               {cat.image ? (
-                <img
-                  src={cat.image}
+                <Image
+                  image={cat.image}
                   alt={cat.name}
-                  loading="lazy"
+                  width={800}
+                  height={600}
                   class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
                 />
               ) : (

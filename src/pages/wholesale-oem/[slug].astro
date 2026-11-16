@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
-import { PortableText } from 'emdash/ui';
+import { PortableText, Image } from 'emdash/ui';
 import {
   getLandingPageData,
   getProducts,
@@ -166,7 +166,7 @@ const pageContext = createPublicPageContext({
   <!-- Hero -->
   <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white overflow-hidden">
     <div class="absolute inset-0">
-      <img src={pageBanner} alt={pageName} class="w-full h-full object-cover opacity-20" />
+      <Image image={pageBanner} alt={pageName} width={1600} height={600} class="w-full h-full object-cover opacity-20" />
       <div class="absolute inset-0 bg-gradient-to-r from-dark-950/90 via-dark-950/70 to-dark-950/90"></div>
     </div>
 
