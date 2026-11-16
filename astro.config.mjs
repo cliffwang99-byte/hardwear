@@ -23,6 +23,11 @@ export default defineConfig({
     },
     // 注意：不要启用 routing.prefixDefaultLocale，否则 /_emdash/admin 会 404
   },
+  image: {
+    // 不绑定具体域名：只按路径授权 EmDash 媒体路由，
+    // 这样无论部署在 workers.dev 还是自定义域名下都能被 Astro 图片服务优化。
+    remotePatterns: [{ pathname: "/_emdash/api/media/file/**" }],
+  },
   integrations: [
     react(), // Required — the admin UI is a React app
     emdash({

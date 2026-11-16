@@ -1,10 +1,14 @@
 ---
+import { Image } from "emdash/ui";
 import { localizePath } from "../lib/i18n";
 
 const currentLocale = Astro.currentLocale ?? "en";
 function localizeUrl(url: string): string {
   return localizePath(url, currentLocale);
 }
+
+const logoLight = "/_emdash/api/media/file/01M74WJRZGC0JR2QEQJZV5KPMS.01M74WJSJYQJ9P667S8GJN850Y.png";
+const logoDark = "/_emdash/api/media/file/01M74WJS00B99V2PQT9MX0A46W.01M74WJSK1TKNMN9BVRHW2EAEV.png";
 ---
 
 <footer class="bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-dark-900 dark:via-dark-950 dark:to-dark-900 border-t border-gray-200 dark:border-dark-800 mt-20">
@@ -14,15 +18,19 @@ function localizeUrl(url: string): string {
       <div class="sm:col-span-2 lg:col-span-2">
         <div class="flex items-center gap-2 mb-4">
           <div class="w-[70px] sm:w-[90px] shrink-0">
-            <img
-              src="https://buildmart.357363320.workers.dev/_emdash/api/media/file/01M74WJRZGC0JR2QEQJZV5KPMS.01M74WJSJYQJ9P667S8GJN850Y.png"
+            <Image
+              image={logoLight}
               alt="MrKB logo"
+              width={180}
+              height={49}
               class="w-full h-auto dark:hidden transition-transform duration-500 ease-in-out"
               loading="lazy"
             />
-            <img
-              src="https://buildmart.357363320.workers.dev/_emdash/api/media/file/01M74WJS00B99V2PQT9MX0A46W.01M74WJSK1TKNMN9BVRHW2EAEV.png"
+            <Image
+              image={logoDark}
               alt="MrKB logo"
+              width={180}
+              height={49}
               class="w-full h-auto hidden dark:block transition-transform duration-500 ease-in-out"
               loading="lazy"
             />

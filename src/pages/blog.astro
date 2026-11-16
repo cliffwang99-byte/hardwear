@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'emdash/ui';
 import { getPosts } from '../lib/blog';
 
 const posts = await getPosts();
@@ -83,7 +84,7 @@ function localizeUrl(url: string): string {
               <a href={localizeUrl(`/blog/${post.id}`)} class="block">
                 <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 overflow-hidden">
                   {post.image
-                    ? <img src={post.image} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image image={post.image} alt={post.title} width={600} height={338} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div class="w-full h-full flex items-center justify-center text-5xl">📰</div>}
                 </div>
               </a>

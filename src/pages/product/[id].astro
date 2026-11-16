@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import { getImage } from 'astro:assets';
 import { getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
-import { PortableText } from 'emdash/ui';
+import { PortableText, Image } from 'emdash/ui';
 import { getProductDetail, getProducts, getProductsBySeries, getSeries } from '../../lib/shop';
 import { localizePath } from '../../lib/i18n';
 const currentLocale = Astro.currentLocale ?? 'en';
@@ -25,6 +26,21 @@ const [allSeries, seriesProducts] = await Promise.all([
 const currentSeries = allSeries.find((s) => s.slug === product.series);
 const seriesName = currentSeries?.name ?? '';
 const seriesDescription = currentSeries?.description ?? '';
+
+const galleryImages = product.images || [];
+
+const galleryOptimized = await Promise.all(
+  galleryImages.map(async (src) => {
+    if (!src) return src;
+    try {
+      const absolute = src.startsWith('/') ? new URL(src, Astro.url.origin).href : src;
+      const { src: optimized } = await getImage({ src: absolute, width: 1000, height: 1000, format: 'webp' });
+      return optimized;
+    } catch {
+      return src;
+    }
+  })
+);
 
 const seriesSetProducts = seriesProducts.filter((p) => p.image);
 
@@ -340,7 +356,7 @@ const pageContext = createPublicPageContext({
       <!-- Images -->
       <div class="space-y-4 animate-slide-up">
         <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-dark-700">
-          <img id="main-image" src={product.images[0]} alt={product.name} class="w-full h-full object-cover" />
+          <img id="main-image" src={galleryOptimized[0]} alt={product.name} class="w-full h-full object-cover" />
           <button
             id="gallery-prev"
             type="button"
@@ -359,7 +375,7 @@ const pageContext = createPublicPageContext({
           </button>
         </div>
         <div class="grid grid-cols-4 gap-4">
-          {product.images.map((img, i) => (
+          {galleryOptimized.map((img, i) => (
             <button
               data-image={img}
               class={`aspect-square rounded-lg overflow-hidden border-2 ${i === 0 ? 'border-primary-600' : 'border-gray-200 dark:border-dark-700'} hover:border-primary-600 transition-colors`}
@@ -581,9 +597,11 @@ const pageContext = createPublicPageContext({
                       </span>
                     )}
                     <div class="aspect-square flex items-center justify-center p-3 sm:p-4">
-                      <img
-                        src={item.image}
+                      <Image
+                        image={item.image}
                         alt={item.name}
+                        width={400}
+                        height={400}
                         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
@@ -744,9 +762,9 @@ const pageContext = createPublicPageContext({
   </div>
 </BaseLayout>
 
-<script define:vars={{ product, b2bCapabilities }}>
+<script define:vars={{ product, b2bCapabilities, galleryOptimized }}>
   // Image gallery - pure JS (thumbnails + prev/next arrows)
-  var galleryImages = product.images || [];
+  var galleryImages = galleryOptimized || [];
   var currentIndex = 0;
 
   function setGalleryIndex(index) {

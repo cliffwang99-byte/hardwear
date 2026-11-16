@@ -52,3 +52,6 @@ test.txt
 *.md
 !README.md
 !LICENSE.md
+
+# Local pages not for production
+src/pages/China/
