@@ -35,6 +35,12 @@ const currentLocale = Astro.currentLocale ?? 'en';
 const RTL_LOCALES = ['ar'];
 const isRtl = RTL_LOCALES.includes(currentLocale);
 const htmlDir = isRtl ? 'rtl' : 'ltr';
+
+// ===== GA4 转化追踪 =====
+// 将来拿到 Measurement ID (G-XXXXXXXXXX) 后填入即可全局启用。
+// 保持空字符串 '' 时不加载任何 GA4 脚本，不影响线上。
+const GA_MEASUREMENT_ID = '';
+const gaEnabled = GA_MEASUREMENT_ID.length > 0;
 ---
 
 <!doctype html>
@@ -209,6 +215,17 @@ const htmlDir = isRtl ? 'rtl' : 'ltr';
         background-image: radial-gradient(circle, var(--tw-gradient-stops));
       }
     </style>
+    {gaEnabled && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '{GA_MEASUREMENT_ID}');
+        </script>
+      </>
+    )}
   </head>
   <body class="bg-white dark:bg-dark-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <Header />

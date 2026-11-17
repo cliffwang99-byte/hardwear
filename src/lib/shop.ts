@@ -148,6 +148,28 @@ export async function getProductBySlug(slug: string): Promise<ShopProduct | unde
 	return toProduct(result.entry as Record<string, unknown>);
 }
 
+export interface ProductVariant {
+	// 变体维度一的值，如 "Matte Black" / "30""（单属性变体只填这一个）。
+	attr1Value: string;
+	// 变体维度二的值，如 "Matte White"。空 = 单属性变体，非空 = 双属性组合。
+	attr2Value?: string;
+	// 变体级 SKU，如 "BV-02-30-MW"。
+	sku: string;
+	// 前端渲染色块圆点用的颜色值，如 "#1A1A1A"（选填）。
+	colorHex?: string;
+	// 选中该变体时切换的主图（选填）。
+	image: string;
+}
+
+export interface ProductAttribute {
+	// 工程属性名，如 Material / Mounting / Certification。
+	name: string;
+	// 逗号拆分的属性值数组，如 ["1/2\" NPT", "G1/2\" BSP"]。
+	values: string[];
+	// 是否参与分类页筛选（True=展示+筛选；False=仅详情页规格表展示）。
+	showInFilter: boolean;
+}
+
 export interface ShopProductDetail extends ShopProduct {
 	images: string[];
 	sku: string;
@@ -166,6 +188,14 @@ export interface ShopProductDetail extends ShopProduct {
 	seoCanonical: string;
 	seoNoIndex: boolean;
 	entryId: string;
+	// —— 变体（WooCommerce-like Variable Product）——
+	variants: ProductVariant[];
+	// 主变体维度名（Finish / Size / Thread…），None 或空 = 无变体。
+	variantAttr1?: string;
+	// 次变体维度名（可选），None 或空 = 仅单属性变体。
+	variantAttr2?: string;
+	// 非变体静态属性（展示 + 分类页筛选），无则空数组。
+	attributes: ProductAttribute[];
 }
 
 const fallbackDetail: ShopProductDetail = {
@@ -211,6 +241,8 @@ const fallbackDetail: ShopProductDetail = {
 	seoCanonical: "",
 	seoNoIndex: false,
 	entryId: "",
+	variants: [],
+	attributes: [],
 };
 
 async function taxonomyLabelMap(taxonomy: string): Promise<Map<string, string>> {
@@ -226,6 +258,61 @@ async function taxonomyLabelMap(taxonomy: string): Promise<Map<string, string>> 
 	};
 	walk(terms as { slug: string; label?: string; children?: unknown[] }[]);
 	return map;
+}
+
+// 解析 products 集合的 `variants`（repeater）为类型化的变体数组。单属性变体
+// 只填 attr_1_value，双属性组合再填 attr_2_value；没有 attr_1_value 的行忽略。
+function toVariants(raw: unknown): ProductVariant[] {
+	if (!Array.isArray(raw)) return [];
+	const out: ProductVariant[] = [];
+	for (const item of raw) {
+		if (!item || typeof item !== "object") continue;
+		const rec = item as Record<string, unknown>;
+		const a1 = typeof rec.attr_1_value === "string" ? rec.attr_1_value.trim() : "";
+		if (!a1) continue;
+		const a2Raw = typeof rec.attr_2_value === "string" ? rec.attr_2_value.trim() : "";
+		out.push({
+			attr1Value: a1,
+			attr2Value: a2Raw || undefined,
+			sku: typeof rec.variant_sku === "string" ? rec.variant_sku.trim() : "",
+			colorHex:
+				typeof rec.color_hex === "string" && rec.color_hex.trim()
+					? rec.color_hex.trim()
+					: undefined,
+			image: mediaUrl(rec.variant_image) || "",
+		});
+	}
+	return out;
+}
+
+// 解析 products 集合的 `product_attributes`（repeater）为静态属性数组，用于
+// 详情页规格表与分类页筛选。attr_value 用英文逗号拆成多个值。
+function toAttributes(raw: unknown): ProductAttribute[] {
+	if (!Array.isArray(raw)) return [];
+	const out: ProductAttribute[] = [];
+	for (const item of raw) {
+		if (!item || typeof item !== "object") continue;
+		const rec = item as Record<string, unknown>;
+		const name = typeof rec.attr_name === "string" ? rec.attr_name.trim() : "";
+		if (!name) continue;
+		const value = typeof rec.attr_value === "string" ? rec.attr_value : "";
+		out.push({
+			name,
+			values: value
+				.split(",")
+				.map((v) => v.trim())
+				.filter(Boolean),
+			showInFilter: rec.show_in_filter === true || rec.show_in_filter === 1 || rec.show_in_filter === "true",
+		});
+	}
+	return out;
+}
+
+// 读取变体维度名，None/空 视为未启用对应维度。
+function variantDim(value: unknown): string | undefined {
+	const v = typeof value === "string" ? value.trim() : "";
+	if (!v || v === "None") return undefined;
+	return v;
 }
 
 export async function getProductDetail(slug: string): Promise<ShopProductDetail> {
@@ -289,6 +376,10 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 		seoCanonical: typeof seo.canonical === "string" ? seo.canonical : "",
 		seoNoIndex: seo.noIndex === true,
 		entryId: typeof entry.id === "string" ? entry.id : "",
+		variants: toVariants(d.variants),
+		variantAttr1: variantDim(d.variant_attr_1),
+		variantAttr2: variantDim(d.variant_attr_2),
+		attributes: toAttributes(d.product_attributes),
 	};
 }
 
@@ -407,6 +498,101 @@ export async function getProductsByCategory(slug: string): Promise<ShopProduct[]
 	// slug match so the behaviour degrades gracefully.
 	if (!termSet) return products.filter((p) => p.category === slug);
 	return products.filter((p) => (p.category ? termSet.has(p.category) : false));
+}
+
+// 分类页动态筛选器聚合。扫描分类下所有产品，合并两类筛选维度：
+//  1) 静态属性（product_attributes）中 show_in_filter=true 者，以其 name 分组；
+//  2) 变体维度（variant_attr_1/2 的各值）作为额外筛选组。
+// 不同分类自然得到各自不同的筛选维度集合（龙头页筛材质/认证、水槽页筛厚度/尺寸）。
+export interface CategoryFilterGroup {
+	name: string;
+	values: string[];
+}
+
+// 分类页动态筛选器聚合（含每产品取值）。扫描分类下所有产品，合并两类筛选维度：
+//  1) 静态属性（product_attributes）中 show_in_filter=true 者，以其 name 分组；
+//  2) 变体维度（variant_attr_1/2 的各值）作为额外筛选组。
+// 返回用于渲染筛选栏的分组，以及每个产品的“分组名 -> 命中值”映射，供前端按属性过滤。
+export async function getCategoryFilterData(slug: string): Promise<{
+	groups: CategoryFilterGroup[];
+	productValues: Record<string, Record<string, string[]>>;
+}> {
+	const termSet = await resolveTermSlugSet("collection", slug);
+
+	const result = (await getEmDashCollection("products" as never)) as {
+		entries?: unknown[] | undefined;
+		error?: unknown;
+	};
+	if (result.error || !Array.isArray(result.entries)) {
+		return { groups: [], productValues: {} };
+	}
+
+	const inCategory = (p: { category?: string }): boolean =>
+		termSet ? (p.category ? termSet.has(p.category) : false) : p.category === slug;
+
+	const groups = new Map<string, Set<string>>();
+	const productValues: Record<string, Record<string, string[]>> = {};
+	const upsert = (g: string, v: string): void => {
+		if (!g || !v) return;
+		let set = groups.get(g);
+		if (!set) {
+			set = new Set();
+			groups.set(g, set);
+		}
+		set.add(v);
+	};
+	const addToProduct = (map: Record<string, string[]>, g: string, v: string): void => {
+		if (!g || !v) return;
+		if (!map[g]) map[g] = [];
+		if (!map[g].includes(v)) map[g].push(v);
+	};
+
+	for (const entry of result.entries) {
+		const e = entry as Record<string, unknown>;
+		const p = toProduct(e);
+		if (p.name === "" || !inCategory(p)) continue;
+		const d = (e.data && typeof e.data === "object" ? e.data : {}) as Record<string, unknown>;
+		const pid = p.id;
+		const map: Record<string, string[]> = {};
+		if (!pid) continue;
+
+		for (const attr of toAttributes(d.product_attributes)) {
+			if (!attr.showInFilter) continue;
+			for (const v of attr.values) {
+				upsert(attr.name, v);
+				addToProduct(map, attr.name, v);
+			}
+		}
+
+		const dim1 = variantDim(d.variant_attr_1);
+		if (dim1) {
+			for (const variant of toVariants(d.variants)) {
+				upsert(dim1, variant.attr1Value);
+				addToProduct(map, dim1, variant.attr1Value);
+			}
+		}
+		const dim2 = variantDim(d.variant_attr_2);
+		if (dim2) {
+			for (const variant of toVariants(d.variants)) {
+				if (variant.attr2Value) {
+					upsert(dim2, variant.attr2Value);
+					addToProduct(map, dim2, variant.attr2Value);
+				}
+			}
+		}
+
+		if (Object.keys(map).length > 0) productValues[pid] = map;
+	}
+
+	const groupList: CategoryFilterGroup[] = [...groups.entries()]
+		.map(([name, set]) => ({ name, values: [...set] }))
+		.filter((g) => g.values.length > 0);
+
+	return { groups: groupList, productValues };
+}
+
+export async function getCategoryFilters(slug: string): Promise<CategoryFilterGroup[]> {
+	return (await getCategoryFilterData(slug)).groups;
 }
 
 export async function getProductsByTopic(slug: string): Promise<ShopProduct[]> {
@@ -878,4 +1064,24 @@ export async function getHomeCategories(): Promise<HomeCategory[]> {
 	// Fall back to the top-level terms when no level-2 terms exist yet, so the
 	// section never renders empty on a freshly seeded site.
 	return level2.length > 0 ? level2 : terms.map(toCard);
+}
+
+export interface CatalogCategoryOption {
+	slug: string;
+	name: string;
+}
+
+// Catalog request dropdown options: expose the level-2 `collection` taxonomy
+// terms (e.g. Faucets, Sinks, Vanities, Showers) so visitors can pick which
+// product catalogs they need. Falls back to level-1 terms when no children exist.
+export async function getCatalogCategoryOptions(): Promise<CatalogCategoryOption[]> {
+	const terms = await getTaxonomyTerms("collection", { includeCounts: true });
+	const toOption = (term: { slug: string; label: string }): CatalogCategoryOption => ({
+		slug: term.slug,
+		name: term.label,
+	});
+	const level2 = terms.flatMap((term) =>
+		(Array.isArray(term.children) ? term.children : []).map(toOption),
+	);
+	return level2.length > 0 ? level2 : terms.map(toOption);
 }

@@ -29,6 +29,15 @@ const seriesDescription = currentSeries?.description ?? '';
 
 const galleryImages = product.images || [];
 
+// —— 变体选择数据（单属性 / 双属性统一模型）——
+const variantAttr1Values = [...new Set(product.variants.map((v) => v.attr1Value))];
+const variantAttr2Values = [
+  ...new Set(product.variants.map((v) => v.attr2Value).filter((v): v is string => Boolean(v))),
+];
+const hasVariants = product.variants.length > 0;
+const hasSecondDim = Boolean(product.variantAttr2) && variantAttr2Values.length > 0;
+const defaultVariant = product.variants[0];
+
 const galleryOptimized = await Promise.all(
   galleryImages.map(async (src) => {
     if (!src) return src;
@@ -494,6 +503,55 @@ const pageContext = createPublicPageContext({
           </div>
         )}
 
+        {hasVariants && (
+          <div id="variant-selector" class="mb-8 space-y-6" data-variant-attr1={product.variantAttr1 ?? ''} data-variant-attr2={product.variantAttr2 ?? ''}>
+            <div>
+              <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">{product.variantAttr1 ?? 'Attribute'}</h3>
+              <div class="flex flex-wrap gap-2" data-variant-options="1">
+                {variantAttr1Values.map((val) => {
+                  const ref = product.variants.find((v) => v.attr1Value === val);
+                  const isDefault = defaultVariant?.attr1Value === val;
+                  return (
+                    <button
+                      type="button"
+                      data-variant-option="1"
+                      data-value={val}
+                      data-color={ref?.colorHex ?? ''}
+                      class={`variant-btn px-4 py-2 rounded-lg border-2 font-semibold text-sm transition-colors ${isDefault ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-200 dark:border-dark-700 hover:border-primary-600'}`}
+                      style={ref?.colorHex && !isDefault ? `background:${ref.colorHex}; color:#fff` : undefined}
+                    >
+                      {val}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            {hasSecondDim && (
+              <div>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">{product.variantAttr2}</h3>
+                <div class="flex flex-wrap gap-2" data-variant-options="2">
+                  {variantAttr2Values.map((val) => {
+                    const ref = product.variants.find((v) => v.attr2Value === val);
+                    const isDefault = defaultVariant?.attr2Value === val;
+                    return (
+                      <button
+                        type="button"
+                        data-variant-option="2"
+                        data-value={val}
+                        data-color={ref?.colorHex ?? ''}
+                        class={`variant-btn px-4 py-2 rounded-lg border-2 font-semibold text-sm transition-colors ${isDefault ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-200 dark:border-dark-700 hover:border-primary-600'}`}
+                        style={ref?.colorHex && !isDefault ? `background:${ref.colorHex}; color:#fff` : undefined}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <!-- Quantity & Actions -->
         <div class="flex flex-wrap gap-4 mb-8">
           <div class="flex items-center gap-2 bg-gray-100 dark:bg-dark-800 rounded-xl p-2">
@@ -521,7 +579,7 @@ const pageContext = createPublicPageContext({
         <div class="space-y-4 border-t border-gray-200 dark:border-dark-700 pt-6">
           <div class="flex items-center gap-3">
             <span class="text-gray-600 dark:text-gray-400">SKU:</span>
-            <span class="font-semibold">{product.sku}</span>
+            <span id="product-sku" class="font-semibold">{product.sku}</span>
           </div>
           <div class="flex items-center gap-3">
             <span class="text-gray-600 dark:text-gray-400">Brand:</span>
@@ -699,6 +757,12 @@ const pageContext = createPublicPageContext({
         <div class="bg-white dark:bg-dark-800 rounded-2xl p-8 border border-gray-200 dark:border-dark-700">
           <h3 class="text-2xl font-bold mb-6">Technical Specifications</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {product.attributes.map((attr) => (
+              <div class="flex justify-between p-4 bg-gray-50 dark:bg-dark-900 rounded-lg">
+                <span class="font-semibold">{attr.name}:</span>
+                <span class="text-gray-600 dark:text-gray-400">{attr.values.join(', ')}</span>
+              </div>
+            ))}
             {Object.entries(product.specifications).map(([key, value]) => (
               <div class="flex justify-between p-4 bg-gray-50 dark:bg-dark-900 rounded-lg">
                 <span class="font-semibold">{key}:</span>
@@ -804,6 +868,122 @@ const pageContext = createPublicPageContext({
   var nextBtn = document.getElementById('gallery-next');
   if (nextBtn) nextBtn.addEventListener('click', function () { setGalleryIndex(currentIndex + 1); });
 
+  // ---- Variant selection (single-attribute or dual-attribute combined) ----
+  var currentVariant = null;
+  var variantSelector = document.getElementById('variant-selector');
+  if (variantSelector && product.variants && product.variants.length) {
+    var variants = product.variants;
+    var row1Btns = Array.prototype.slice.call(variantSelector.querySelectorAll('[data-variant-option="1"]'));
+    var row2Btns = Array.prototype.slice.call(variantSelector.querySelectorAll('[data-variant-option="2"]'));
+
+    function findVariant(av1, av2) {
+      for (var i = 0; i < variants.length; i++) {
+        var v = variants[i];
+        if (v.attr1Value === av1 && (v.attr2Value || '') === (av2 || '')) return v;
+      }
+      return null;
+    }
+    function getSelectedGroup(btns) {
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].classList.contains('user-selected')) return btns[i].getAttribute('data-value');
+      }
+      return '';
+    }
+    function setVariant(v) {
+      if (!v) return;
+      currentVariant = v;
+      var skuEl = document.getElementById('product-sku');
+      if (skuEl && v.sku) skuEl.textContent = v.sku;
+      var main = document.getElementById('main-image');
+      if (main && v.image) main.setAttribute('src', v.image);
+    }
+    function updateAvailability() {
+      var s1 = getSelectedGroup(row1Btns);
+      var s2 = getSelectedGroup(row2Btns);
+      for (var i = 0; i < row1Btns.length; i++) {
+        var val1 = row1Btns[i].getAttribute('data-value');
+        var ok = !s2 || variants.some(function (v) { return v.attr1Value === val1 && (v.attr2Value || '') === s2; });
+        row1Btns[i].disabled = !ok;
+        row1Btns[i].classList.toggle('opacity-40', !ok);
+        row1Btns[i].classList.toggle('cursor-not-allowed', !ok);
+      }
+      for (var j = 0; j < row2Btns.length; j++) {
+        var val2 = row2Btns[j].getAttribute('data-value');
+        var ok2 = !s1 || variants.some(function (v) { return v.attr1Value === s1 && (v.attr2Value || '') === val2; });
+        row2Btns[j].disabled = !ok2;
+        row2Btns[j].classList.toggle('opacity-40', !ok2);
+        row2Btns[j].classList.toggle('cursor-not-allowed', !ok2);
+      }
+    }
+    function styleActive() {
+      var groups = [row1Btns, row2Btns];
+      for (var g = 0; g < groups.length; g++) {
+        var btns = groups[g];
+        for (var i = 0; i < btns.length; i++) {
+          var btn = btns[i];
+          var active = btn.classList.contains('user-selected');
+          var color = btn.getAttribute('data-color');
+          btn.classList.remove('border-primary-600', 'bg-primary-600', 'text-white', 'border-gray-200', 'hover:border-primary-600');
+          if (active) btn.classList.add('border-primary-600', 'bg-primary-600', 'text-white');
+          else btn.classList.add('border-gray-200', 'hover:border-primary-600');
+          if (color) {
+            if (active) btn.style.background = '';
+            else { btn.style.background = color; btn.style.color = '#fff'; }
+          } else {
+            btn.style.background = '';
+            btn.style.color = '';
+          }
+        }
+      }
+    }
+    function selectRow1(btn) {
+      var val = btn.getAttribute('data-value');
+      for (var i = 0; i < row1Btns.length; i++) row1Btns[i].classList.remove('user-selected');
+      btn.classList.add('user-selected');
+      if (row2Btns.length) {
+        for (var j = 0; j < row2Btns.length; j++) row2Btns[j].classList.remove('user-selected');
+        updateAvailability();
+        var firstOk = null;
+        for (var k = 0; k < row2Btns.length; k++) { if (!row2Btns[k].disabled) { firstOk = row2Btns[k]; break; } }
+        if (firstOk) selectRow2(firstOk, true);
+        else setVariant(findVariant(val, ''));
+      } else {
+        setVariant(findVariant(val, ''));
+      }
+      styleActive();
+    }
+    function selectRow2(btn, preserve) {
+      var val = btn.getAttribute('data-value');
+      for (var j = 0; j < row2Btns.length; j++) row2Btns[j].classList.remove('user-selected');
+      btn.classList.add('user-selected');
+      updateAvailability();
+      var s1 = getSelectedGroup(row1Btns);
+      setVariant(findVariant(s1, val));
+      styleActive();
+    }
+    for (var r1 = 0; r1 < row1Btns.length; r1++) {
+      (function (btn) { btn.addEventListener('click', function () { if (!btn.disabled) selectRow1(btn); }); })(row1Btns[r1]);
+    }
+    for (var r2 = 0; r2 < row2Btns.length; r2++) {
+      (function (btn) { btn.addEventListener('click', function () { if (!btn.disabled) selectRow2(btn, false); }); })(row2Btns[r2]);
+    }
+    // init default: the first variant
+    var def = variants[0];
+    if (def) {
+      for (var i = 0; i < row1Btns.length; i++) {
+        if (row1Btns[i].getAttribute('data-value') === def.attr1Value) row1Btns[i].classList.add('user-selected');
+      }
+      if (row2Btns.length && def.attr2Value) {
+        for (var j = 0; j < row2Btns.length; j++) {
+          if (row2Btns[j].getAttribute('data-value') === def.attr2Value) row2Btns[j].classList.add('user-selected');
+        }
+      }
+      setVariant(def);
+      if (row2Btns.length) updateAvailability();
+      styleActive();
+    }
+  }
+
   // Quantity
   var quantity = 1;
   var incBtn = document.getElementById('increase-qty');
@@ -824,16 +1004,26 @@ const pageContext = createPublicPageContext({
   // Add to cart
   var cartBtn = document.getElementById('add-to-cart-btn');
   if (cartBtn) cartBtn.addEventListener('click', function () {
+    var currentSku = (currentVariant && currentVariant.sku) ? currentVariant.sku : product.sku;
+    var variantLabel = '';
+    if (currentVariant) {
+      var parts = [];
+      if (product.variantAttr1) parts.push(product.variantAttr1 + ': ' + currentVariant.attr1Value);
+      if (currentVariant.attr2Value && product.variantAttr2) parts.push(product.variantAttr2 + ': ' + currentVariant.attr2Value);
+      variantLabel = parts.join(' / ');
+    }
+    var img = (currentVariant && currentVariant.image) ? currentVariant.image : product.images[0];
+    var key = product.id + '|' + currentSku;
     var cart = [];
     try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (err) { cart = []; }
     var existing = null;
     for (var i = 0; i < cart.length; i++) {
-      if (cart[i].id === product.id) { existing = cart[i]; break; }
+      if (cart[i].key === key) { existing = cart[i]; break; }
     }
     if (existing) {
       existing.quantity += quantity;
     } else {
-      cart.push({ id: product.id, name: product.name, price: product.price, image: product.images[0], quantity: quantity });
+      cart.push({ key: key, id: product.id, name: product.name, sku: currentSku, variant: variantLabel, price: product.price, image: img, quantity: quantity });
     }
     try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (err) {}
     var count = 0;

@@ -12,7 +12,7 @@ const currentLocale = Astro.currentLocale ?? 'en';
 function localizeUrl(url: string): string {
   return localizePath(url, currentLocale);
 }
-import { getCategoryPageData, getProductsByCategory, getCategories, getTopics, faqBlocksToItems } from '../../lib/shop';
+import { getCategoryPageData, getProductsByCategory, getCategoryFilterData, getCategories, getTopics, faqBlocksToItems } from '../../lib/shop';
 
 const { category } = Astro.params;
 
@@ -463,6 +463,14 @@ const products = taxProducts.length
   ? taxProducts
   : (productsByCategory[taxCategorySlug] || productsByCategory['cement']);
 
+// 动态筛选（静态属性 + 变体维度）：仅在确实由 taxonomy 驱动产品时计算，
+// 静态 fallback 数据无属性、groups 为空，筛选栏自动不渲染该区块。
+const refine = taxProducts.length
+  ? await getCategoryFilterData(taxCategorySlug)
+  : { groups: [], productValues: {} };
+const refineGroups = refine.groups;
+const refineByProduct = refine.productValues;
+
 const siteSettings = await getSiteSettings();
 const siteTitle = siteSettings.title || 'MrKB';
 const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
@@ -576,7 +584,7 @@ const pageContext = createPublicPageContext({
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Sidebar Filters -->
       <aside class="lg:w-64 flex-shrink-0">
-        <FilterSidebar categories={categories} topics={topics} />
+        <FilterSidebar categories={categories} topics={topics} attributeGroups={refineGroups} />
       </aside>
 
       <!-- Products Grid -->
@@ -606,7 +614,7 @@ const pageContext = createPublicPageContext({
         <!-- Products Grid -->
         <div data-filter-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {products.map((product, i) => (
-            <div style={`animation: fadeInUp 0.6s ease-in-out ${i * 0.05}s both;`}>
+            <div style={`animation: fadeInUp 0.6s ease-in-out ${i * 0.05}s both;`} data-refine={JSON.stringify(refineByProduct[product.id] ?? {})}>
               <ProductCard {...product} />
             </div>
           ))}

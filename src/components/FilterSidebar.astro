@@ -9,9 +9,10 @@ interface TopicTerm {
 interface Props {
   categories: { slug: string; name: string; totalProducts: number }[];
   topics: TopicTerm[];
+  attributeGroups?: { name: string; values: string[] }[];
 }
 
-const { categories = [], topics = [] } = Astro.props;
+const { categories = [], topics = [], attributeGroups = [] } = Astro.props;
 ---
 
 <!-- Mobile Filter Toggle Button -->
@@ -103,6 +104,30 @@ const { categories = [], topics = [] } = Astro.props;
     </div>
   </div>
 
+  <!-- Attribute / Variant Refine - Dynamic -->
+  {attributeGroups.length > 0 && (
+    <div class="bg-white dark:bg-dark-800 rounded-xl p-5 sm:p-6 border border-gray-200 dark:border-dark-700">
+      <h3 class="font-bold text-base sm:text-lg mb-4">Refine</h3>
+      <div class="space-y-4">
+        {attributeGroups.map(group => (
+          <div class="refine-group">
+            <div class="mb-2">
+              <h4 class="text-sm font-semibold text-gray-900 dark:text-white">{group.name}</h4>
+            </div>
+            <div class="space-y-2 ms-1">
+              {group.values.map(value => (
+                <label class="flex items-center gap-3 cursor-pointer group py-0.5">
+                  <input type="checkbox" value={value} data-filter-group={group.name} class="w-5 h-5 accent-primary-600 rounded cursor-pointer" />
+                  <span class="text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{value}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
   <!-- Clear Filters - Touch-Friendly -->
   <button data-filter-clear class="w-full py-3 sm:py-3.5 bg-gray-200 dark:bg-dark-700 hover:bg-gray-300 dark:hover:bg-dark-600 rounded-xl font-semibold transition-colors duration-300 text-sm sm:text-base active:scale-95">
     Clear All Filters
@@ -117,18 +142,37 @@ const { categories = [], topics = [] } = Astro.props;
   interface FilterState {
     category: string[];
     topic: string[];
+    refine: Record<string, string[]>;
   }
 
   function readState(container: HTMLElement | null): FilterState {
-    const state: FilterState = { category: [], topic: [] };
+    const state: FilterState = { category: [], topic: [], refine: {} };
     if (!container) return state;
     container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
       if (!checkbox.checked) return;
       const kind = checkbox.dataset.filter;
       if (kind === 'category') state.category.push(checkbox.value);
       else if (kind === 'topic') state.topic.push(checkbox.value);
+      else if (checkbox.dataset.filterGroup) {
+        const group = checkbox.dataset.filterGroup;
+        if (!state.refine[group]) state.refine[group] = [];
+        state.refine[group].push(checkbox.value);
+      }
     });
     return state;
+  }
+
+  // 解析每张卡片承载的属性取值（单个 JSON 属性，key=分组名 value=该产品命中值）。
+  function cardRefine(card: HTMLElement): Record<string, string[]> {
+    const el = card.closest<HTMLElement>('[data-refine]');
+    const raw = el?.getAttribute('data-refine') ?? '';
+    if (!raw) return {};
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
   }
 
   function cardMatches(card: HTMLElement, state: FilterState): boolean {
@@ -142,6 +186,16 @@ const { categories = [], topics = [] } = Astro.props;
     if (state.topic.length > 0) {
       const cardTopics = slugsOf('productTopic');
       if (!state.topic.some((slug) => cardTopics.includes(slug))) return false;
+    }
+
+    if (Object.keys(state.refine).length > 0) {
+      const values = cardRefine(card);
+      for (const group of Object.keys(state.refine)) {
+        const selected = state.refine[group];
+        if (!selected.length) continue;
+        const available: string[] = Array.isArray(values[group]) ? values[group] : [];
+        if (!selected.some((s) => available.includes(s))) return false;
+      }
     }
 
     return true;
@@ -173,9 +227,13 @@ const { categories = [], topics = [] } = Astro.props;
     const mobileCheckboxes = mobileFilterContent.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
     mobileCheckboxes.forEach((mobileCheckbox) => {
       const kind = mobileCheckbox.dataset.filter;
-      if (!kind) return;
+      const group = mobileCheckbox.dataset.filterGroup;
+      if (!kind && !group) return;
+      const where = kind
+        ? `[data-filter="${kind}"][value="${mobileCheckbox.value}"]`
+        : `[data-filter-group="${group}"][value="${mobileCheckbox.value}"]`;
       desktopFilters
-        .querySelectorAll<HTMLInputElement>(`input[type="checkbox"][data-filter="${kind}"][value="${mobileCheckbox.value}"]`)
+        .querySelectorAll<HTMLInputElement>(`input[type="checkbox"]${where}`)
         .forEach((desktopCheckbox) => {
           desktopCheckbox.checked = mobileCheckbox.checked;
         });
@@ -184,7 +242,7 @@ const { categories = [], topics = [] } = Astro.props;
 
   function clearAll(): void {
     document
-      .querySelectorAll<HTMLInputElement>('[data-filter="category"], [data-filter="topic"]')
+      .querySelectorAll<HTMLInputElement>('[data-filter="category"], [data-filter="topic"], [data-filter-group]')
       .forEach((checkbox) => {
         checkbox.checked = false;
       });
@@ -193,8 +251,9 @@ const { categories = [], topics = [] } = Astro.props;
 
   // Any checkbox change re-applies the filters immediately.
   document.addEventListener('change', (e) => {
-    const checkbox = (e.target as HTMLElement)?.closest<HTMLInputElement>('input[type="checkbox"][data-filter]');
+    const checkbox = (e.target as HTMLElement)?.closest<HTMLInputElement>('input[type="checkbox"]');
     if (!checkbox) return;
+    if (!checkbox.dataset.filter && !checkbox.dataset.filterGroup) return;
     applyFilters();
   });
 

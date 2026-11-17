@@ -11,10 +11,13 @@ const CATALOG_REQUEST_FIELDS = [
   { slug: "scope_type", label: "Scope Type", type: "string" as const },
   { slug: "scope_name", label: "Scope Name", type: "string" as const },
   { slug: "scope_label", label: "Scope Label", type: "string" as const },
-  { slug: "locale", label: "Locale", type: "string" as const },
+  { slug: "request_locale", label: "Locale", type: "string" as const },
   { slug: "cr_number", label: "CR Number", type: "string" as const },
   { slug: "company_name", label: "Company", type: "string" as const },
   { slug: "bom_note", label: "BOM / Model List", type: "text" as const },
+  { slug: "catalog_categories", label: "Requested Catalogs", type: "json" as const },
+  { slug: "submitter_ip", label: "Submitter IP", type: "string" as const },
+  { slug: "submitter_country", label: "Country", type: "string" as const },
   {
     slug: "request_status",
     label: "Status",
@@ -64,10 +67,30 @@ export const POST: APIRoute = async ({ request }) => {
   const scopeType = typeof body.scope_type === "string" ? body.scope_type.trim() : "";
   const scopeName = typeof body.scope_name === "string" ? body.scope_name.trim() : "";
   const scopeLabel = typeof body.scope_label === "string" ? body.scope_label.trim() : "";
-  const locale = typeof body.locale === "string" ? body.locale.trim() : "";
+  const requestLocale = typeof body.request_locale === "string" ? body.request_locale.trim() : "";
   const crNumber = typeof body.cr_number === "string" ? body.cr_number.trim() : "";
   const company = typeof body.company_name === "string" ? body.company_name.trim() : "";
-  const bomNote = typeof body.bom_note === "string" ? body.bom_note.trim() : "";
+  const bomNote = typeof body.bom_note === "string" ? body.bom_note.trim() : "No BOM attached";
+  // `catalog_categories` may arrive as a JSON array of slugs, or a comma-separated string.
+  let catalogCategories: string[] = [];
+  if (Array.isArray(body.catalog_categories)) {
+    catalogCategories = (body.catalog_categories as unknown[])
+      .map((v) => (typeof v === "string" ? v.trim() : ""))
+      .filter(Boolean);
+  } else if (typeof body.catalog_categories === "string" && body.catalog_categories.trim()) {
+    catalogCategories = body.catalog_categories
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+
+  // --- Anti-abuse: honeypot (only gate kept; timing check removed) ---
+  const honeypot = typeof body.honeypot_website === "string" ? body.honeypot_website.trim() : "";
+  if (honeypot) return invalid("Suspicious submission rejected");
+
+  // --- Geo / IP enrichment from Cloudflare edge headers ---
+  const submitterIp = request.headers.get("CF-Connecting-IP") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+  const submitterCountry = (request.headers.get("CF-IPCountry") ?? "").toUpperCase();
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return invalid("Please provide a valid work email");
@@ -91,10 +114,13 @@ export const POST: APIRoute = async ({ request }) => {
         scope_type: scopeType,
         scope_name: scopeName,
         scope_label: scopeLabel,
-        locale,
+        request_locale: requestLocale,
         cr_number: crNumber,
         company_name: company,
         bom_note: bomNote,
+        catalog_categories: catalogCategories,
+        submitter_ip: submitterIp,
+        submitter_country: submitterCountry,
         request_status: "new",
       },
     });

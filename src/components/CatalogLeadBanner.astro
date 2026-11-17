@@ -1,10 +1,12 @@
 ---
 import { localizePath } from '../lib/i18n';
+import { getCatalogCategoryOptions } from '../lib/shop';
 interface Props {
   categoryName: string;
   scopeType?: 'category' | 'topic' | 'landing';
 }
 const { categoryName, scopeType = 'category' } = Astro.props;
+const catalogOptions = await getCatalogCategoryOptions();
 const locale = Astro.currentLocale ?? 'en';
 const isRtl = locale === 'ar';
 const quoteUrl = localizePath('/cart', locale);
@@ -16,9 +18,11 @@ const COPY = {
     trust: ['500+ ready molds', 'Zinc / SS304 / Brass', 'NPT & G1/2 threads'],
     emailLabel: 'Work Email *',
     emailPlaceholder: 'you@company.com',
-    geoLabel: 'Project ZIP Code *',
-    geoPlaceholder: 'e.g. 90210',
-    geoKind: 'zip',
+    geoLabel: 'Country *',
+    geoPlaceholder: 'e.g. United States, Canada, Mexico',
+    geoKind: 'country',
+    catalogLabel: 'Which catalogs do you need?',
+    catalogPlaceholder: 'Select catalogs...',
     cta: 'Request Full PDF Catalog',
     bomLink: 'Have a BOM or competitor model list? Send it with your request ->',
     quoteLink: 'Already building a quote? Add a note for full catalog access ->',
@@ -42,9 +46,11 @@ const COPY = {
     trust: ['500+ moldes listos', 'Zinc / Acero inox. / Laton', 'Rosca NPT y G1/2'],
     emailLabel: 'Correo Corporativo *',
     emailPlaceholder: 'usted@empresa.com',
-    geoLabel: 'Puerto de Destino *',
-    geoPlaceholder: 'ej. Manzanillo, Callao, San Antonio',
-    geoKind: 'port',
+    geoLabel: 'País *',
+    geoPlaceholder: 'Ej. Estados Unidos, México, Perú',
+    geoKind: 'country',
+    catalogLabel: '¿Qué catálogos necesita?',
+    catalogPlaceholder: 'Seleccione catálogos...',
     cta: 'Solicitar Catalogo PDF Completo',
     bomLink: 'Tiene un BOM o lista de modelos? Enviela junto con su solicitud ->',
     quoteLink: 'Ya esta armando una cotizacion? Agregue una nota para el catalogo completo ->',
@@ -68,9 +74,11 @@ const COPY = {
     trust: ['أكثر من 500 قالب جاهز', 'نحاس أصفر / ستانلس ستيل', 'معايير SASO و SABER'],
     emailLabel: 'البريد الإلكتروني للعمل *',
     emailPlaceholder: 'you@company.com',
-    geoLabel: 'ميناء الوصول *',
-    geoPlaceholder: 'مثل: جدة، الدمام، جبل علي',
-    geoKind: 'port',
+    geoLabel: 'الدولة *',
+    geoPlaceholder: 'مثل: السعودية، الإمارات، مصر',
+    geoKind: 'country',
+    catalogLabel: 'ما الكتالوجات التي تحتاجها؟',
+    catalogPlaceholder: 'اختر الكتالوجات...',
     crLabel: 'رقم السجل التجاري (CR Number)',
     cta: 'طلب الكتالوج الهندسي الكامل (PDF)',
     bomLink: 'هل لديك جدول كميات أو قائمة موديلات؟ أرسلها مع طلبك',
@@ -121,6 +129,11 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
           <input type="hidden" name="scope_label" value={scopeLabel}/>
           <input type="hidden" name="locale" value={locale}/>
           <input type="hidden" name="geo_kind" value={t.geoKind}/>
+          <div class="absolute -left-[9999px] top-auto" aria-hidden="true">
+            <label>Website</label>
+            <input type="text" name="honeypot_website" tabindex="-1" autocomplete="off"/>
+          </div>
+          <input type="hidden" name="submitted_at" value=""/>
           <div class="space-y-3">
             <div>
               <label class={labelClass}>{t.emailLabel}</label>
@@ -129,6 +142,26 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
             <div>
               <label class={labelClass}>{t.geoLabel}</label>
               <input data-field="geo" type="text" name="geo_value" required placeholder={t.geoPlaceholder} class={fieldClass}/>
+            </div>
+            <div>
+              <label class={labelClass}>{t.catalogLabel}</label>
+              <div data-catalog-dropdown class="relative">
+                <details class="group">
+                  <summary class="flex items-center justify-between gap-2 cursor-pointer list-none select-none px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/15 hover:border-emerald-400 focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-400/25 transition">
+                    <span data-catalog-value-label data-placeholder={t.catalogPlaceholder} class="text-sm text-white/60 truncate">{t.catalogPlaceholder}</span>
+                    <svg class="w-4 h-4 shrink-0 text-white/50 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="absolute z-30 start-0 w-full mt-1.5 max-h-56 overflow-auto rounded-lg bg-[#0e2a22] border border-white/15 shadow-2xl p-2 space-y-0.5">
+                    {catalogOptions.map((opt) => (
+                      <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-white/10 cursor-pointer text-sm text-white/90">
+                        <input type="checkbox" value={opt.slug} data-catalog-opt class="w-4 h-4 accent-emerald-400 shrink-0"/>
+                        <span class="truncate">{opt.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </details>
+                <input type="hidden" name="catalog_categories" data-catalog-value/>
+              </div>
             </div>
           </div>
           <button type="submit" data-catalog-submit class="mt-4 w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-[#0b1f19] font-bold text-sm transition-colors active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed">{t.cta}</button>
@@ -161,6 +194,11 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
       <input type="hidden" name="scope_label" value={scopeLabel}/>
       <input type="hidden" name="locale" value={locale}/>
       <input type="hidden" name="geo_kind" value={t.geoKind}/>
+      <div class="absolute -left-[9999px] top-auto" aria-hidden="true">
+        <label>Website</label>
+        <input type="text" name="honeypot_website" tabindex="-1" autocomplete="off"/>
+      </div>
+      <input type="hidden" name="submitted_at" value=""/>
       <div>
         <label class={labelClass}>{t.emailLabel}</label>
         <input data-field="email" type="email" name="work_email" required placeholder={t.emailPlaceholder} class={fieldClass}/>
@@ -168,6 +206,26 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
       <div>
         <label class={labelClass}>{t.geoLabel}</label>
         <input data-field="geo" type="text" name="geo_value" required placeholder={t.geoPlaceholder} class={fieldClass}/>
+      </div>
+      <div>
+        <label class={labelClass}>{t.catalogLabel}</label>
+        <div data-catalog-dropdown class="relative">
+          <details class="group">
+            <summary class="flex items-center justify-between gap-2 cursor-pointer list-none select-none px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/15 hover:border-emerald-400 focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-400/25 transition">
+              <span data-catalog-value-label data-placeholder={t.catalogPlaceholder} class="text-sm text-white/60 truncate">{t.catalogPlaceholder}</span>
+              <svg class="w-4 h-4 shrink-0 text-white/50 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="absolute z-30 start-0 w-full mt-1.5 max-h-60 overflow-auto rounded-lg bg-[#0e2a22] border border-white/15 shadow-2xl p-2 space-y-0.5">
+              {catalogOptions.map((opt) => (
+                <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-white/10 cursor-pointer text-sm text-white/90">
+                  <input type="checkbox" value={opt.slug} data-catalog-opt class="w-4 h-4 accent-emerald-400 shrink-0"/>
+                  <span class="truncate">{opt.name}</span>
+                </label>
+              ))}
+            </div>
+          </details>
+          <input type="hidden" name="catalog_categories" data-catalog-value/>
+        </div>
       </div>
       {isRtl && (
         <div>
@@ -200,6 +258,35 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
     ar: { required: 'يرجى إكمال الحقول المطلوبة.', email: 'يرجى إدخال بريد إلكتروني للعمل صالح.', generic: 'حدث خطأ. يرجى المحاولة مرة أخرى.', success: 'تم استلام طلبك. سنرسل الكتالوج الكامل بصيغة PDF خلال يوم عمل واحد.' },
   };
   function hintsFor(form) { return HINTS[form.dataset.locale || 'en'] || HINTS.en; }
+  function catalogOptionsSelected(dropdown) {
+    if (!dropdown) return [];
+    const checked = dropdown.querySelectorAll('[data-catalog-opt]:checked');
+    return Array.prototype.map.call(checked, function (o) { return o.value; });
+  }
+  function updateDropdownLabel(dropdown) {
+    if (!dropdown) return;
+    const values = catalogOptionsSelected(dropdown);
+    const label = dropdown.querySelector('[data-catalog-value-label]');
+    const hidden = dropdown.querySelector('[data-catalog-value]');
+    if (label) {
+      if (values.length === 0) {
+        label.textContent = (label.dataset.placeholder || '').trim() || label.dataset.placeholder || '';
+      } else {
+        label.textContent = values.length + ' selected';
+      }
+    }
+    if (hidden) hidden.value = values.join(',');
+  }
+  function copyCatalogSelection(fromForm, toForm) {
+    if (!fromForm || !toForm) return;
+    const fromDd = fromForm.querySelector('[data-catalog-dropdown]');
+    const toDd = toForm.querySelector('[data-catalog-dropdown]');
+    if (!fromDd || !toDd) return;
+    const fromValues = catalogOptionsSelected(fromDd);
+    const set = fromValues.reduce(function (acc, v) { acc[v] = true; return acc; }, {});
+    Array.prototype.forEach.call(toDd.querySelectorAll('[data-catalog-opt]'), function (cb) { cb.checked = !!set[cb.value]; });
+    updateDropdownLabel(toDd);
+  }
   function setStatus(form, message, ok) {
     const el = form.querySelector('[data-catalog-status]');
     if (!el) return;
@@ -227,6 +314,7 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
     const fullGeo = fullForm && fullForm.querySelector('[data-field="geo"]');
     if (fullEmail && email) fullEmail.value = email.value;
     if (fullGeo && geo) fullGeo.value = geo.value;
+    copyCatalogSelection(quickForm, fullForm);
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(function () {
       if (backdrop) backdrop.classList.remove('opacity-0');
@@ -241,6 +329,13 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
     window.setTimeout(function () { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
   }
   document.querySelectorAll('[data-catalog-open]').forEach(function (btn) { btn.addEventListener('click', function (e) { e.preventDefault(); openModal(); }); });
+  document.addEventListener('change', function (e) {
+    const target = e.target;
+    if (target && target.matches && target.matches('[data-catalog-opt]')) {
+      const dd = target.closest('[data-catalog-dropdown]');
+      updateDropdownLabel(dd);
+    }
+  });
   document.querySelectorAll('[data-catalog-close]').forEach(function (btn) { btn.addEventListener('click', closeModal); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeModal(); });
   document.querySelectorAll('form[data-catalog-form]').forEach(function (formEl) {
@@ -255,28 +350,41 @@ const labelClass = 'block text-xs font-semibold text-emerald-100/90 mb-1.5';
       const crInput = form.querySelector('[data-field="cr"]');
       const companyInput = form.querySelector('[data-field="company"]');
       const bomInput = form.querySelector('[data-field="bom"]');
+      const catalogsDropdown = form.querySelector('[data-catalog-dropdown]');
       const email = (emailInput && emailInput.value || '').trim();
       const geo = (geoInput && geoInput.value || '').trim();
       if (!email || !geo) { setStatus(form, hints.required, false); return; }
       if (!EMAIL_RE.test(email)) { setStatus(form, hints.email, false); return; }
+      if (catalogsDropdown) updateDropdownLabel(catalogsDropdown);
+      const catalogCategories = catalogOptionsSelected(catalogsDropdown);
       const payload = {
         work_email: email,
         geo_value: geo,
         geo_kind: form.dataset.geoKind || 'zip',
+        catalog_categories: catalogCategories,
         cr_number: (crInput && crInput.value || '').trim(),
         company_name: (companyInput && companyInput.value || '').trim(),
         bom_note: (bomInput && bomInput.value || '').trim(),
         scope_type: form.dataset.scopeType || 'category',
         scope_name: form.dataset.scopeName || '',
-        locale: form.dataset.locale || 'en',
+        request_locale: form.dataset.locale || 'en',
+        honeypot_website: (form.querySelector('input[name="honeypot_website"]') || {}).value || '',
+        submitted_at: Date.now(),
       };
       if (submitBtn) submitBtn.disabled = true;
       try {
         const res = await fetch('/api/catalog/request', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
         const data = await res.json().catch(function () { return {}; });
         if (res.ok && data.ok) {
+          if (window.gtag) {
+            gtag('event', 'generate_lead', {
+              method: 'catalog_request',
+            });
+          }
           setStatus(form, hints.success, true);
           form.querySelectorAll('input, textarea').forEach(function (el) { if (el.type !== 'hidden') el.value = ''; });
+          Array.prototype.forEach.call(form.querySelectorAll('[data-catalog-opt]'), function (cb) { cb.checked = false; });
+          if (catalogsDropdown) updateDropdownLabel(catalogsDropdown);
           if (form.dataset.catalogMode === 'full') window.setTimeout(closeModal, 1800);
         } else {
           setStatus(form, data.message || hints.generic, false);

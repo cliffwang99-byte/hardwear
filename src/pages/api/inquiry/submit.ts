@@ -17,6 +17,8 @@ const INQUIRY_FIELDS = [
   { slug: "company_name", label: "Company", type: "string" as const },
   { slug: "message", label: "Message", type: "text" as const },
   { slug: "items", label: "Quote Items", type: "json" as const },
+  { slug: "submitter_ip", label: "Submitter IP", type: "string" as const },
+  { slug: "submitter_country", label: "Country", type: "string" as const },
   {
     slug: "inquiry_status",
     label: "Status",
@@ -67,6 +69,14 @@ export const POST: APIRoute = async ({ request }) => {
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const rawItems = Array.isArray(body.items) ? (body.items as QuoteItem[]) : [];
 
+  // --- Anti-abuse: honeypot (only gate kept; timing check removed) ---
+  const honeypot = typeof body.honeypot_website === "string" ? body.honeypot_website.trim() : "";
+  if (honeypot) return invalid({ submitted_at: body.submitted_at }, "Suspicious submission rejected");
+
+  // --- Geo / IP enrichment from Cloudflare edge headers ---
+  const submitterIp = request.headers.get("CF-Connecting-IP") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+  const submitterCountry = (request.headers.get("CF-IPCountry") ?? "").toUpperCase();
+
   if (!name) return invalid(body, "Please provide your name");
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return invalid(body, "Please provide a valid email address");
@@ -100,6 +110,8 @@ export const POST: APIRoute = async ({ request }) => {
         company_name: company,
         message,
         items,
+        submitter_ip: submitterIp,
+        submitter_country: submitterCountry,
         inquiry_status: "pending",
       },
     });
