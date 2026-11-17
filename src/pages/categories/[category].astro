@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import FilterSidebar from '../../components/FilterSidebar.astro';
+import CatalogLeadBanner from '../../components/CatalogLeadBanner.astro';
 
 import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
@@ -638,6 +639,8 @@ const pageContext = createPublicPageContext({
       </div>
     </div>
   </section>
+
+  <CatalogLeadBanner categoryName={currentCategory.name} scopeType="category" />
 
   <!-- Category Info Section -->
   <section class="bg-gray-50 dark:bg-dark-900 py-16">

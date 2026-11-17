@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import CatalogLeadBanner from '../../components/CatalogLeadBanner.astro';
 import { getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText, Image } from 'emdash/ui';
@@ -241,6 +242,8 @@ const pageContext = createPublicPageContext({
       </div>
     </div>
   </section>
+
+  <CatalogLeadBanner categoryName={pageName} scopeType="landing" />
 
   <!-- Longtext SEO Blocks (from CMS) -->
   {longtextBlocks.length > 0 && (
