@@ -441,12 +441,18 @@ const currentLocaleCode = currentLocale;
         : '';
     const rows = items
       .map((item) => {
+        const thumb = item.image
+          ? `<img src="${escapeHtml(item.image)}" alt="" loading="lazy" class="w-10 h-10 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-dark-700" />`
+          : '';
         const meta = item.meta
           ? `<span class="block text-[11px] text-gray-500 dark:text-gray-400 truncate">${highlight(item.meta, keywords)}</span>`
           : '';
-        return `<a href="${item.url}" data-search-item class="${itemClass}">
+        const body = `<span class="flex-1 min-w-0">
           <span class="block text-sm font-medium text-gray-900 dark:text-white truncate">${highlight(item.title, keywords)}</span>
           ${meta}
+        </span>`;
+        return `<a href="${item.url}" data-search-item class="${itemClass}">
+          ${thumb ? `<span class="flex items-center gap-3">${thumb}${body}</span>` : body}
         </a>`;
       })
       .join('');
