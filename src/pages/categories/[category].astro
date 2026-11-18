@@ -29,69 +29,61 @@ const categoryData: Record<string, any> = {
     name: 'Cement & Concrete',
     icon: '🏗️',
     description: 'Premium cement and concrete products for all your construction needs',
-    banner: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=400&fit=crop',
-    totalProducts: 2450
+    banner: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=400&fit=crop'
   },
   'cement-concrete': {
     name: 'Cement & Concrete',
     icon: '🏗️',
     description: 'Premium cement and concrete products for all your construction needs',
-    banner: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=400&fit=crop',
-    totalProducts: 2450
+    banner: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=400&fit=crop'
   },
   'steel-metal': {
     name: 'Steel & Metal',
     icon: '⚙️',
     description: 'High-quality steel and metal materials for structural projects',
-    banner: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&h=400&fit=crop',
-    totalProducts: 1890
+    banner: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&h=400&fit=crop'
   },
   'steel-&-metal': {
     name: 'Steel & Metal',
     icon: '⚙️',
     description: 'High-quality steel and metal materials for structural projects',
-    banner: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&h=400&fit=crop',
-    totalProducts: 1890
+    banner: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&h=400&fit=crop'
   },
   'lumber-wood': {
     name: 'Lumber & Wood',
     icon: '🪵',
     description: 'Premium lumber and wood products for construction and finishing',
-    banner: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1200&h=400&fit=crop',
-    totalProducts: 3200
+    banner: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1200&h=400&fit=crop'
   },
   'lumber-&-wood': {
     name: 'Lumber & Wood',
     icon: '🪵',
     description: 'Premium lumber and wood products for construction and finishing',
-    banner: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1200&h=400&fit=crop',
-    totalProducts: 3200
+    banner: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1200&h=400&fit=crop'
   },
   'tools-equipment': {
     name: 'Tools & Equipment',
     icon: '🔨',
     description: 'Professional tools and equipment for every construction task',
-    banner: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&h=400&fit=crop',
-    totalProducts: 5600
+    banner: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&h=400&fit=crop'
   },
   'tools-&-equipment': {
     name: 'Tools & Equipment',
     icon: '🔨',
     description: 'Professional tools and equipment for every construction task',
-    banner: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&h=400&fit=crop',
-    totalProducts: 5600
+    banner: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&h=400&fit=crop'
   }
 };
 
+const fallbackCategory = categoryData[taxCategorySlug] || categoryData['cement'];
 const currentCategory = catMeta
   ? {
       name: catMeta.name || categoryData[taxCategorySlug]?.name || categoryData['cement'].name,
       icon: '🛁',
       description: catMeta.termDescription || catMeta.seoDescription || categoryData[taxCategorySlug]?.description || 'Products in this collection.',
       banner: catMeta.banner || categoryData[taxCategorySlug]?.banner || 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=400&fit=crop',
-      totalProducts: catMeta.totalProducts || categoryData[taxCategorySlug]?.totalProducts || categoryData['cement'].totalProducts
     }
-  : categoryData[taxCategorySlug] || categoryData['cement'];
+  : fallbackCategory;
 
 const longtextBlocks = catMeta?.longDescriptionBlocks ?? [];
 const hasLongtext = longtextBlocks.length > 0;
@@ -100,6 +92,29 @@ const faqItems = faqBlocksToItems(faqBlocks);
 const hasFaq = faqItems.length > 0;
 
 const products = taxProducts.length ? taxProducts : [];
+
+const PER_PAGE = 12;
+const totalProducts = products.length;
+const totalPages = Math.max(1, Math.ceil(totalProducts / PER_PAGE));
+const rawPage = Number(Astro.url.searchParams.get('page') ?? '1');
+const currentPage = Number.isFinite(rawPage) ? Math.min(Math.max(Math.trunc(rawPage), 1), totalPages) : 1;
+const pageStart = (currentPage - 1) * PER_PAGE;
+const pageEnd = Math.min(pageStart + PER_PAGE, totalProducts);
+const pagedProducts = products.slice(pageStart, pageEnd);
+
+function pageUrl(target: number): string {
+  const base = Astro.url.pathname;
+  return localizeUrl(target <= 1 ? base : `${base}?page=${target}`);
+}
+
+const pageNumbers: number[] = [];
+if (totalPages <= 7) {
+  for (let p = 1; p <= totalPages; p += 1) pageNumbers.push(p);
+} else {
+  const windowStart = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+  const windowEnd = Math.min(totalPages, windowStart + 4);
+  for (let p = windowStart; p <= windowEnd; p += 1) pageNumbers.push(p);
+}
 
 // 动态筛选（静态属性 + 变体维度）：仅在确实由 taxonomy 驱动产品时计算，
 // 静态 fallback 数据无属性、groups 为空，筛选栏自动不渲染该区块。
@@ -231,27 +246,15 @@ const pageContext = createPublicPageContext({
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-dark-800">
           <div>
             <p class="text-gray-600 dark:text-gray-400">
-              Showing <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{products.length}</span> of 
-              <span class="font-semibold text-gray-900 dark:text-white">{currentCategory.totalProducts}</span> products
+              Showing <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{pagedProducts.length}</span> of
+              <span class="font-semibold text-gray-900 dark:text-white">{totalProducts}</span> products
             </p>
-          </div>
-
-          <!-- Sort Dropdown -->
-          <div class="flex items-center gap-4">
-            <label for="sort" class="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
-            <select id="sort" class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300">
-              <option>Best Selling</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Newest</option>
-              <option>Rating</option>
-            </select>
           </div>
         </div>
 
         <!-- Products Grid -->
         <div data-filter-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {products.map((product, i) => (
+          {pagedProducts.map((product, i) => (
             <div style={`animation: fadeInUp 0.6s ease-in-out ${i * 0.05}s both;`} data-refine={JSON.stringify(refineByProduct[product.id] ?? {})}>
               <ProductCard {...product} />
             </div>
@@ -263,25 +266,27 @@ const pageContext = createPublicPageContext({
         </p>
 
         <!-- Pagination -->
-        <div class="flex justify-center items-center gap-2">
-          <button class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          {[1, 2, 3, 4, 5].map(page => (
-            <button class={`px-4 py-2 rounded-xl border-2 transition-all duration-300 ${page === 1 ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500'}`}>
-              {page}
-            </button>
-          ))}
-          
-          <button class="px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-300">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+        {totalPages > 1 && (
+          <nav class="flex justify-center items-center gap-2" aria-label="Pagination">
+            <a href={pageUrl(currentPage - 1)} aria-disabled={currentPage === 1 ? 'true' : 'false'} class={`px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 transition-all duration-300 ${currentPage === 1 ? 'pointer-events-none opacity-50' : 'hover:border-primary-500 dark:hover:border-primary-500'}`}>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </a>
+
+            {pageNumbers.map(page => (
+              <a href={pageUrl(page)} aria-current={page === currentPage ? 'page' : undefined} class={`px-4 py-2 rounded-xl border-2 transition-all duration-300 ${page === currentPage ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500'}`}>
+                {page}
+              </a>
+            ))}
+
+            <a href={pageUrl(currentPage + 1)} aria-disabled={currentPage === totalPages ? 'true' : 'false'} class={`px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-dark-700 transition-all duration-300 ${currentPage === totalPages ? 'pointer-events-none opacity-50' : 'hover:border-primary-500 dark:hover:border-primary-500'}`}>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </nav>
+        )}
       </div>
     </div>
   </section>
