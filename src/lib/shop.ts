@@ -621,8 +621,13 @@ export async function getProductsByTopic(slug: string): Promise<ShopProduct[]> {
 		.map((entry) => toProduct(entry as Record<string, unknown>))
 		.filter((p) => p.name !== "");
 
-	if (!termSet) return products.filter((p) => p.topic === slug);
-	return products.filter((p) => (p.topic ? termSet.has(p.topic) : false));
+	// 一个产品可关联多个 topic（一对多），取全部 topic slug 后与目标子树求交集，
+	// 保证产品在其所属的每个 topic 页面都能展示出来。
+	const topicSlugs = (p: ShopProduct): string[] =>
+		Array.isArray(p.topics) ? p.topics.map((t) => (typeof t === "string" ? t : t.slug)) : [];
+
+	if (!termSet) return products.filter((p) => topicSlugs(p).includes(slug));
+	return products.filter((p) => topicSlugs(p).some((t) => termSet.has(t)));
 }
 
 // Product series: taxonomy term `series`. A series is a design family that can
