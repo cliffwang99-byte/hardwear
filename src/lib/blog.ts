@@ -85,7 +85,7 @@ export function toPost(entry: Record<string, unknown>): BlogPost {
 		excerpt: typeof d.excerpt === "string" ? d.excerpt : "",
 		content: d.content ?? null,
 		image: mediaUrl(d.featured_image),
-		faq: Array.isArray(d.faq) ? d.faq : [],
+		faq: Array.isArray(d.postfaq) ? d.postfaq : [],
 		category: typeof catTerms?.[0]?.label === "string"
 			? catTerms[0].label
 			: referenceSlug(catTerms) || undefined,
@@ -139,7 +139,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 	try {
 		result = (await getEmDashEntry("posts" as never, slug, {
 			references: { products: true },
-		})) as typeof result;
+		})) as unknown as typeof result;
 	} catch { return null; }
 	if (result.error || !result.entry) return null;
 	const post = toPost(result.entry as Record<string, unknown>);
