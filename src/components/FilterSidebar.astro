@@ -194,7 +194,7 @@ const { categories = [], topics = [], attributeGroups = [] } = Astro.props;
         const selected = state.refine[group];
         if (!selected.length) continue;
         const available: string[] = Array.isArray(values[group]) ? values[group] : [];
-        if (!selected.some((s) => available.includes(s))) return false;
+        if (!selected.some((s) => available.some((a) => a.toLowerCase() === s.toLowerCase()))) return false;
       }
     }
 

@@ -530,16 +530,20 @@ export async function getCategoryFilterData(slug: string): Promise<{
 	const inCategory = (p: { category?: string }): boolean =>
 		termSet ? (p.category ? termSet.has(p.category) : false) : p.category === slug;
 
-	const groups = new Map<string, Set<string>>();
+	// 属性为手动填写，值可能存在大小写差异（gold/GOLD/Gold、GREEM/green）。
+	// 按小写去重避免统计被大小写分裂，同时保留首次出现的原始大小写用于展示。
+	const groups = new Map<string, Map<string, string>>();
 	const productValues: Record<string, Record<string, string[]>> = {};
 	const upsert = (g: string, v: string): void => {
 		if (!g || !v) return;
-		let set = groups.get(g);
-		if (!set) {
-			set = new Set();
-			groups.set(g, set);
+		v = v.trim();
+		const key = v.toLowerCase();
+		let byKey = groups.get(g);
+		if (!byKey) {
+			byKey = new Map();
+			groups.set(g, byKey);
 		}
-		set.add(v);
+		if (!byKey.has(key)) byKey.set(key, v);
 	};
 	const addToProduct = (map: Record<string, string[]>, g: string, v: string): void => {
 		if (!g || !v) return;
@@ -585,7 +589,7 @@ export async function getCategoryFilterData(slug: string): Promise<{
 	}
 
 	const groupList: CategoryFilterGroup[] = [...groups.entries()]
-		.map(([name, set]) => ({ name, values: [...set] }))
+		.map(([name, byKey]) => ({ name, values: [...byKey.values()] }))
 		.filter((g) => g.values.length > 0);
 
 	return { groups: groupList, productValues };
