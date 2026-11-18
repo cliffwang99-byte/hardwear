@@ -23,6 +23,7 @@ export interface ShopProduct {
 	topics?: string[] | ProductTopic[];
 	series?: string;
 	sku?: string;
+	description?: string;
 }
 
 export interface ShopCategory {
@@ -33,6 +34,30 @@ export interface ShopCategory {
 	banner: string;
 	totalProducts: number;
 	children?: ShopCategory[];
+}
+
+// Portable Text 富文本递归提取为纯文本（含嵌套 children），供搜索/摘要等场景使用。
+function portableTextToText(value: unknown): string {
+	if (typeof value === "string") return value.trim();
+	if (!Array.isArray(value)) return "";
+	const parts: string[] = [];
+	const walk = (node: unknown): void => {
+		if (typeof node === "string") {
+			parts.push(node);
+			return;
+		}
+		if (Array.isArray(node)) {
+			for (const item of node) walk(item);
+			return;
+		}
+		if (node && typeof node === "object") {
+			const rec = node as Record<string, unknown>;
+			if (typeof rec.text === "string") parts.push(rec.text);
+			if (Array.isArray(rec.children)) walk(rec.children);
+		}
+	};
+	walk(value);
+	return parts.join(" ").replace(/\s+/g, " ").trim();
 }
 
 function mediaUrl(value: unknown): string {
@@ -116,14 +141,20 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		topics: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.topic),
 		series: referenceSlug((d.terms as Record<string, unknown> | undefined)?.series),
 		sku: typeof d.sku === "string" ? d.sku : undefined,
+		description: portableTextToText(d.description) || undefined,
 	};
 }
 
 export async function getProducts(): Promise<ShopProduct[]> {
-	const result = (await getEmDashCollection("products" as never)) as {
-		entries?: unknown[] | undefined;
-		error?: unknown;
-	};
+	let result: { entries?: unknown[] | undefined; error?: unknown };
+	try {
+		result = (await getEmDashCollection("products" as never)) as {
+			entries?: unknown[] | undefined;
+			error?: unknown;
+		};
+	} catch {
+		return [];
+	}
 	if (result.error || !Array.isArray(result.entries) || result.entries.length === 0) {
 		return [];
 	}

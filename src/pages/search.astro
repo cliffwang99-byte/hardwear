@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'emdash/ui';
+import { localizePath } from '../lib/i18n';
+import { parseSearchType, searchContent } from '../lib/search';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const q = (Astro.url.searchParams.get('q') || '').trim();
+const type = parseSearchType(Astro.url.searchParams.get('type'));
+
+// 服务端直接检索，首屏即出结果，无需前端二次请求
+const { results, total } = q
+  ? await searchContent(q, type, currentLocale)
+  : { results: [], total: 0 };
+
+const tabs = [
+  { key: 'all', label: 'All results' },
+  { key: 'products', label: 'Products' },
+  { key: 'posts', label: 'Articles' },
+] as const;
+
+function tabUrl(key: string): string {
+  const params = new URLSearchParams({ q, type: key });
+  return `${localizeUrl('/search')}?${params.toString()}`;
+}
+---
+
+<BaseLayout
+  title={q ? `Search results for "${q}" | MrKB` : 'Search | MrKB'}
+  description="Search products and articles across MrKB."
+  keywords="search, products, articles, bathroom hardware"
+>
+  <!-- Hero -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-12 sm:py-16 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-8 start-8 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-8 end-8 w-80 h-80 bg-white rounded-full blur-3xl"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3">Search</h1>
+        <p class="text-white/90 mb-6">Find products, models and articles in one place.</p>
+
+        <form action={localizeUrl('/search')} method="GET" class="flex flex-col sm:flex-row gap-3">
+          <input type="hidden" name="type" value={type} />
+          <div class="relative flex-1">
+            <input
+              type="search"
+              name="q"
+              value={q}
+              placeholder="Search by product name, SKU or article keyword..."
+              required
+              class="w-full px-4 py-3 ps-12 rounded-xl bg-white dark:bg-dark-800 text-gray-900 dark:text-white border-2 border-white/30 focus:border-white focus:outline-none focus:ring-4 focus:ring-white/20 transition-all"
+            />
+            <svg class="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <button
+            type="submit"
+            class="px-8 py-3 bg-white text-primary-600 font-semibold rounded-xl hover:bg-gray-100 active:scale-95 transition-all duration-300"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="py-10 sm:py-14 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        {q && (
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 dark:border-dark-800 pb-4 mb-8">
+            <div class="flex flex-wrap gap-2">
+              {tabs.map((tab) => (
+                <a
+                  href={tabUrl(tab.key)}
+                  class:list={[
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300',
+                    type === tab.key
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700',
+                  ]}
+                >
+                  {tab.label}
+                </a>
+              ))}
+            </div>
+            <span class="text-sm text-gray-500 dark:text-gray-400">
+              Found <span class="font-semibold text-gray-900 dark:text-white">{total}</span> results for
+              <span class="font-semibold text-gray-900 dark:text-white">“{q}”</span>
+            </span>
+          </div>
+        )}
+
+        {!q ? (
+          <div class="text-center py-16 text-gray-500 dark:text-gray-400">
+            Enter a keyword above to start searching.
+          </div>
+        ) : results.length === 0 ? (
+          <div class="text-center py-16 text-gray-500 dark:text-gray-400">
+            No products or articles match
+            <span class="font-semibold text-gray-900 dark:text-white">“{q}”</span>.
+            Try a different keyword.
+          </div>
+        ) : (
+          <ul class="space-y-4">
+            {results.map((item) => (
+              <li class="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-800 rounded-xl overflow-hidden hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-lg transition-all duration-300">
+                <a href={item.url} class="flex gap-4 p-4 items-start">
+                  {item.image && (
+                    <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-dark-800">
+                      <Image image={item.image} alt={item.title} width={160} height={160} class="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                      <span
+                        class:list={[
+                          'px-2.5 py-0.5 rounded-full text-xs font-semibold',
+                          item.type === 'product'
+                            ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
+                            : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
+                        ]}
+                      >
+                        {item.type === 'product' ? 'Product' : 'Article'}
+                      </span>
+                      {item.meta && (
+                        <span class="text-xs text-gray-500 dark:text-gray-400">{item.meta}</span>
+                      )}
+                    </div>
+                    <h2
+                      class="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-2"
+                      data-highlight={item.title}
+                    >
+                      {item.title}
+                    </h2>
+                    {item.snippet && (
+                      <p
+                        class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
+                        data-highlight={item.snippet}
+                      >
+                        {item.snippet}
+                      </p>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ q }}>
+    // 高亮：先转义 HTML，再安全替换为 <mark>，避免 XSS 与结构破坏
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+      ));
+    }
+
+    function escapeRegExp(value) {
+      return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    const keywords = String(q).toLowerCase().split(/\s+/).filter(Boolean);
+    if (keywords.length) {
+      const pattern = new RegExp('(' + keywords.map(escapeRegExp).join('|') + ')', 'gi');
+      document.querySelectorAll('[data-highlight]').forEach((el) => {
+        const raw = el.getAttribute('data-highlight') || '';
+        el.innerHTML = escapeHtml(raw).replace(
+          pattern,
+          '<mark class="bg-primary-200 dark:bg-primary-500/40 text-primary-900 dark:text-primary-100 rounded px-0.5">$1</mark>',
+        );
+      });
+    }
+  </script>
+</BaseLayout>
