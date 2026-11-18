@@ -4,6 +4,7 @@ import { decodeSlug, getSeoMeta, getSiteSettings } from 'emdash';
 import { createPublicPageContext } from 'emdash/page';
 import { PortableText, Image } from 'emdash/ui';
 import { getPostBySlug, getPosts } from '../../lib/blog';
+import { faqBlocksToItems } from '../../lib/shop';
 import { localizePath } from '../../lib/i18n';
 const currentLocale = Astro.currentLocale ?? 'en';
 function localizeUrl(url: string): string {
@@ -15,6 +16,9 @@ const post = await getPostBySlug(slug);
 const recent = (await getPosts()).filter((p) => p.id !== post?.id).slice(0, 3);
 
 if (!post) return Astro.redirect(localizeUrl('/blog'));
+
+const faqItems = faqBlocksToItems(post.faq ?? []);
+const hasFaq = faqItems.length > 0;
 
 const siteSettings = await getSiteSettings();
 const siteTitle = siteSettings.title || 'MrKB';
@@ -81,7 +85,7 @@ const pageContext = createPublicPageContext({
       />
     )}
 
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-[50.4rem] mx-auto">
       <div class="flex items-center gap-3 mb-4">
         {post.category && (
           <span class="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold">{post.category}</span>
@@ -98,6 +102,27 @@ const pageContext = createPublicPageContext({
       <article class="richtext">
         <PortableText value={post.content as any} />
       </article>
+
+      {hasFaq && (
+        <div class="mt-10">
+          <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <div class="space-y-4">
+            {faqItems.map((item) => (
+              <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+                <button type="button" class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                  <span class="font-semibold text-gray-900 dark:text-white pe-4">{item.question}</span>
+                  <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div class="faq-content hidden px-6 pb-5 richtext max-w-none">
+                  <PortableText value={item.answerBlocks as any} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </div>
 
@@ -150,4 +175,16 @@ const pageContext = createPublicPageContext({
       </div>
     </section>
   )}
+
+  <script>
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
 </BaseLayout>

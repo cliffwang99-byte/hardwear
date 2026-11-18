@@ -21,6 +21,7 @@ export interface BlogPost {
 	image: string;
 	category?: string;
 	date: string;
+	faq: unknown[];
 	products?: BlogProduct[];
 	seoTitle?: string;
 	seoDescription?: string;
@@ -84,6 +85,7 @@ export function toPost(entry: Record<string, unknown>): BlogPost {
 		excerpt: typeof d.excerpt === "string" ? d.excerpt : "",
 		content: d.content ?? null,
 		image: mediaUrl(d.featured_image),
+		faq: Array.isArray(d.faq) ? d.faq : [],
 		category: typeof catTerms?.[0]?.label === "string"
 			? catTerms[0].label
 			: referenceSlug(catTerms) || undefined,
