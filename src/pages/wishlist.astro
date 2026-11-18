@@ -29,12 +29,6 @@ function localizeUrl(url: string): string {
 </BaseLayout>
 
 <script>
-  // Mock product data (in real app, fetch from API)
-  const mockProducts: any = {
-    '1': { id: '1', name: 'Premium Portland Cement - 50kg Bag', price: 12.99, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=500&fit=crop', rating: 4.8, reviews: 234, inStock: true },
-    '2': { id: '2', name: 'Steel Reinforcement Bars', price: 45.50, image: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=500&h=500&fit=crop', rating: 4.9, reviews: 189, inStock: true },
-  };
-
   function renderWishlist() {
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
     const container = document.getElementById('wishlist-items');
@@ -50,7 +44,7 @@ function localizeUrl(url: string): string {
     emptyState!.classList.add('hidden');
 
     container!.innerHTML = wishlist.map((id: string) => {
-      const product = mockProducts[id] || { id, name: 'Product', price: 0, image: '', rating: 0, reviews: 0, inStock: true };
+      const product = { id, name: 'Product', price: 0, image: '', rating: 0, reviews: 0, inStock: true };
       return `
         <div class="bg-white dark:bg-dark-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-dark-700 hover:border-primary-500 transition-all duration-300 hover:shadow-xl animate-scale-in">
           <div class="relative">
@@ -90,8 +84,7 @@ function localizeUrl(url: string): string {
     document.querySelectorAll('[data-add-to-cart-wishlist]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = (e.currentTarget as HTMLElement).dataset.addToCartWishlist!;
-        const product = mockProducts[id];
-        if (!product) return;
+        const product = { id, name: 'Product', price: 0, image: '', rating: 0, reviews: 0, inStock: true };
 
         const cart = JSON.parse(localStorage.getItem('cart') || '[]');
         const existingItem = cart.find((item: any) => item.id === id);

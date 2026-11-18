@@ -13,6 +13,13 @@ const currentLocale = Astro.currentLocale ?? 'en';
 function localizeUrl(url: string): string {
   return localizePath(url, currentLocale);
 }
+
+// 支持头部搜索框：按 ?q= 关键词对产品名做大小写不敏感过滤。
+const rawQuery = Astro.url.searchParams.get('q') ?? '';
+const query = rawQuery.trim().toLowerCase();
+const visibleProducts = query
+  ? products.filter((p) => (p.name || '').toLowerCase().includes(query))
+  : products;
 ---
 
 <BaseLayout title="Products - MrKB">
@@ -33,7 +40,7 @@ function localizeUrl(url: string): string {
         <!-- Toolbar - Mobile Optimized -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 animate-slide-down">
           <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-            Showing <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{products.length}</span> of <span class="font-semibold text-gray-900 dark:text-white">{products.length}</span> products
+            Showing <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{visibleProducts.length}</span> of <span class="font-semibold text-gray-900 dark:text-white">{visibleProducts.length}</span> products
           </p>
           
           <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
@@ -65,7 +72,7 @@ function localizeUrl(url: string): string {
 
         <!-- Products - Mobile Optimized Grid -->
         <div data-filter-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-          {products.map(product => (
+          {visibleProducts.map(product => (
             <ProductCard {...product} />
           ))}
         </div>

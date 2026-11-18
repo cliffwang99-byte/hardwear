@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { SchemaRegistry } from "emdash";
 import { getDb } from "emdash/runtime";
-import type { CreateFieldInput } from "emdash/schema/types";
+import type { CreateFieldInput } from "emdash";
 
 // 一次性迁移：为 `products` 集合补齐产品变体 + 静态属性所需的字段。
 // 通过 SchemaRegistry.createField() 落地，幂等（已存在的字段自动跳过）。

@@ -1,5 +1,10 @@
 import { getEmDashCollection, getEmDashEntry, getTaxonomyTerms, getTerm } from "emdash";
 
+export interface ProductTopic {
+	slug: string;
+	name: string;
+}
+
 export interface ShopProduct {
 	id: string;
 	name: string;
@@ -14,7 +19,8 @@ export interface ShopProduct {
 	category?: string;
 	categories?: string[];
 	topic?: string;
-	topics?: string[];
+	// 列表/卡片场景下为 topic slug 数组；详情场景下为 {slug,name} 对象数组。
+	topics?: string[] | ProductTopic[];
 	series?: string;
 	sku?: string;
 }
@@ -28,17 +34,6 @@ export interface ShopCategory {
 	totalProducts: number;
 	children?: ShopCategory[];
 }
-
-const fallbackProducts: ShopProduct[] = [
-	{ id: "1", name: "Premium Portland Cement - 50kg Bag", price: 12.99, originalPrice: 15.99, image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=500&fit=crop", rating: 4.8, reviews: 234, badge: "Best Seller", inStock: true, featured: true },
-	{ id: "2", name: "Steel Reinforcement Bars (Rebar) - Grade 60", price: 45.5, image: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=500&h=500&fit=crop", rating: 4.9, reviews: 189, inStock: true, featured: true },
-	{ id: "3", name: "Premium Pine Lumber 2x4x8", price: 8.99, originalPrice: 11.99, image: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&h=500&fit=crop", rating: 4.7, reviews: 456, badge: "Sale", inStock: true, featured: true },
-	{ id: "4", name: "Professional Power Drill Set", price: 129.99, originalPrice: 179.99, image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&h=500&fit=crop", rating: 4.9, reviews: 678, badge: "Hot Deal", inStock: true, featured: true },
-	{ id: "5", name: "Copper Electrical Wire - 100ft Roll", price: 89.99, image: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500&h=500&fit=crop", rating: 4.6, reviews: 123, inStock: true },
-	{ id: "6", name: "PVC Plumbing Pipe Kit", price: 34.99, image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop", rating: 4.5, reviews: 234, inStock: false },
-	{ id: "7", name: "Exterior Paint - Premium Weather Shield", price: 54.99, originalPrice: 69.99, image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&h=500&fit=crop", rating: 4.8, reviews: 345, inStock: true },
-	{ id: "8", name: "Asphalt Roofing Shingles - Bundle", price: 39.99, image: "https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?w=500&h=500&fit=crop", rating: 4.7, reviews: 167, inStock: true },
-];
 
 function mediaUrl(value: unknown): string {
 	if (typeof value === "string") return value;
@@ -130,7 +125,7 @@ export async function getProducts(): Promise<ShopProduct[]> {
 		error?: unknown;
 	};
 	if (result.error || !Array.isArray(result.entries) || result.entries.length === 0) {
-		return fallbackProducts;
+		return [];
 	}
 	return result.entries
 		.map((entry) => toProduct(entry as Record<string, unknown>))
@@ -143,7 +138,7 @@ export async function getProductBySlug(slug: string): Promise<ShopProduct | unde
 		error?: unknown;
 	};
 	if (result.error || !result.entry) {
-		return fallbackProducts.find((p) => p.id === slug);
+		return undefined;
 	}
 	return toProduct(result.entry as Record<string, unknown>);
 }
@@ -176,7 +171,7 @@ export interface ShopProductDetail extends ShopProduct {
 	category: string;
 	categorySlug: string;
 	brand: string;
-	topics: { slug: string; name: string }[];
+	topics: ProductTopic[];
 	description: string;
 	features: string[];
 	descriptionRich?: unknown;
@@ -198,43 +193,25 @@ export interface ShopProductDetail extends ShopProduct {
 	attributes: ProductAttribute[];
 }
 
+// 数据缺失/未找到时返回的空壳默认值：不包含任何预设演示内容，仅保证
+// 详情页结构完整、可安全访问各字段。真实内容一律来自 products 集合。
 const fallbackDetail: ShopProductDetail = {
-	id: "1",
-	name: "Premium Portland Cement - 50kg Bag",
-	price: 12.99,
-	originalPrice: 15.99,
-	image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=800&fit=crop",
-	rating: 4.8,
-	reviews: 234,
-	inStock: true,
-	images: [
-		"https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=800&fit=crop",
-		"https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=800&h=800&fit=crop",
-		"https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=800&fit=crop",
-	],
-	sku: "CEM-PORT-50",
-	category: "Cement & Concrete",
-	categorySlug: "cement-concrete",
-	brand: "BuildPro",
+	id: "",
+	name: "",
+	price: 0,
+	image: "",
+	rating: 0,
+	reviews: 0,
+	inStock: false,
+	images: [],
+	sku: "",
+	category: "",
+	categorySlug: "",
+	brand: "",
 	topics: [],
-	description:
-		"High-quality Portland cement perfect for all construction projects. Provides excellent strength and durability for foundations, walls, and structural applications.",
-	features: [
-		"Premium grade Portland cement",
-		"High compressive strength",
-		"Consistent quality and performance",
-		"Suitable for all weather conditions",
-		"Meets ASTM C150 standards",
-		"Fast setting time",
-	],
-	specifications: {
-		Weight: "50 kg (110 lbs)",
-		Type: "Portland Cement Type I",
-		"Compressive Strength": "4000+ PSI",
-		"Setting Time": "45-60 minutes",
-		Color: "Gray",
-		Storage: "Keep dry and covered",
-	},
+	description: "",
+	features: [],
+	specifications: {},
 	seoTitle: "",
 	seoDescription: "",
 	seoImage: "",

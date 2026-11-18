@@ -30,16 +30,8 @@
     
     section?.classList.remove('hidden');
     
-    // Mock product data (in production, fetch from API)
-    const mockProducts: any = {
-      '1': { id: '1', name: 'Premium Portland Cement', price: 12.99, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300&h=300&fit=crop' },
-      '2': { id: '2', name: 'Steel Reinforcement Bars', price: 45.50, image: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=300&h=300&fit=crop' },
-      '3': { id: '3', name: 'Premium Pine Lumber', price: 8.99, image: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=300&h=300&fit=crop' },
-      '4': { id: '4', name: 'Power Drill Set', price: 129.99, image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=300&h=300&fit=crop' },
-    };
-    
     grid!.innerHTML = recentlyViewed.slice(0, 6).map((id: string) => {
-      const product = mockProducts[id] || { id, name: 'Product', price: 0, image: '' };
+      const product = { id, name: 'Product', price: 0, image: '' };
       return `
         <a href="/product/${id}" class="group block bg-white dark:bg-dark-800 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div class="aspect-square overflow-hidden bg-gray-100 dark:bg-dark-700">
