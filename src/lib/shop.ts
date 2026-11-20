@@ -37,7 +37,7 @@ export interface ShopCategory {
 }
 
 // Portable Text 富文本递归提取为纯文本（含嵌套 children），供搜索/摘要等场景使用。
-function portableTextToText(value: unknown): string {
+export function portableTextToText(value: unknown): string {
 	if (typeof value === "string") return value.trim();
 	if (!Array.isArray(value)) return "";
 	const parts: string[] = [];
