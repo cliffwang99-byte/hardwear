@@ -1,0 +1,438 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings } from 'emdash';
+import { createPublicPageContext, safeJsonLdSerialize } from 'emdash/page';
+import { localizePath } from '../lib/i18n';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const pageName = 'Markets & Solutions';
+const pageHeading = 'Kitchen & Bath Hardware Solutions for Global Projects';
+const pageDescription =
+  'Spec-grade kitchen and bath hardware solutions for developers, fabricators, and importers. Cross-factory FCL consolidation, Delta E < 1.5 finish match & OEM.';
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'MrKB';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+const siteBaseUrl = siteUrl.replace(/\/+$/, '');
+const pageUrl = `${siteBaseUrl}${Astro.url.pathname}`;
+
+const solutionCards = [
+  {
+    tag: 'RTA & Custom Cabinet Upgrades',
+    title: 'Wholesale Kitchen Cabinet Storage Solutions',
+    copy: "We don't sell empty wooden boxes. We supply heavy-duty SUS 304 pull-out baskets, blind-corner organizers, and wall-mounted rail systems that double the margin on standard base cabinets—with zero wooden-cabinet tariff exposure.",
+    cta: 'Explore Cabinet Storage Solutions',
+    href: '/solutions/wholesale-kitchen-cabinets-storage/',
+  },
+  {
+    tag: 'Zero Color-Mismatch Guarantee',
+    title: 'Full-Room Finishing Consistency (Delta E < 1.5)',
+    copy: 'Buying faucets from one factory and towel bars from another causes visible shade mismatches. We lock Matte Black, PVD Brushed Gold, and Gunmetal across every kitchen and bath SKU under one digital color standard.',
+    cta: 'View Matched Finish Collections',
+    href: '/solutions/full-room-finishing-consistency/',
+  },
+  {
+    tag: 'Freight Optimization & Nesting',
+    title: 'Multi-Factory FCL Container Consolidation',
+    copy: 'Combine faucets, stainless steel sinks, concealed shower valves, and metal vanities in one 20ft or 40HQ container. We nest compact hardware inside sink bowls and vanity cavities to cut your per-unit ocean freight.',
+    cta: 'See Container Loading Guide',
+    href: '/blog/multi-factory-fcl-container-consolidation/',
+  },
+  {
+    tag: 'Low-Tooling Brand Launch',
+    title: 'Private-Label OEM & White-Label Submittals',
+    copy: 'Launch or expand your own plumbing hardware brand without paying massive mold fees. Get custom laser-etched logos, retail-ready packaging, and unbranded 2D CAD drawings for local project approvals.',
+    cta: 'Explore OEM / ODM Programs',
+    href: '/oem-odm/',
+  },
+];
+
+const buyerRoles = [
+  {
+    title: 'Developers & General Contractors',
+    focus: 'On-Schedule Phased Delivery & Code Compliance',
+    copy: 'Keep 50-unit to 2,000-unit multifamily and hotel rollouts on schedule. We supply cUPC, NSF-61, and ADA-compliant faucets, sinks, and concealed shower systems packed by unit so your plumbers never stall waiting on missing parts.',
+    lines: 'Concealed Shower Systems · ADA Kitchen Sinks',
+  },
+  {
+    title: 'Stone Fabricators & Cabinet Shops',
+    focus: 'High-Margin Add-On Bundles',
+    copy: 'You cut the stone or build the cabinet boxes—we supply the profitable metal hardware you bundle on every job. Get undermount sinks with 1:1 cutout templates, matching pull-down faucets, and soft-close pull-out organizers.',
+    lines: 'Kitchen Sinks · Cabinet Hardware & Storage',
+  },
+  {
+    title: 'Regional Distributors & Importers',
+    focus: 'Evergreen SKUs & Mixed-Container Margins',
+    copy: 'Source fast-moving evergreen specs across kitchen and bath categories starting from a 50-piece MOQ. Mix chrome, matte black, and brushed gold in one container with tiered trade pricing at $ ??.?? / Pc.',
+    lines: 'Kitchen Faucets · Basin & Vanity Faucets',
+  },
+  {
+    title: 'Architects & Interior Designers',
+    focus: 'Spec-Ready CAD Files & Exact Finishes',
+    copy: 'Specify one unified collection name across kitchen faucets, shower trim kits, linear drains, and bath accessories. Download clean 2D CAD line drawings and rough-in depth specs before finalizing your construction drawings.',
+    lines: 'Shower Systems · Bathroom Accessories',
+  },
+];
+
+const marketRows = [
+  {
+    market: 'North America',
+    region: '(USA & Canada)',
+    code: 'cUPC, NSF-61 Lead-Free, ADA (ANSI A117.1), and UL 962 / ETL for LED mirrors. Metal vanities eliminate wooden-cabinet AD/CVD tariff exposure.',
+    thread: '1/2" NPT & 3/8" Compression lines; 110V–120V / 60Hz hardwire LED.',
+    strategy: 'Spec-grade SUS 304 sinks, pressure-balance shower valves, and honeycomb aluminum / SUS 304 vanities.',
+  },
+  {
+    market: 'Middle East',
+    region: '(Saudi Arabia & UAE)',
+    code: 'SASO / SABER compliance, 48h–72h acid salt spray corrosion resistance, 1.6 MPa anti-water hammer valves, and ≤ 5.7 LPM water-saving aerators.',
+    thread: 'G1/2" (BSP) metric threads; 220V–240V / 50–60Hz wide voltage.',
+    strategy: 'Heavy-duty solid brass faucets, PVD gunmetal/brushed gold finishes, and SUS 304 vanities.',
+  },
+  {
+    market: 'Latin America',
+    region: '(Mexico & South America)',
+    code: 'Low-pressure gravity-flow compatibility (Flujo por Gravedad), tool-free removable anti-sediment aerators, and builder-grade unit cost control.',
+    thread: 'Dual-spec support: 1/2" NPT (Mexico) & G1/2" BSP (South America).',
+    strategy: 'Cost-optimized builder-grade faucets, flat-pack metal storage organizers, and pressed stainless sinks.',
+  },
+  {
+    market: 'Europe & ANZ',
+    region: '(EU, UK & Australia)',
+    code: 'CE (EN-817), UKCA, RoHS, and WaterMark / WELS water efficiency standards with compact European metric dimensions.',
+    thread: 'G1/2" & G3/8" BSP threads; 220V–240V / 50Hz.',
+    strategy: 'Wall-hung compact vanities (600–1000mm), thermostatic shower columns, and slim-frame LED mirrors.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Are you a single factory or a multi-factory supplier?',
+    answer:
+      'We operate as a factory-direct manufacturing consortium. Dedicated partner workshops produce our faucets, stainless steel sinks, concealed shower valves, cabinet organizers, and metal vanities under one unified QC protocol, consolidating your entire order into a single shipment.',
+  },
+  {
+    question: 'Do you manufacture wooden kitchen cabinets or stone countertops?',
+    answer:
+      'No. We focus strictly on metal hardware, plumbing fixtures, and storage organizers. For projects that already source cabinet boxes or stone slabs locally, we supply the matching pull-out baskets, undermount sinks, and color-matched faucets to complete the package.',
+  },
+  {
+    question: 'How do we get trade pricing for a specific project or container order?',
+    answer:
+      'Add your target models and estimated quantities to your Project Quote List and submit your project ZIP code or destination port. Our engineering desk returns an itemized FOB/CIF quote, container CBM loading breakdown, and unbranded spec sheets within 24 hours.',
+  },
+];
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'custom',
+  pageType: 'website',
+  title: `${pageName}${titleSeparator}Commercial Kitchen & Bath Supply`,
+  description: pageDescription,
+  canonical: pageUrl,
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'Home', url: localizeUrl('/') },
+    { name: pageName, url: Astro.url.pathname },
+  ],
+});
+
+// ===== 结构化数据（JSON-LD） =====
+const breadcrumbJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumb`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBaseUrl}${localizeUrl('/')}` },
+    { '@type': 'ListItem', position: 2, name: pageName, item: pageUrl },
+  ],
+});
+
+const collectionJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: pageHeading,
+  description: pageDescription,
+  url: pageUrl,
+  isPartOf: { '@id': siteBaseUrl },
+  breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+  about: [
+    { '@type': 'Thing', name: 'Kitchen Hardware' },
+    { '@type': 'Thing', name: 'Bathroom Hardware' },
+  ],
+  hasPart: {
+    '@type': 'WebPageElement',
+    name: 'Project & Supply Chain Solutions',
+    cssSelector: '#supply-chain-solutions',
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: solutionCards.length,
+    itemListElement: solutionCards.map((card, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: card.title,
+      url: `${siteBaseUrl}${localizeUrl(card.href)}`,
+    })),
+  },
+});
+
+const faqJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <script type="application/ld+json" set:html={breadcrumbJsonLd}></script>
+  <script type="application/ld+json" set:html={collectionJsonLd}></script>
+  <script type="application/ld+json" set:html={faqJsonLd}></script>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden text-white">
+    <div class="absolute inset-0 bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950"></div>
+    <div class="absolute inset-0 opacity-[0.04]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="markets-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#markets-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 py-16 md:py-24 relative z-10">
+      <div class="max-w-4xl">
+        <nav class="flex items-center gap-2 text-sm mb-6">
+          <a href={localizeUrl("/")} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+          <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span class="text-white font-medium">{pageName}</span>
+        </nav>
+
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-primary-200 mb-6">
+          {pageName}
+        </span>
+
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">{pageHeading}</h1>
+
+        <p class="text-lg text-white/90 leading-relaxed mb-4">
+          One factory-direct supply network for builders, fabricators, and regional importers.
+        </p>
+        <p class="text-base text-white/70 leading-relaxed mb-8 max-w-3xl">
+          We do not manufacture wooden cabinets or stone slabs. We supply the heavy-duty metal hardware, faucets, sinks, and shower systems that complete your build—matched to Delta E &lt; 1.5 finish consistency and consolidated into one container from Guangzhou or Shenzhen.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            href={localizeUrl("/cart")}
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            + Build Your Project Quote List
+          </a>
+          <a
+            href={localizeUrl("/contact")}
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          >
+            Request Unbranded CAD &amp; Spec Pack
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: Supply Chain Solutions -->
+  <section id="supply-chain-solutions" class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Core Supply Chain &amp; Engineering Solutions</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Pick the specific sourcing challenge your team needs to solve right now.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {solutionCards.map((card) => (
+            <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg border-t-4 border-primary-500 flex flex-col">
+              <span class="inline-flex self-start items-center gap-2 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-xs font-bold uppercase tracking-wide mb-4">
+                {card.tag}
+              </span>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{card.title}</h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 flex-1">{card.copy}</p>
+              <a
+                href={localizeUrl(card.href)}
+                class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all duration-300"
+              >
+                {card.cta}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Who We Serve -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Built Around Your Role in the Supply Chain</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Different buyers face different job-site risks. Here is how we support your exact workflow.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {buyerRoles.map((role) => (
+            <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 border border-gray-200 dark:border-dark-700">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{role.title}</h3>
+              <p class="text-sm font-semibold text-primary-600 dark:text-primary-400 mb-4">{role.focus}</p>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">{role.copy}</p>
+              <div class="pt-4 border-t border-gray-200 dark:border-dark-700">
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Recommended Lines</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{role.lines}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Global Market Compliance -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Engineered for Regional Codes, Water Pressure &amp; Climate</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            A faucet built for North America will fail in the Middle East or Latin America. We configure threads, cartridges, and materials for your exact market.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl shadow-lg">
+          <table class="min-w-full bg-white dark:bg-dark-900 divide-y divide-gray-200 dark:divide-dark-700">
+            <thead class="bg-gray-100 dark:bg-dark-800">
+              <tr>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Target Market</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Key Engineering &amp; Code Focus</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Thread &amp; Electrical Standard</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Recommended Product Strategy</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-dark-700">
+              {marketRows.map((row) => (
+                <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                  <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top whitespace-nowrap">
+                    {row.market}
+                    <span class="block text-xs font-normal text-gray-500 dark:text-gray-400 mt-1">{row.region}</span>
+                  </td>
+                  <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">{row.code}</td>
+                  <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">{row.thread}</td>
+                  <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">{row.strategy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: FAQ -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Markets &amp; Solutions FAQ</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map((item) => (
+            <div class="faq-item bg-white dark:bg-dark-900 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700">
+              <button type="button" class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white pe-4">{item.question}</span>
+                <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Bottom CTA -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-bold mb-4">Ready to Consolidate Your Next Kitchen &amp; Bath Order?</h2>
+              <p class="text-lg text-white/90 leading-relaxed">
+                Send us your project BOM or target SKU list. We will match your finishes, verify regional code specs, and map out your 20ft or 40HQ container load.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row md:justify-end gap-4">
+              <a href={localizeUrl("/cart")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                + Open Project Quote List
+              </a>
+              <a href={localizeUrl("/contact")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-colors">
+                Contact Engineering Desk
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
+</BaseLayout>

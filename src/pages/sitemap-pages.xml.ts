@@ -20,6 +20,7 @@ const STATIC_PATHS: Record<string, number> = {
   "/cart": 0.4,
   "/wishlist": 0.4,
   "/oem-odm": 0.7,
+  "/markets-solutions": 0.8,
   "/privacy": 0.3,
   "/terms": 0.3,
   "/shipping-info-combined": 0.5,
