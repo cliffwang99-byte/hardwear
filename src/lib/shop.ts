@@ -754,6 +754,11 @@ export async function getSeriesWithProducts(): Promise<ShopSeriesDetail[]> {
 	return resolved;
 }
 
+export interface AboutEntity {
+	name: string;
+	sameAs?: string;
+}
+
 export interface CategoryMeta {
 	name: string;
 	// Optional custom H1 shown instead of the term name when provided.
@@ -777,6 +782,9 @@ export interface CategoryMeta {
 	// Category references (slugs) attached to the content entry — used to filter
 	// the featured products on wholesale landing pages. Empty when not provided.
 	categories: string[];
+	// Schema.org `about` entities configured in the CMS (`about_entities` repeater).
+	// Each entry disambiguates the topic via `sameAs` (Wikidata/Wikipedia URLs).
+	aboutEntities: AboutEntity[];
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
@@ -915,6 +923,25 @@ async function getEntryFromCandidates(
 	return { entry: undefined, collection: candidates[0] ?? "" };
 }
 
+// Normalise the `about_entities` repeater into a typed list. The CMS stores
+// each row as `{ name, sameAs }`; rows without a name are dropped so the JSON-LD
+// `about` array never contains an empty Thing. The `sameAs` sub-field may be
+// stored under its snake_case slug, so both spellings are accepted.
+function aboutEntities(value: unknown): AboutEntity[] {
+	if (!Array.isArray(value)) return [];
+	const out: AboutEntity[] = [];
+	for (const row of value) {
+		if (!row || typeof row !== "object") continue;
+		const rec = row as Record<string, unknown>;
+		const name = typeof rec.name === "string" ? rec.name.trim() : "";
+		if (!name) continue;
+		const rawSameAs = rec.sameAs ?? rec.same_as;
+		const sameAs = typeof rawSameAs === "string" ? rawSameAs.trim() : "";
+		out.push(sameAs ? { name, sameAs } : { name });
+	}
+	return out;
+}
+
 // Merge the lightweight taxonomy term (name/count) with the rich content-type
 // entry (banner image, long description, SEO) keyed by the same slug.
 async function getTermPageData(
@@ -960,6 +987,7 @@ async function getTermPageData(
 		entryId: typeof entry?.id === "string" ? entry.id : "",
 		collection,
 		categories: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.collection),
+		aboutEntities: aboutEntities(d.about_entities),
 	};
 }
 
@@ -1028,6 +1056,7 @@ export async function getLandingPageData(slug: string): Promise<CategoryMeta | n
 		entryId: typeof entry.id === "string" ? entry.id : "",
 		collection,
 		categories: referenceSlugs(d.categories),
+		aboutEntities: aboutEntities(d.about_entities),
 	};
 }
 
