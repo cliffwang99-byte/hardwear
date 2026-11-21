@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'emdash/ui';
+import { getSiteSettings } from 'emdash';
+import { localizePath } from '../../lib/i18n';
+import { getHomeCategories } from '../../lib/shop';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+// 品类索引：只展示有产品（count > 0）的状态，空分类由分类详情页重定向至此。
+const homeCategories = (await getHomeCategories())
+  .filter((c) => c.count > 0)
+  .sort((a, b) => b.count - a.count);
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'MrKB';
+const siteUrl = siteSettings.url || Astro.url.origin;
+const siteBaseUrl = siteUrl.replace(/\/+$/, '');
+
+const totalSkus = homeCategories.reduce((sum, c) => sum + c.count, 0);
+
+const pageTitle = `Product Categories | ${siteTitle}`;
+const pageDescription =
+  'Browse our full range of bathroom hardware product categories. Find faucets, showers, sinks and more, each with spec-ready SKUs for project buyers.';
+
+const currentPath = Astro.url.pathname;
+const localizedBase = siteBaseUrl + currentPath;
+
+// ==== 结构化数据（JSON-LD） ====
+const breadcrumbJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${localizedBase}#breadcrumb`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBaseUrl}${localizeUrl('/')}` },
+    { '@type': 'ListItem', position: 2, name: 'Categories', item: `${siteBaseUrl}${localizeUrl('/categories')}` },
+  ],
+});
+
+const categoryListJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${localizedBase}#item-list`,
+  name: 'Bathroom Hardware Product Categories',
+  numberOfItems: homeCategories.length,
+  itemListElement: homeCategories.map((cat, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: cat.name,
+    url: `${siteBaseUrl}${localizeUrl(`/categories/${cat.slug}`)}`,
+  })),
+});
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={breadcrumbJsonLd}></script>
+  {categoryListJsonLd && homeCategories.length > 0 && (
+    <script type="application/ld+json" set:html={categoryListJsonLd}></script>
+  )}
+
+  <!-- Hero -->
+  <section class="relative bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="categories-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#categories-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+        <a href={localizeUrl('/')} class="text-primary-300 hover:text-white transition-colors duration-300">Home</a>
+        <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-white font-medium">Categories</span>
+      </nav>
+
+      <div class="max-w-3xl">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3">Product Categories</h1>
+        <p class="text-base text-white/80 leading-relaxed">
+          {pageDescription}
+        </p>
+        {homeCategories.length > 0 && (
+          <p class="mt-4 text-xs uppercase tracking-widest text-primary-300">
+            {homeCategories.length} {homeCategories.length === 1 ? 'category' : 'categories'} - {totalSkus} SKUs ready to spec
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Grid -->
+  <section class="container mx-auto px-4 py-12 sm:py-16">
+    {homeCategories.length > 0 ? (
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[180px] md:auto-rows-[220px]">
+        {homeCategories.map((cat, i) => {
+          const isHero = i === 0;
+          const spanClass = isHero ? 'col-span-2 lg:col-span-2 lg:row-span-2' : '';
+          return (
+            <a
+              href={localizeUrl(`/categories/${cat.slug}`)}
+              class={`group relative overflow-hidden rounded-3xl text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll ${spanClass}`}
+              style={`animation-delay: ${i * 0.05}s;`}
+            >
+              {cat.image ? (
+                <Image
+                  image={cat.image}
+                  alt={cat.name}
+                  width={800}
+                  height={600}
+                  class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                />
+              ) : (
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800"></div>
+              )}
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
+
+              <div class="relative z-10 p-5 md:p-6 h-full flex flex-col justify-end">
+                <h2 class={`font-bold leading-tight drop-shadow-md ${isHero ? 'text-2xl md:text-4xl' : 'text-base md:text-lg'}`}>{cat.name}</h2>
+                {cat.count > 0 && (
+                  <p class="mt-2 text-sm text-white/80">{cat.count} SKUs ready to spec</p>
+                )}
+              </div>
+
+              <div class="absolute bottom-4 end-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="text-center text-gray-500 dark:text-gray-400 py-16">No categories yet</p>
+    )}
+  </section>
+</BaseLayout>

@@ -21,6 +21,10 @@ const taxCategorySlug = decodeSlug(category ?? '');
 const catMeta = await getCategoryPageData(taxCategorySlug);
 if (!catMeta) return Astro.redirect(localizeUrl('/categories'));
 const taxProducts = await getProductsByCategory(taxCategorySlug);
+// 空分类（子树下无产品）重定向到品类索引页，避免薄内容页拖累 SEO
+if (taxProducts.length === 0) {
+  return Astro.redirect(localizeUrl('/categories'));
+}
 const categories = await getCategories();
 const topics = await getTopics();
 
