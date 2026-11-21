@@ -3,24 +3,35 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'emdash/ui';
 import { getSiteSettings } from 'emdash';
 import { localizePath } from '../../lib/i18n';
-import { getHomeCategories } from '../../lib/shop';
+import { getCategoryIndex } from '../../lib/shop';
 
 const currentLocale = Astro.currentLocale ?? 'en';
 function localizeUrl(url: string): string {
   return localizePath(url, currentLocale);
 }
 
-// 品类索引：只展示有产品（count > 0）的状态，空分类由分类详情页重定向至此。
-const homeCategories = (await getHomeCategories())
-  .filter((c) => c.count > 0)
-  .sort((a, b) => b.count - a.count);
+// 品类索引：展示 level-1 以下全部有产品的分类。
+// 一级分类作为分组标题，二级分类作为大卡（subtree 聚合产品数），
+// 三级分类作为小卡，不限数量。空分类由分类详情页重定向至此，故仅列 count > 0。
+const sections = (await getCategoryIndex())
+  .map((section) => ({
+    ...section,
+    groups: section.groups
+      .filter((g) => g.count > 0)
+      .map((g) => ({
+        ...g,
+        children: g.children.filter((c) => c.count > 0),
+      })),
+  }))
+  .filter((section) => section.groups.length > 0);
+
+const visibleGroups = sections.flatMap((s) => s.groups);
+const totalSkus = visibleGroups.reduce((sum, g) => sum + g.count, 0);
 
 const siteSettings = await getSiteSettings();
 const siteTitle = siteSettings.title || 'MrKB';
 const siteUrl = siteSettings.url || Astro.url.origin;
 const siteBaseUrl = siteUrl.replace(/\/+$/, '');
-
-const totalSkus = homeCategories.reduce((sum, c) => sum + c.count, 0);
 
 const pageTitle = `Product Categories | ${siteTitle}`;
 const pageDescription =
@@ -40,24 +51,35 @@ const breadcrumbJsonLd = JSON.stringify({
   ],
 });
 
+// 二级 + 三级分类全部列入 ItemList，二级优先级高（排前），三级随后。
+const itemElements = sections.flatMap((section) =>
+  section.groups.flatMap((group) => [
+    { name: group.name, url: `${siteBaseUrl}${localizeUrl(`/categories/${group.slug}`)}` },
+    ...group.children.map((child) => ({
+      name: child.name,
+      url: `${siteBaseUrl}${localizeUrl(`/categories/${child.slug}`)}`,
+    })),
+  ]),
+);
+
 const categoryListJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   '@id': `${localizedBase}#item-list`,
   name: 'Bathroom Hardware Product Categories',
-  numberOfItems: homeCategories.length,
-  itemListElement: homeCategories.map((cat, index) => ({
+  numberOfItems: itemElements.length,
+  itemListElement: itemElements.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
-    name: cat.name,
-    url: `${siteBaseUrl}${localizeUrl(`/categories/${cat.slug}`)}`,
+    name: item.name,
+    url: item.url,
   })),
 });
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
   <script type="application/ld+json" set:html={breadcrumbJsonLd}></script>
-  {categoryListJsonLd && homeCategories.length > 0 && (
+  {categoryListJsonLd && visibleGroups.length > 0 && (
     <script type="application/ld+json" set:html={categoryListJsonLd}></script>
   )}
 
@@ -89,58 +111,92 @@ const categoryListJsonLd = JSON.stringify({
         <p class="text-base text-white/80 leading-relaxed">
           {pageDescription}
         </p>
-        {homeCategories.length > 0 && (
+        {visibleGroups.length > 0 && (
           <p class="mt-4 text-xs uppercase tracking-widest text-primary-300">
-            {homeCategories.length} {homeCategories.length === 1 ? 'category' : 'categories'} - {totalSkus} SKUs ready to spec
+            {visibleGroups.length} {visibleGroups.length === 1 ? 'category' : 'categories'} - {totalSkus} SKUs ready to spec
           </p>
         )}
       </div>
     </div>
   </section>
 
-  <!-- Category Grid -->
+  <!-- Category Sections: level-1 as group headings, level-2 as large bento cards,
+       level-3 as small cards, unlimited count. -->
   <section class="container mx-auto px-4 py-12 sm:py-16">
-    {homeCategories.length > 0 ? (
-      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[180px] md:auto-rows-[220px]">
-        {homeCategories.map((cat, i) => {
-          const isHero = i === 0;
-          const spanClass = isHero ? 'col-span-2 lg:col-span-2 lg:row-span-2' : '';
-          return (
-            <a
-              href={localizeUrl(`/categories/${cat.slug}`)}
-              class={`group relative overflow-hidden rounded-3xl text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll ${spanClass}`}
-              style={`animation-delay: ${i * 0.05}s;`}
-            >
-              {cat.image ? (
-                <Image
-                  image={cat.image}
-                  alt={cat.name}
-                  width={800}
-                  height={600}
-                  class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
-                />
-              ) : (
-                <div class="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800"></div>
-              )}
+    {sections.length > 0 ? (
+      sections.map((section) => (
+        <div class="mb-14 last:mb-0">
+          <div class="flex items-center gap-4 mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{section.name}</h2>
+            <div class="flex-1 h-px bg-gray-200 dark:bg-dark-700"></div>
+          </div>
 
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 auto-rows-[130px] sm:auto-rows-[170px] lg:auto-rows-[190px]">
+            {section.groups.map((group) => (
+              <>
+                <!-- Level-2: large card spanning 2x2 -->
+                <a
+                  href={localizeUrl(`/categories/${group.slug}`)}
+                  class="group relative overflow-hidden rounded-3xl col-span-2 lg:col-span-2 row-span-2 text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll"
+                >
+                  {group.image ? (
+                    <Image
+                      image={group.image}
+                      alt={group.name}
+                      width={800}
+                      height={600}
+                      class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                    />
+                  ) : (
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800"></div>
+                  )}
 
-              <div class="relative z-10 p-5 md:p-6 h-full flex flex-col justify-end">
-                <h2 class={`font-bold leading-tight drop-shadow-md ${isHero ? 'text-2xl md:text-4xl' : 'text-base md:text-lg'}`}>{cat.name}</h2>
-                {cat.count > 0 && (
-                  <p class="mt-2 text-sm text-white/80">{cat.count} SKUs ready to spec</p>
-                )}
-              </div>
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
 
-              <div class="absolute bottom-4 end-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </div>
-            </a>
-          );
-        })}
-      </div>
+                  <div class="relative z-10 p-4 sm:p-6 h-full flex flex-col justify-end">
+                    <h3 class="font-bold leading-tight drop-shadow-md text-lg sm:text-2xl lg:text-3xl">{group.name}</h3>
+                    {group.count > 0 && (
+                      <p class="mt-1.5 sm:mt-2 text-xs sm:text-sm text-white/80">{group.count} SKUs ready to spec</p>
+                    )}
+                  </div>
+
+                  <div class="absolute bottom-4 end-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- Level-3: small cards filling the remaining bento slots -->
+                {group.children.map((child) => (
+                  <a
+                    href={localizeUrl(`/categories/${child.slug}`)}
+                    class="group relative overflow-hidden rounded-2xl col-span-1 row-span-1 text-white transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-[1.02] animate-on-scroll"
+                  >
+                    {child.image ? (
+                      <Image
+                        image={child.image}
+                        alt={child.name}
+                        width={400}
+                        height={400}
+                        class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                      />
+                    ) : (
+                      <div class="absolute inset-0 bg-gradient-to-br from-primary-500/90 via-primary-600/90 to-primary-800/90"></div>
+                    )}
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5"></div>
+
+                    <div class="relative z-10 p-3 sm:p-4 h-full flex flex-col justify-end">
+                      <h3 class="font-semibold leading-tight drop-shadow-md text-xs sm:text-sm lg:text-base">{child.name}</h3>
+                    </div>
+                  </a>
+                ))}
+              </>
+            ))}
+          </div>
+        </div>
+      ))
     ) : (
       <p class="text-center text-gray-500 dark:text-gray-400 py-16">No categories yet</p>
     )}

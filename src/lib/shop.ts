@@ -502,10 +502,19 @@ export async function getProductsByCategory(slug: string): Promise<ShopProduct[]
 		.map((entry) => toProduct(entry as Record<string, unknown>))
 		.filter((p) => p.name !== "");
 
+	// 一个产品可关联多个分类（多对多）。取产品全部 collection slug 后与目标
+	// 子树求交集，保证产品在其所属的每个分类页面都能展示出来。
+	const categorySlugs = (p: ShopProduct): string[] =>
+		Array.isArray(p.categories) && p.categories.length > 0
+			? p.categories
+			: p.category
+				? [p.category]
+				: [];
+
 	// If the requested term was not found in the tree, fall back to an exact
 	// slug match so the behaviour degrades gracefully.
-	if (!termSet) return products.filter((p) => p.category === slug);
-	return products.filter((p) => (p.category ? termSet.has(p.category) : false));
+	if (!termSet) return products.filter((p) => categorySlugs(p).includes(slug));
+	return products.filter((p) => categorySlugs(p).some((cat) => termSet.has(cat)));
 }
 
 // 分类页动态筛选器聚合。扫描分类下所有产品，合并两类筛选维度：
@@ -535,8 +544,14 @@ export async function getCategoryFilterData(slug: string): Promise<{
 		return { groups: [], productValues: {} };
 	}
 
-	const inCategory = (p: { category?: string }): boolean =>
-		termSet ? (p.category ? termSet.has(p.category) : false) : p.category === slug;
+	const inCategory = (p: ShopProduct): boolean => {
+		const slugs = Array.isArray(p.categories) && p.categories.length > 0
+			? p.categories
+			: p.category
+				? [p.category]
+				: [];
+		return termSet ? slugs.some((cat) => termSet.has(cat)) : slugs.includes(slug);
+	};
 
 	// 属性为手动填写，值可能存在大小写差异（gold/GOLD/Gold、GREEM/green）。
 	// 按小写去重避免统计被大小写分裂，同时保留首次出现的原始大小写用于展示。
@@ -1155,6 +1170,87 @@ export async function getHomeCategories(): Promise<HomeCategory[]> {
 	// Fall back to the top-level terms when no level-2 terms exist yet, so the
 	// section never renders empty on a freshly seeded site.
 	return level2.length > 0 ? level2 : terms.map(toCard);
+}
+
+// 品类索引页：露出 level-1 以下**全部**分类层级（二级 + 三级，不限数量），
+// 二级作大卡（subtree 聚合产品数），三级作小卡，保留便当式分层布局。
+export interface CategoryIndexCard {
+	slug: string;
+	name: string;
+	image: string;
+	count: number;
+}
+
+export interface CategoryIndexGroup {
+	slug: string;
+	name: string;
+	image: string;
+	/** 二级分类的子树产品数（自身 count + 所有三级 count 之和），供卡片展示。 */
+	count: number;
+	/** 该二级分类下的三级分类卡片（可为空）。 */
+	children: CategoryIndexCard[];
+}
+
+export interface CategoryIndexSection {
+	/** 一级分类名称（仅作分组标题，不渲染成卡片）。 */
+	name: string;
+	groups: CategoryIndexGroup[];
+}
+
+export async function getCategoryIndex(): Promise<CategoryIndexSection[]> {
+	const [terms, result] = await Promise.all([
+		getTaxonomyTerms("collection", { includeCounts: true }),
+		getEmDashCollection("categories" as never) as Promise<{
+			entries?: unknown[] | undefined;
+			error?: unknown;
+		}>,
+	]);
+
+	const entries =
+		result && !result.error && Array.isArray(result.entries)
+			? (result.entries as Record<string, unknown>[])
+			: [];
+
+	const imageBySlug = new Map<string, string>();
+	for (const entry of entries) {
+		const slug = typeof entry.slug === "string" ? entry.slug : "";
+		const d =
+			entry.data && typeof entry.data === "object"
+				? (entry.data as Record<string, unknown>)
+				: {};
+		if (slug) imageBySlug.set(slug, mediaUrl(d.categoryimage));
+	}
+
+	const toCard = (term: { slug: string; label: string; count?: number }): CategoryIndexCard => ({
+		slug: term.slug,
+		name: term.label,
+		image: imageBySlug.get(term.slug) ?? "",
+		count: term.count ?? 0,
+	});
+
+	const sections: CategoryIndexSection[] = [];
+	for (const top of terms) {
+		const level2 = Array.isArray(top.children) ? top.children : [];
+		if (level2.length === 0) continue;
+		const groups = level2.map((l2) => {
+			const children = (Array.isArray(l2.children) ? l2.children : []).map(toCard);
+			return {
+				...toCard(l2),
+				count: (l2.count ?? 0) + children.reduce((sum, c) => sum + c.count, 0),
+				children,
+			};
+		});
+		sections.push({ name: top.label, groups });
+	}
+
+	// 尚无二级结构（只挂了顶层 term）时按顶层降级，保证索引页不渲染空。
+	if (sections.length > 0) return sections;
+	return [
+		{
+			name: "All Categories",
+			groups: terms.map((term) => ({ ...toCard(term), count: term.count ?? 0, children: [] })),
+		},
+	];
 }
 
 export interface CatalogCategoryOption {
