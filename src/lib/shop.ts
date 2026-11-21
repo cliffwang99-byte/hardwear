@@ -785,6 +785,47 @@ export interface CategoryMeta {
 	// Schema.org `about` entities configured in the CMS (`about_entities` repeater).
 	// Each entry disambiguates the topic via `sameAs` (Wikidata/Wikipedia URLs).
 	aboutEntities: AboutEntity[];
+	// Related blog posts configured in the CMS via the `posts` reference field.
+	relatedPosts: RelatedPost[];
+}
+
+export interface RelatedPost {
+	id: string;
+	title: string;
+	excerpt: string;
+	image: string;
+	date: string;
+	category: string;
+}
+
+function relatedPostsFrom(entries: unknown[] | undefined): RelatedPost[] {
+	if (!Array.isArray(entries)) return [];
+	const out: RelatedPost[] = [];
+	for (const raw of entries) {
+		if (!raw || typeof raw !== "object") continue;
+		const entry = raw as Record<string, unknown>;
+		const d =
+			entry.data && typeof entry.data === "object"
+				? (entry.data as Record<string, unknown>)
+				: {};
+		const title = typeof d.title === "string" ? d.title.trim() : "";
+		if (!title) continue;
+		const dateRaw = entry.publishedAt ?? d.published_at ?? entry.published_at;
+		let date = "";
+		if (dateRaw instanceof Date) date = dateRaw.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+		else if (typeof dateRaw === "string" && dateRaw) date = new Date(dateRaw).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+		const terms = d.terms as Record<string, unknown> | undefined;
+		const catTerms = (terms?.category as Array<Record<string, unknown>> | undefined) ?? [];
+		out.push({
+			id: typeof entry.slug === "string" ? entry.slug : String(entry.id ?? ""),
+			title,
+			excerpt: typeof d.excerpt === "string" ? d.excerpt : "",
+			image: mediaUrl(d.featured_image),
+			date,
+			category: typeof catTerms?.[0]?.label === "string" ? catTerms[0].label : "",
+		});
+	}
+	return out;
 }
 
 // Extract plain text from an EmDash portableText block array so categories can
@@ -911,7 +952,9 @@ async function getEntryFromCandidates(
 	slug: string,
 ): Promise<{ entry: Record<string, unknown> | undefined; collection: string }> {
 	for (const candidate of candidates) {
-		const result = (await getEmDashEntry(candidate as never, slug)) as {
+		const result = (await getEmDashEntry(candidate as never, slug, {
+			references: { posts: true },
+		})) as {
 			entry?: unknown;
 			error?: unknown;
 		};
@@ -988,6 +1031,7 @@ async function getTermPageData(
 		collection,
 		categories: referenceSlugs((d.terms as Record<string, unknown> | undefined)?.collection),
 		aboutEntities: aboutEntities(d.about_entities),
+		relatedPosts: relatedPostsFrom((entry?.references as Record<string, { entries?: unknown[] }> | undefined)?.posts?.entries),
 	};
 }
 
@@ -1057,6 +1101,7 @@ export async function getLandingPageData(slug: string): Promise<CategoryMeta | n
 		collection,
 		categories: referenceSlugs(d.categories),
 		aboutEntities: aboutEntities(d.about_entities),
+		relatedPosts: relatedPostsFrom((entry?.references as Record<string, { entries?: unknown[] }> | undefined)?.posts?.entries),
 	};
 }
 
