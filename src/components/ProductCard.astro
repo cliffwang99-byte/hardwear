@@ -1,6 +1,7 @@
 ---
 import { Image } from "emdash/ui";
 import { localizePath } from "../lib/i18n";
+import { isVanityListProduct } from "../lib/shop";
 
 interface Props {
   id: string;
@@ -17,14 +18,18 @@ interface Props {
   topic?: string;
   topics?: string[];
   series?: string;
+  enableVanityCustomizer?: boolean;
+  optCabinetMaterial?: string;
 }
 
-const { id, name, price, originalPrice, image, rating, badge, inStock, category, categories, topic, topics, series } = Astro.props;
+const { id, name, price, originalPrice, image, rating, badge, inStock, category, categories, topic, topics, series, enableVanityCustomizer, optCabinetMaterial } = Astro.props;
 const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
 const currentLocale = Astro.currentLocale ?? "en";
 const productUrl = localizePath(`/product/${id}`, currentLocale);
 const categorySlugs = (categories && categories.length ? categories : category ? [category] : []).join(" ");
 const topicSlugs = (topics && topics.length ? topics : topic ? [topic] : []).join(" ");
+// 定制产品：按钮跳转详情页而不是直接加购（与详情页 isVanityProduct 同口径）
+const customizable = isVanityListProduct({ category, categories, enableVanityCustomizer, optCabinetMaterial });
 ---
 
 <div
@@ -155,6 +160,8 @@ const topicSlugs = (topics && topics.length ? topics : topic ? [topic] : []).joi
     <!-- Multi-Layer Request a Quote Button with Enhanced Animation - Mobile Optimized -->
     <button
       data-add-to-cart={id}
+      data-customizable={customizable ? "true" : "false"}
+      data-product-url={productUrl}
       data-product-name={name}
       data-product-price={price}
       data-product-image={image}
@@ -177,7 +184,7 @@ const topicSlugs = (topics && topics.length ? topics : topic ? [topic] : []).joi
           </svg>
           
           <!-- Text -->
-          <span class="relative z-10 tracking-wide">Add to Quote List</span>
+          <span class="relative z-10 tracking-wide">{customizable ? "Customize" : "Add to Quote List"}</span>
           
           <!-- Success Checkmark (hidden by default, shown via JS) -->
           <svg class="w-4 h-4 sm:w-5 sm:h-5 relative z-10 hidden success-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,6 +209,14 @@ const topicSlugs = (topics && topics.length ? topics : topic ? [topic] : []).joi
     button.addEventListener('click', (e) => {
       const target = e.currentTarget as HTMLElement;
       const id = target.dataset.addToCart!;
+      
+      // 定制产品（浴室柜专属）：打开详情页让客户先在定制控制台配置，而非直接加购
+      if (target.dataset.customizable === 'true') {
+        const url = target.dataset.productUrl || `/product/${id}`;
+        if (url) window.location.href = url;
+        return;
+      }
+      
       const name = target.dataset.productName!;
       const price = parseFloat(target.dataset.productPrice!);
       const image = target.dataset.productImage!;

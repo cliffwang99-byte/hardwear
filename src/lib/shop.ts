@@ -24,6 +24,9 @@ export interface ShopProduct {
 	series?: string;
 	sku?: string;
 	description?: string;
+	// —— 浴室柜专属定制（列表/卡片场景，与详情页同一字段口径）——
+	enableVanityCustomizer?: boolean;
+	optCabinetMaterial?: string;
 }
 
 export interface ShopCategory {
@@ -142,6 +145,12 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		series: referenceSlug((d.terms as Record<string, unknown> | undefined)?.series),
 		sku: typeof d.sku === "string" ? d.sku : undefined,
 		description: portableTextToText(d.description) || undefined,
+		// 浴室柜专属定制开关（列表/卡片场景需要做按钮分流，与详情页同一字段口径）。
+		enableVanityCustomizer:
+			d.enable_vanity_customizer === true ||
+			d.enable_vanity_customizer === 1 ||
+			d.enable_vanity_customizer === "true",
+		optCabinetMaterial: str(d.opt_cabinet_material),
 	};
 }
 
@@ -252,6 +261,22 @@ export const VANITY_CATEGORY_SLUGS = new Set([
 export function isVanityProduct(product: ShopProductDetail): boolean {
 	return Boolean(
 		VANITY_CATEGORY_SLUGS.has(product.categorySlug) &&
+			product.enableVanityCustomizer &&
+			typeof product.optCabinetMaterial === "string" &&
+			product.optCabinetMaterial.trim() !== "",
+	);
+}
+
+// 列表/卡片场景的定制判定：与 isVanityProduct 同口径，兼容 ShopProduct 的 categories 数组。
+export function isVanityListProduct(product: {
+	categories?: string[];
+	category?: string;
+	enableVanityCustomizer?: boolean;
+	optCabinetMaterial?: string;
+}): boolean {
+	const slugs = product.categories && product.categories.length ? product.categories : product.category ? [product.category] : [];
+	return Boolean(
+		slugs.some((s) => VANITY_CATEGORY_SLUGS.has(s)) &&
 			product.enableVanityCustomizer &&
 			typeof product.optCabinetMaterial === "string" &&
 			product.optCabinetMaterial.trim() !== "",
