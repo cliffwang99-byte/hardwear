@@ -11,8 +11,6 @@ export interface ShopProduct {
 	price: number;
 	originalPrice?: number;
 	image: string;
-	rating: number;
-	reviews: number;
 	badge?: string;
 	inStock: boolean;
 	featured?: boolean;
@@ -130,8 +128,6 @@ function toProduct(entry: Record<string, unknown>): ShopProduct {
 		price: Number(d.price) || 0,
 		originalPrice: d.originalPrice != null ? Number(d.originalPrice) || undefined : undefined,
 		image: mediaUrl(d.image),
-		rating: Number(d.rating) || 5,
-		reviews: Number(d.reviews) || 0,
 		badge: typeof d.badge === "string" ? d.badge : undefined,
 		inStock: d.inStock !== false,
 		featured:
@@ -292,8 +288,6 @@ const fallbackDetail: ShopProductDetail = {
 	name: "",
 	price: 0,
 	image: "",
-	rating: 0,
-	reviews: 0,
 	inStock: false,
 	images: [],
 	sku: "",
