@@ -243,6 +243,8 @@ export interface ShopProductDetail extends ShopProduct {
 	optBasin?: string;
 	optFaucetHole?: string;
 	bundledHardwareSlugs?: string;
+	// Drainage Type："Wall Drainage (P-Trap / Back Cutout), Floor Drainage (S-Trap / Bottom Cutout)" 逗号分隔，第1项默认选中。
+	optDrainageType?: string;
 	cadSpecPdfUrl?: string;
 }
 
@@ -461,6 +463,7 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 		optCountertop: str(d.opt_countertop),
 		optBasin: str(d.opt_basin),
 		optFaucetHole: str(d.opt_faucet_hole),
+		optDrainageType: str(d.opt_drainage_type),
 		bundledHardwareSlugs: str(d.bundled_hardware_slugs),
 		cadSpecPdfUrl: str(d.cad_spec_pdf_url),
 	};
