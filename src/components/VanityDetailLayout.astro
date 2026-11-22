@@ -534,7 +534,10 @@ const images = (product.images && product.images.length ? product.images : [prod
     for (var i = 0; i < cart.length; i++) {
       if (cart[i].key === item.key) { existing = cart[i]; break; }
     }
-    if (existing) existing.quantity += qty;
+    if (existing) {
+      existing.quantity += qty;
+      if (item.bundleOf) existing.bundleOf = item.bundleOf;
+    }
     else cart.push({ ...item, quantity: qty });
   }
 
@@ -590,6 +593,7 @@ const images = (product.images && product.images.length ? product.images : [prod
         name: cb.dataset.title || "",
         sku: aSku,
         variant: "Color-Matched Bundle for " + sku,
+        bundleOf: sku,
         price: Number(cb.dataset.price) || 0,
         image: cb.dataset.image || "",
       }, qty);

@@ -155,8 +155,14 @@ function localizeUrl(url: string): string {
         <div class="flex gap-4 items-center">
           <img src="${item.image}" alt="${item.name}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg" />
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-sm sm:text-lg mb-1 truncate">${item.name}</h3>
+            <h3 class="font-semibold text-sm sm:text-lg mb-1 truncate flex items-center gap-2">
+              ${item.name}
+              ${item.bundleOf || (typeof item.variant === 'string' && item.variant.indexOf('Color-Matched Bundle for ') === 0)
+                ? `<span class="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-emerald-600/10 text-emerald-700 dark:text-emerald-400">Bundle</span>`
+                : ''}
+            </h3>
             ${item.sku ? `<p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">SKU: ${item.sku}</p>` : ''}
+            ${item.bundleOf ? `<p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Added as bundle of ${item.bundleOf}</p>` : ''}
             ${item.variant ? `<p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">${item.variant}</p>` : ''}
             ${item.notes ? `<p class="text-[11px] text-amber-700 dark:text-amber-400 whitespace-pre-wrap leading-relaxed mb-0.5">📝 ${item.notes}</p>` : ''}
             <div class="flex items-center justify-between mt-2">
@@ -249,15 +255,29 @@ function localizeUrl(url: string): string {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          name,
-          email,
-          company,
-          phone,
-          message,
-          items: cart.map((item: any) => ({ id: item.id, name: item.name, sku: item.sku || '', variant: item.variant || '', notes: item.notes || '', quantity: item.quantity })),
-          honeypot_website: (form.querySelector('input[name="honeypot_website"]') as HTMLInputElement | null)?.value || '',
-          submitted_at: Date.now(),
-        }),
+            name,
+            email,
+            company,
+            phone,
+            message,
+            items: cart.map((item: any) => {
+              // bundleOf 回退：老 localStorage 数据可能只有 variant 暗示，未见结构化字段
+              const bundleFromVariant = typeof item.variant === 'string' && item.variant.indexOf('Color-Matched Bundle for ') === 0
+                ? item.variant.slice('Color-Matched Bundle for '.length)
+                : '';
+              return {
+                id: item.id,
+                name: item.name,
+                sku: item.sku || '',
+                variant: item.variant || '',
+                notes: item.notes || '',
+                bundleOf: typeof item.bundleOf === 'string' && item.bundleOf ? item.bundleOf : bundleFromVariant,
+                quantity: item.quantity,
+              };
+            }),
+            honeypot_website: (form.querySelector('input[name="honeypot_website"]') as HTMLInputElement | null)?.value || '',
+            submitted_at: Date.now(),
+          }),
       });
 
       const data = await res.json();
