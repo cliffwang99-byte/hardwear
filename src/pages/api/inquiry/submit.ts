@@ -5,6 +5,8 @@ import { getDb } from "emdash/runtime";
 interface QuoteItem {
   id?: unknown;
   name?: unknown;
+  sku?: unknown;
+  variant?: unknown;
   quantity?: unknown;
 }
 
@@ -87,6 +89,8 @@ export const POST: APIRoute = async ({ request }) => {
     .map((item) => ({
       id: typeof item?.id === "string" ? item.id : "",
       name: typeof item?.name === "string" ? item.name : "",
+      sku: typeof item?.sku === "string" ? item.sku : "",
+      variant: typeof item?.variant === "string" ? item.variant : "",
       quantity: Number(item?.quantity) || 1,
     }))
     .filter((item) => item.id !== "" || item.name !== "");

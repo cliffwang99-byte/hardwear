@@ -226,6 +226,8 @@ export interface ShopProductDetail extends ShopProduct {
 	enableVanityCustomizer: boolean;
 	// —— 浴室柜专属扁平定制字段（逗号分隔纯文本，非浴室柜留空）——
 	optCabinetMaterial?: string;
+	// 柜体二级色板（颜色/饰面）："[Oak] Tasmanian Oak | oak.webp, [Walnut] American Walnut" 格式。
+	optCabinetFinish?: string;
 	optCountertop?: string;
 	optBasin?: string;
 	optFaucetHole?: string;
@@ -426,6 +428,7 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 			d.enable_vanity_customizer === "true",
 		// —— 浴室柜专属扁平字段（逗号分隔纯文本，空串/undefined 一律归一为 undefined）——
 		optCabinetMaterial: str(d.opt_cabinet_material),
+		optCabinetFinish: str(d.opt_cabinet_finish),
 		optCountertop: str(d.opt_countertop),
 		optBasin: str(d.opt_basin),
 		optFaucetHole: str(d.opt_faucet_hole),

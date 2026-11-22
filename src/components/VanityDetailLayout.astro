@@ -16,6 +16,69 @@ const tops = parseOpts(product.optCountertop);
 const basins = parseOpts(product.optBasin);
 const holes = parseOpts(product.optFaucetHole);
 
+// —— 柜体二级色板（Color Swatch）——
+// 后台格式："[Oak] Tasmanian Oak | oak.webp, [Walnut] American Walnut, PVD Brushed Gold"
+// 规则：逗号分隔选项；"[Dep] 名称 | 自定义色卡图.webp"；无自定义图时自动 `public/swatches/{slug}.webp`。
+
+// 兜底纯色表：色卡图片未上传时平滑降级为色号圆点，绝不出现破图。
+const FALLBACK_COLORS: Record<string, string> = {
+  oak: "#C8A97E",
+  walnut: "#5C4033",
+  white: "#F5F7FA",
+  grey: "#6B7280",
+  gray: "#6B7280",
+  black: "#1F2937",
+  gold: "#D4AF37",
+  chrome: "#D6DDE5",
+  gunmetal: "#374151",
+  silver: "#C0C8D1",
+  brass: "#B08D57",
+  bronze: "#8C6B3F",
+};
+
+const toSlug = (s: string): string =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+const getFallbackHex = (text: string): string => {
+  const lower = text.toLowerCase();
+  const hit = Object.keys(FALLBACK_COLORS).find((k) => lower.includes(k));
+  return hit ? FALLBACK_COLORS[hit] : "#D1D5DB";
+};
+
+interface SwatchOption {
+  dep: string; // 关联的一级材质（如 "Oak"），空 = 始终显示
+  name: string; // 颜色名（如 "Tasmanian Oak"）
+  swatchUrl: string; // 色卡图 URL（无图时用于 onerror 判空）
+  fallbackHex: string; // 兜底色号
+  slug: string; // 颜色名 slug，用于主图匹配
+  hasImg: boolean;
+}
+
+const parseFinishes = (raw?: string): SwatchOption[] => {
+  const out: SwatchOption[] = [];
+  const parts = raw ? raw.split(",").map((s) => s.trim()).filter(Boolean) : [];
+  for (const part of parts) {
+    const matched = part.match(/^\[(.*?)\]\s*(.*)$/);
+    const dep = matched ? matched[1].trim() : "";
+    const body = matched ? matched[2].trim() : part;
+    const [nameRaw, customImg] = body.split("|").map((s) => s.trim());
+    if (!nameRaw) continue;
+    const name = nameRaw.trim();
+    const slug = toSlug(name);
+    out.push({
+      dep,
+      name,
+      swatchUrl: customImg || `/swatches/${slug}.webp`,
+      fallbackHex: getFallbackHex(name),
+      slug,
+      hasImg: !customImg,
+    });
+  }
+  return out;
+};
+
+const finishes = parseFinishes(product.optCabinetFinish);
+
 // 图库缩略图工程角标（数量不足时按实际图片数截断）
 const galleryLabels = [
   "Main View",
@@ -124,10 +187,56 @@ const images = (product.images && product.images.length ? product.images : [prod
         </div>
       )}
 
+      <!-- 1.5 柜体颜色色板（二级定制，按材质联动；色卡图缺图自动兜底） -->
+      {finishes.length > 0 && (
+        <div id="finish-swatch-group">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200">2. Cabinet Color / Wood Veneer</label>
+            <span class="selected-swatch-name text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[55%]">
+              {finishes[0].name}
+            </span>
+          </div>
+          <div id="finish-swatch-options" class="flex flex-wrap gap-2">
+            {finishes.map((sw, i) => (
+              <label
+                class="cursor-pointer finish-swatch-option"
+                data-dep={sw.dep.toLowerCase()}
+                data-slug={sw.slug}
+              >
+                <input
+                  type="radio"
+                  name="opt_finish"
+                  value={sw.name}
+                  checked={i === 0}
+                  class="peer sr-only"
+                />
+                <span
+                  class="inline-flex items-center gap-2 px-2 py-1.5 pr-3 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-900 peer-checked:border-primary-600 peer-checked:ring-1 peer-checked:ring-primary-600 transition"
+                >
+                  <span
+                    class="w-7 h-7 rounded border border-gray-200 dark:border-dark-600 overflow-hidden shrink-0 block"
+                    style={`background-color: ${sw.fallbackHex}`}
+                  >
+                    <img
+                      src={sw.swatchUrl}
+                      alt={sw.name}
+                      loading="lazy"
+                      class="w-full h-full object-cover"
+                      onerror="this.style.display='none'"
+                    />
+                  </span>
+                  <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{sw.name}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       <!-- 2. 台面选项 -->
       {tops.length > 0 && (
         <div>
-          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">2. Countertop Option</label>
+          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">3. Countertop Option</label>
           <div class="flex flex-wrap gap-2">
             {tops.map((item, i) => (
               <label class="cursor-pointer">
@@ -144,7 +253,7 @@ const images = (product.images && product.images.length ? product.images : [prod
       <!-- 3. 面盆选项 -->
       {basins.length > 0 && (
         <div>
-          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">3. Basin Option</label>
+          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">4. Basin Option</label>
           <div class="flex flex-wrap gap-2">
             {basins.map((item, i) => (
               <label class="cursor-pointer">
@@ -162,7 +271,7 @@ const images = (product.images && product.images.length ? product.images : [prod
       {holes.length > 0 && (
         <div id="faucet-hole-group">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200">4. Faucet Hole Drilling</label>
+            <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200">5. Faucet Hole Drilling</label>
             <span id="faucet-hole-na-tip" class="hidden text-[11px] text-amber-700 dark:text-amber-400 font-medium">
               N/A (Customer-Supplied Top)
             </span>
@@ -296,6 +405,78 @@ const images = (product.images && product.images.length ? product.images : [prod
   topRadios.forEach((r) => r.addEventListener("change", syncHoleState));
   syncHoleState();
 
+  // 2.5 柜体颜色色板联动：材质切换 → 过滤色板；选中色板 → 切换左侧主图
+  // 所有图库图片（含首图），用于按颜色名匹配主图；匹配不到回退当前/首图
+  const vanityImages = (product.images && product.images.length ? product.images : [product.image]).filter(Boolean);
+  const mainImgEl = document.getElementById("vanity-main-img");
+  const swatchOptions = document.querySelectorAll(".finish-swatch-option");
+  const swatchNameBadge = document.querySelector(".selected-swatch-name");
+  const materialRadios = document.querySelectorAll('input[name="opt_material"]');
+  const finishSwatchGroup = document.getElementById("finish-swatch-group");
+
+  const toSlug = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+  // 在图片 URL 文件名里匹配颜色关键词（如 "walnut"），找不到返回空
+  const matchColorImage = (slug) => {
+    if (!slug) return "";
+    for (let k = 0; k < vanityImages.length; k++) {
+      const base = (vanityImages[k].split("/").pop() || vanityImages[k]).toLowerCase();
+      if (base.includes(slug)) return vanityImages[k];
+    }
+    return "";
+  };
+
+  // 主图镜像：优先当前选中的色板匹配图，失败则保留现有主图（不回退跳变）
+  const syncMainImage = () => {
+    const checkedFinish = document.querySelector('input[name="opt_finish"]:checked');
+    if (!checkedFinish || !mainImgEl) return;
+    const chosen = matchColorImage(toSlug(checkedFinish.value));
+    if (chosen) mainImgEl.src = chosen;
+  };
+
+  const syncSwatchOptions = () => {
+    if (!finishSwatchGroup || !swatchOptions.length) return;
+    const selectedMaterial = (document.querySelector('input[name="opt_material"]:checked')?.value || "").toLowerCase();
+
+    let firstVisible = null;
+    let hasCheckedVisible = false;
+
+    swatchOptions.forEach((optEl) => {
+      const dep = (optEl.dataset.dep || "").toLowerCase();
+      const visible = !dep || dep === selectedMaterial;
+      optEl.style.display = visible ? "" : "none";
+      const input = optEl.querySelector("input");
+      if (!input) return;
+      if (visible) {
+        if (!firstVisible) firstVisible = input;
+        if (input.checked) hasCheckedVisible = true;
+      } else {
+        input.checked = false;
+      }
+    });
+
+    // 无任何匹配色板 → 整组隐藏；否则若当前无选中则自动选第一个可见项
+    if (!firstVisible) {
+      finishSwatchGroup.style.display = "none";
+      return;
+    }
+    finishSwatchGroup.style.display = "";
+    if (!hasCheckedVisible) firstVisible.checked = true;
+
+    // 同步右上角当前选中色板名
+    const active = document.querySelector('input[name="opt_finish"]:checked');
+    if (swatchNameBadge && active) swatchNameBadge.textContent = active.value;
+
+    syncMainImage();
+  };
+
+  materialRadios.forEach((r) => r.addEventListener("change", syncSwatchOptions));
+  swatchOptions.forEach((optEl) => {
+    const input = optEl.querySelector("input");
+    if (input) input.addEventListener("change", syncMainImage);
+  });
+  syncSwatchOptions();
+
   // 3. 扁平写入 localStorage['cart']（沿用现有询价清单机制，与 Header 角标 / Quote List 页联动）
   const form = document.getElementById("vanity-quote-form");
   const addBtn = document.getElementById("vanity-add-btn");
@@ -333,15 +514,18 @@ const images = (product.images && product.images.length ? product.images : [prod
     var qty = Math.max(1, parseInt(fd.get("qty") || "50", 10));
     var selectedTop = fd.get("opt_top") || "";
     var isNoTop = selectedTop.toLowerCase().includes("no top");
+    var selectedFinish = fd.get("opt_finish") || "";
 
     var customSpec = [
       fd.get("opt_material") ? "Material: " + fd.get("opt_material") : "",
+      selectedFinish ? "Finish: " + selectedFinish : "",
       selectedTop ? "Top: " + selectedTop : "",
       fd.get("opt_basin") ? "Basin: " + fd.get("opt_basin") : "",
       !isNoTop && fd.get("opt_hole") ? "Hole: " + fd.get("opt_hole") : "",
     ].filter(Boolean).join(" | ");
 
-    var img = (product.images && product.images[0]) || product.image || "";
+    // 镜像主图：优先当前选中的 Finish 匹配到的颜色主图，否则回退首图
+    var img = ((document.getElementById("vanity-main-img") || {}).src) || (product.images && product.images[0]) || product.image || "";
     var sku = product.sku || product.id;
     var cart = readCart();
 
