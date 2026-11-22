@@ -7,6 +7,7 @@ interface QuoteItem {
   name?: unknown;
   sku?: unknown;
   variant?: unknown;
+  notes?: unknown;
   quantity?: unknown;
 }
 
@@ -91,6 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
       name: typeof item?.name === "string" ? item.name : "",
       sku: typeof item?.sku === "string" ? item.sku : "",
       variant: typeof item?.variant === "string" ? item.variant : "",
+      notes: typeof item?.notes === "string" ? item.notes : "",
       quantity: Number(item?.quantity) || 1,
     }))
     .filter((item) => item.id !== "" || item.name !== "");

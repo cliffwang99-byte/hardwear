@@ -224,6 +224,8 @@ export interface ShopProductDetail extends ShopProduct {
 	attributes: ProductAttribute[];
 	// —— 浴室柜专属定制开关（EmDash Products → Checkbox）——
 	enableVanityCustomizer: boolean;
+	// 定制控制台区域 H2 标题（扁平字段 config_section_title；不配时组件回退默认文案）。
+	configSectionTitle?: string;
 	// —— 浴室柜专属扁平定制字段（逗号分隔纯文本，非浴室柜留空）——
 	optCabinetMaterial?: string;
 	// 柜体二级色板（颜色/饰面）："[Oak] Tasmanian Oak | oak.webp, [Walnut] American Walnut" 格式。
@@ -426,6 +428,8 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 			d.enable_vanity_customizer === true ||
 			d.enable_vanity_customizer === 1 ||
 			d.enable_vanity_customizer === "true",
+		// 定制控制台区域 H2 标题（可配置化，缺失时组件内回退默认文案）。
+		configSectionTitle: str(d.config_section_title),
 		// —— 浴室柜专属扁平字段（逗号分隔纯文本，空串/undefined 一律归一为 undefined）——
 		optCabinetMaterial: str(d.opt_cabinet_material),
 		optCabinetFinish: str(d.opt_cabinet_finish),
