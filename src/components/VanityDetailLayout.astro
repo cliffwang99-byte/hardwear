@@ -1,0 +1,389 @@
+---
+import type { ShopProductDetail, ShopProduct } from "../lib/shop";
+
+interface Props {
+  product: ShopProductDetail;
+  bundledProducts?: ShopProduct[];
+}
+
+const { product, bundledProducts = [] } = Astro.props;
+
+const parseOpts = (str?: string): string[] =>
+  str ? str.split(",").map((s) => s.trim()).filter(Boolean) : [];
+
+const materials = parseOpts(product.optCabinetMaterial);
+const tops = parseOpts(product.optCountertop);
+const basins = parseOpts(product.optBasin);
+const holes = parseOpts(product.optFaucetHole);
+
+// 图库缩略图工程角标（数量不足时按实际图片数截断）
+const galleryLabels = [
+  "Main View",
+  "2D Cutout CAD",
+  "U-Drawer",
+  "Core Material",
+  "Color Match",
+  "FCL Pack",
+];
+const images = (product.images && product.images.length ? product.images : [product.image]).filter(Boolean);
+---
+
+<!-- 首屏双栏：左 40% 工程视觉与图纸区 + 右 60% 定制配置控制台 -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-16">
+  <!-- 左侧 (2/5 = 40%) -->
+  <div class="lg:col-span-2 space-y-4 animate-slide-up">
+    <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-dark-700">
+      <img
+        id="vanity-main-img"
+        src={images[0]}
+        alt={product.name}
+        class="w-full h-full object-contain"
+      />
+    </div>
+
+    <!-- 带工程识别标签的缩略图切换条 -->
+    {images.length > 1 && (
+      <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+        {images.slice(0, galleryLabels.length).map((imgUrl, idx) => (
+          <button
+            type="button"
+            class="vanity-thumb-btn group border border-gray-200 dark:border-dark-700 hover:border-primary-600 dark:hover:border-primary-600 rounded-lg p-1.5 text-left transition-colors"
+            data-src={imgUrl}
+          >
+            <span class="block aspect-square overflow-hidden rounded-md bg-gray-100 dark:bg-dark-900">
+              <img src={imgUrl} alt={galleryLabels[idx] ?? `View ${idx + 1}`} class="w-full h-full object-cover" />
+            </span>
+            <span class="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mt-1.5 truncate">
+              {galleryLabels[idx] ?? `View ${idx + 1}`}
+            </span>
+          </button>
+        ))}
+      </div>
+    )}
+
+    <!-- 无品牌 2D CAD & Spec Sheet 下载钩子 -->
+    {product.cadSpecPdfUrl && (
+      <div class="bg-gray-50 dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">Submittal-Ready 2D CAD &amp; Plumbing Rough-In Spec</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Includes rear back-panel cutout dimensions &amp; U-shaped drawer clearance.</p>
+        </div>
+        <a
+          href={product.cadSpecPdfUrl}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center justify-center px-4 py-2 border border-gray-900 dark:border-white text-xs font-semibold text-gray-900 dark:text-white rounded-lg hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 transition shrink-0"
+        >
+          Download Spec PDF
+        </a>
+      </div>
+    )}
+  </div>
+
+  <!-- 右侧 (3/5 = 60%)：定制配置控制台 -->
+  <div class="lg:col-span-3 border border-gray-200 dark:border-dark-700 rounded-2xl p-6 bg-white dark:bg-dark-800 shadow-sm animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+      <span>SKU: <strong class="text-gray-800 dark:text-gray-200">{product.sku}</strong></span>
+      <span class="px-2 py-0.5 bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-200 font-medium rounded">Spec-Grade B2B</span>
+    </div>
+
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white leading-snug">{product.name}</h1>
+    {product.description && <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{product.description}</p>}
+
+    <!-- 价格隐藏协议占位符 -->
+    <div class="mt-4 pb-4 border-b border-gray-200 dark:border-dark-700 flex items-center justify-between">
+      <div>
+        <span class="font-mono text-xl font-bold text-gray-900 dark:text-white">$??.?? / Set</span>
+        <span class="ml-2 inline-flex items-center px-2 py-0.5 text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded">
+          🔒 Protected
+        </span>
+      </div>
+      <span class="text-xs text-gray-500 dark:text-gray-400">FOB / CIF · FCL Consolidation</span>
+    </div>
+
+    <!-- 定制表单 -->
+    <form id="vanity-quote-form" class="mt-5 space-y-5">
+      <div class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        Step 1: Customize Vanity Unit
+      </div>
+
+      <!-- 1. 柜体材质 -->
+      {materials.length > 0 && (
+        <div>
+          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">1. Cabinet Material &amp; Finish</label>
+          <div class="flex flex-wrap gap-2">
+            {materials.map((item, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="opt_material" value={item} checked={i === 0} class="peer sr-only" />
+                <span class="inline-block px-3 py-1.5 border border-gray-300 dark:border-dark-600 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-checked:text-white dark:peer-checked:text-white transition">
+                  {item}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- 2. 台面选项 -->
+      {tops.length > 0 && (
+        <div>
+          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">2. Countertop Option</label>
+          <div class="flex flex-wrap gap-2">
+            {tops.map((item, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="opt_top" value={item} checked={i === 0} class="peer sr-only" />
+                <span class="inline-block px-3 py-1.5 border border-gray-300 dark:border-dark-600 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-checked:text-white dark:peer-checked:text-white transition">
+                  {item}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- 3. 面盆选项 -->
+      {basins.length > 0 && (
+        <div>
+          <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1.5">3. Basin Option</label>
+          <div class="flex flex-wrap gap-2">
+            {basins.map((item, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="opt_basin" value={item} checked={i === 0} class="peer sr-only" />
+                <span class="inline-block px-3 py-1.5 border border-gray-300 dark:border-dark-600 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-checked:text-white dark:peer-checked:text-white transition">
+                  {item}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- 4. 台面龙头开孔（选 No Top 时自动禁用） -->
+      {holes.length > 0 && (
+        <div id="faucet-hole-group">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-gray-800 dark:text-gray-200">4. Faucet Hole Drilling</label>
+            <span id="faucet-hole-na-tip" class="hidden text-[11px] text-amber-700 dark:text-amber-400 font-medium">
+              N/A (Customer-Supplied Top)
+            </span>
+          </div>
+          <div id="faucet-hole-options" class="flex flex-wrap gap-2">
+            {holes.map((item, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="opt_hole" value={item} checked={i === 0} class="peer sr-only" />
+                <span class="inline-block px-3 py-1.5 border border-gray-300 dark:border-dark-600 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-checked:text-white dark:peer-checked:text-white transition">
+                  {item}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- STEP 2: 跨厂水暖加购区 -->
+      {bundledProducts.length > 0 && (
+        <div class="pt-4 border-t border-gray-200 dark:border-dark-700 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Step 2: Cross-Factory Hardware Bundle
+            </span>
+          </div>
+          <p class="text-[11px] text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg px-2.5 py-1.5">
+            Pack inside vanity cavities — $0 extra ocean freight &amp; color-matched within Delta E &lt; 1.5.
+          </p>
+
+          <div class="space-y-2">
+            {bundledProducts.map((addon) => (
+              <label class="flex items-center justify-between p-2.5 border border-gray-200 dark:border-dark-700 rounded-lg hover:border-primary-600 dark:hover:border-primary-600 cursor-pointer transition">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <input
+                    type="checkbox"
+                    name="bundled_addon"
+                    data-sku={addon.sku ?? ""}
+                    data-title={addon.name}
+                    data-image={addon.image}
+                    data-id={addon.id}
+                    data-price={addon.price}
+                    class="w-4 h-4 rounded border-gray-300 dark:border-dark-600 text-primary-600 focus:ring-primary-600 flex-shrink-0"
+                  />
+                  {addon.image && (
+                    <img
+                      src={addon.image}
+                      alt={addon.name}
+                      class="w-10 h-10 object-cover rounded border border-gray-100 dark:border-dark-700 flex-shrink-0"
+                    />
+                  )}
+                  <div class="min-w-0">
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight truncate">{addon.name}</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400">SKU: {addon.sku}</p>
+                  </div>
+                </div>
+                <span class="font-mono text-xs font-semibold text-gray-700 dark:text-gray-300 shrink-0">$??.?? 🔒</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- 工程起订量与唯一转化按钮 -->
+      <div class="pt-4 border-t border-gray-200 dark:border-dark-700">
+        <div class="flex items-center gap-3 mb-3">
+          <label for="vanity-qty" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Project Qty (Sets):</label>
+          <input
+            id="vanity-qty"
+            name="qty"
+            type="number"
+            min="10"
+            value="50"
+            class="w-24 px-2.5 py-1.5 border border-gray-300 dark:border-dark-600 rounded-lg text-sm font-semibold text-gray-900 dark:text-white bg-white dark:bg-dark-900"
+          />
+          <span class="text-xs text-gray-500 dark:text-gray-400">Standard MOQ: 50 Sets</span>
+        </div>
+
+        <button
+          id="vanity-add-btn"
+          type="submit"
+          class="w-full py-3.5 px-5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 active:scale-95"
+        >
+          + Add Selected to Quote List
+        </button>
+        <p id="quote-feedback-msg" class="hidden text-xs text-emerald-700 dark:text-emerald-400 font-semibold text-center mt-2">
+          Added to your Quote List. Open Quote List at top right to submit BOM.
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 移动端底部吸底转化条 -->
+<div class="fixed bottom-0 inset-x-0 bg-white dark:bg-dark-900 border-t border-gray-200 dark:border-dark-700 px-4 py-2.5 flex items-center justify-between lg:hidden z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+  <div>
+    <span class="font-mono text-sm font-bold text-gray-900 dark:text-white">$??.?? / Set 🔒</span>
+    <span class="block text-[11px] text-gray-500 dark:text-gray-400">MOQ: 50 Sets · FCL Direct</span>
+  </div>
+  <button
+    id="vanity-sticky-add"
+    type="button"
+    class="px-4 py-2.5 bg-primary-600 active:bg-primary-700 text-white text-xs font-bold rounded-xl"
+  >
+    + Add to Quote List
+  </button>
+</div>
+
+<script define:vars={{ product }}>
+  // 1. 图库缩略图切换
+  document.querySelectorAll(".vanity-thumb-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mainImg = document.getElementById("vanity-main-img");
+      if (mainImg && btn.dataset.src) mainImg.src = btn.dataset.src;
+    });
+  });
+
+  // 2. No Top 与台面开孔防呆联动
+  const topRadios = document.querySelectorAll('input[name="opt_top"]');
+  const holeOptionsBox = document.getElementById("faucet-hole-options");
+  const holeNaTip = document.getElementById("faucet-hole-na-tip");
+
+  const syncHoleState = () => {
+    const selectedTop = document.querySelector('input[name="opt_top"]:checked')?.value || "";
+    const isNoTop = selectedTop.toLowerCase().includes("no top");
+    if (holeOptionsBox && holeNaTip) {
+      holeOptionsBox.classList.toggle("opacity-40", isNoTop);
+      holeOptionsBox.classList.toggle("pointer-events-none", isNoTop);
+      holeNaTip.classList.toggle("hidden", !isNoTop);
+    }
+  };
+  topRadios.forEach((r) => r.addEventListener("change", syncHoleState));
+  syncHoleState();
+
+  // 3. 扁平写入 localStorage['cart']（沿用现有询价清单机制，与 Header 角标 / Quote List 页联动）
+  const form = document.getElementById("vanity-quote-form");
+  const addBtn = document.getElementById("vanity-add-btn");
+  const stickyBtn = document.getElementById("vanity-sticky-add");
+
+  function readCart() {
+    try {
+      var c = JSON.parse(localStorage.getItem("cart") || "[]");
+      return Array.isArray(c) ? c : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function pushItem(cart, item, qty) {
+    if (!item.key) return;
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].key === item.key) { existing = cart[i]; break; }
+    }
+    if (existing) existing.quantity += qty;
+    else cart.push({ ...item, quantity: qty });
+  }
+
+  function updateCounts(cart) {
+    var count = 0;
+    for (var i = 0; i < cart.length; i++) count += Number(cart[i].quantity) || 0;
+    var counters = document.querySelectorAll("[data-cart-count]");
+    for (var k = 0; k < counters.length; k++) counters[k].textContent = count.toString();
+  }
+
+  function submitSelection(e) {
+    if (e) e.preventDefault();
+    var fd = new FormData(form);
+    var qty = Math.max(1, parseInt(fd.get("qty") || "50", 10));
+    var selectedTop = fd.get("opt_top") || "";
+    var isNoTop = selectedTop.toLowerCase().includes("no top");
+
+    var customSpec = [
+      fd.get("opt_material") ? "Material: " + fd.get("opt_material") : "",
+      selectedTop ? "Top: " + selectedTop : "",
+      fd.get("opt_basin") ? "Basin: " + fd.get("opt_basin") : "",
+      !isNoTop && fd.get("opt_hole") ? "Hole: " + fd.get("opt_hole") : "",
+    ].filter(Boolean).join(" | ");
+
+    var img = (product.images && product.images[0]) || product.image || "";
+    var sku = product.sku || product.id;
+    var cart = readCart();
+
+    // 写入主浴室柜条目（key 与标准页一致：id|sku）
+    pushItem(cart, {
+      key: product.id + "|" + sku,
+      id: product.id,
+      name: product.name,
+      sku: sku,
+      variant: customSpec || "Standard Vanity Spec",
+      price: product.price,
+      image: img,
+    }, qty);
+
+    // 写入勾选的跨厂水暖加购条目（独立 key，Avoid 与主柜 key 冲突）
+    var checked = document.querySelectorAll('input[name="bundled_addon"]:checked');
+    for (var i = 0; i < checked.length; i++) {
+      var cb = checked[i];
+      var aSku = cb.dataset.sku || cb.dataset.id;
+      pushItem(cart, {
+        key: (cb.dataset.id || aSku) + "|" + aSku,
+        id: cb.dataset.id || "",
+        name: cb.dataset.title || "",
+        sku: aSku,
+        variant: "Color-Matched Bundle for " + sku,
+        price: Number(cb.dataset.price) || 0,
+        image: cb.dataset.image || "",
+      }, qty);
+    }
+
+    try { localStorage.setItem("cart", JSON.stringify(cart)); } catch (err) {}
+    updateCounts(cart);
+
+    var msg = document.getElementById("quote-feedback-msg");
+    if (msg) {
+      msg.classList.remove("hidden");
+      setTimeout(function () { msg.classList.add("hidden"); }, 4000);
+    }
+    if (addBtn) addBtn.textContent = "Added to Quote List!";
+    setTimeout(function () { if (addBtn) addBtn.textContent = "+ Add Selected to Quote List"; }, 2000);
+  }
+
+  if (form) form.addEventListener("submit", submitSelection);
+  if (stickyBtn) stickyBtn.addEventListener("click", submitSelection);
+</script>

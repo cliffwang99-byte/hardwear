@@ -222,6 +222,36 @@ export interface ShopProductDetail extends ShopProduct {
 	variantAttr2?: string;
 	// 非变体静态属性（展示 + 分类页筛选），无则空数组。
 	attributes: ProductAttribute[];
+	// —— 浴室柜专属定制开关（EmDash Products → Checkbox）——
+	enableVanityCustomizer: boolean;
+	// —— 浴室柜专属扁平定制字段（逗号分隔纯文本，非浴室柜留空）——
+	optCabinetMaterial?: string;
+	optCountertop?: string;
+	optBasin?: string;
+	optFaucetHole?: string;
+	bundledHardwareSlugs?: string;
+	cadSpecPdfUrl?: string;
+}
+
+// 浴室柜专属模板的判定分类 slug 集合。产品满足三层条件才走 VanityDetailLayout：
+//  1) categorySlug 命中集合（品类资格）；
+//  2) enable_vanity_customizer 勾选（产品级定制授权，未勾选的浴室柜走标准模板）；
+//  3) opt_cabinet_material 非空（至少有定制选项可渲染）。
+export const VANITY_CATEGORY_SLUGS = new Set([
+	"bathroom-vanities",
+	"floating-bathroom-vanity",
+	"freestanding-bathroom-vanity",
+	"double-sink-vanity",
+	"single-sink-vanity",
+]);
+
+export function isVanityProduct(product: ShopProductDetail): boolean {
+	return Boolean(
+		VANITY_CATEGORY_SLUGS.has(product.categorySlug) &&
+			product.enableVanityCustomizer &&
+			typeof product.optCabinetMaterial === "string" &&
+			product.optCabinetMaterial.trim() !== "",
+	);
 }
 
 // 数据缺失/未找到时返回的空壳默认值：不包含任何预设演示内容，仅保证
@@ -251,6 +281,7 @@ const fallbackDetail: ShopProductDetail = {
 	entryId: "",
 	variants: [],
 	attributes: [],
+	enableVanityCustomizer: false,
 };
 
 async function taxonomyLabelMap(taxonomy: string): Promise<Map<string, string>> {
@@ -388,7 +419,25 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 		variantAttr1: variantDim(d.variant_attr_1),
 		variantAttr2: variantDim(d.variant_attr_2),
 		attributes: toAttributes(d.product_attributes),
+		// —— 浴室柜专属定制开关（Checkbox 布尔字段；兼容 true / 1 / "true" 三种存储形态）——
+		enableVanityCustomizer:
+			d.enable_vanity_customizer === true ||
+			d.enable_vanity_customizer === 1 ||
+			d.enable_vanity_customizer === "true",
+		// —— 浴室柜专属扁平字段（逗号分隔纯文本，空串/undefined 一律归一为 undefined）——
+		optCabinetMaterial: str(d.opt_cabinet_material),
+		optCountertop: str(d.opt_countertop),
+		optBasin: str(d.opt_basin),
+		optFaucetHole: str(d.opt_faucet_hole),
+		bundledHardwareSlugs: str(d.bundled_hardware_slugs),
+		cadSpecPdfUrl: str(d.cad_spec_pdf_url),
 	};
+}
+
+// 将未知值为逗号分隔的纯文本字段归一化为可选字符串：
+// 非 string / 空串 / 全空白 → undefined；否则去首尾空白。
+function str(v: unknown): string | undefined {
+	return typeof v === "string" && v.trim() !== "" ? v.trim() : undefined;
 }
 
 export async function getCategories(): Promise<ShopCategory[]> {
