@@ -1,10 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { localizePath } from '../lib/i18n';
-const currentLocale = Astro.currentLocale ?? 'en';
-function localizeUrl(url: string): string {
-  return localizePath(url, currentLocale);
-}
 ---
 
 <BaseLayout title="Frequently Asked Questions - MrKB">
@@ -14,7 +9,7 @@ function localizeUrl(url: string): string {
       <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
       <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-3xl mx-auto text-center">
         <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -24,7 +19,7 @@ function localizeUrl(url: string): string {
         </div>
         <h1 class="text-4xl sm:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
         <p class="text-lg sm:text-xl text-white/90 leading-relaxed">
-          Find answers to common questions about ordering, shipping, returns, and more.
+          Payment terms, production lead times, ocean freight and customs, QC and warranty. The commercial details behind every project quote.
         </p>
       </div>
     </div>
@@ -35,10 +30,10 @@ function localizeUrl(url: string): string {
     <div class="container mx-auto px-4">
       <div class="max-w-2xl mx-auto">
         <div class="relative">
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="faq-search"
-            placeholder="Search for answers..." 
+            placeholder="Search for answers..."
             class="w-full px-6 py-4 ps-14 bg-gray-50 dark:bg-dark-800 border-2 border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 dark:focus:border-primary-500 text-gray-900 dark:text-white transition-colors"
           />
           <svg class="w-6 h-6 text-gray-400 absolute start-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,20 +51,20 @@ function localizeUrl(url: string): string {
         <button class="category-filter active px-6 py-2.5 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors" data-category="all">
           All Questions
         </button>
-        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="ordering">
-          Ordering
-        </button>
-        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="shipping">
-          Shipping
-        </button>
-        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="returns">
-          Returns
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="pricing">
+          Pricing &amp; Access
         </button>
         <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="payment">
-          Payment
+          Payment Terms
         </button>
-        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="account">
-          Account
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="leadtime">
+          Lead Times
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="shipping">
+          Shipping &amp; Customs
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="quality">
+          QC &amp; Warranty
         </button>
       </div>
     </div>
@@ -79,395 +74,272 @@ function localizeUrl(url: string): string {
   <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto">
-        
-        <!-- Ordering Questions -->
-        <div class="mb-12 faq-category" data-category="ordering">
+
+        <!-- Group 1: Pricing & Access -->
+        <div class="mb-12 faq-category" data-category="pricing">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Ordering</h2>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Commercial Pricing Protection &amp; Sourcing Access</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Why prices stay hidden, and how trade buyers get verified.</p>
+            </div>
           </div>
 
           <div class="space-y-4">
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">How do I place an order?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">Why are exact prices hidden, and why is there no account login?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  Browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in, provide shipping information, and complete payment. You'll receive an order confirmation email immediately.
+                  We only sell to B2B trade buyers, not retail consumers. Hiding prices ($??.??) protects your project bid margins from local competitors. You do not need to register an account &mdash; just add items to your Quote List, and our team will verify your business info and send your tiered quote within 24 hours.
                 </p>
               </div>
             </div>
 
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I modify or cancel my order?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">What is your minimum order quantity (MOQ) across different categories?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  You can modify or cancel your order within 1 hour of placing it. After that, orders are processed for shipping. Contact our support team immediately at support@kantongaplikasi.com or WhatsApp +62 813-9244-2358 for assistance.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do you offer bulk discounts?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes! We offer volume discounts for bulk orders. Contact us at contact@kantongaplikasi.com with your requirements, and we'll provide a custom quote with competitive pricing.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">What is your minimum order amount?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  There is no minimum order amount. However, orders over $500 qualify for free standard shipping. Smaller orders are subject to standard shipping fees.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Shipping Questions -->
-        <div class="mb-12 faq-category" data-category="shipping">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Shipping</h2>
-          </div>
-
-          <div class="space-y-4">
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">How long does shipping take?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Standard shipping takes 5-7 business days, Express shipping takes 2-3 business days, and Freight shipping takes 3-5 business days. Orders placed before 2 PM PST ship the same day.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do you offer free shipping?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes! We offer free standard shipping on all orders over $500. Orders under $500 have a flat shipping rate of $49 for standard delivery.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I track my order?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Absolutely! Once your order ships, you'll receive a tracking number via email. You can also track your order in real-time through your account dashboard.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do you ship internationally?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Currently, we only ship within the United States (all 50 states including Alaska and Hawaii). International shipping may be available in the future.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">What if my package is lost or damaged?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  All shipments are fully insured. If your package is lost or arrives damaged, contact us immediately with photos. We'll file a claim and send a replacement or issue a full refund.
+                  Our standard wholesale MOQ is 10 sets for bathroom vanities and 50 pieces for basin faucets and drains. If you need to check quality or match a custom space before bulk production, we accept 1-piece sample or single-unit vanity orders at sample pricing.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Returns Questions -->
-        <div class="mb-12 faq-category" data-category="returns">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Returns & Refunds</h2>
-          </div>
-
-          <div class="space-y-4">
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">What is your return policy?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  We offer a 30-day return policy on most items. Products must be unused, in original packaging, and in resalable condition. Custom-cut items, opened chemicals, and clearance items are not eligible for return.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">How do I return an item?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Log in to your account, go to Order History, select the order, and click "Return Items". You'll receive a prepaid return label via email. Pack the items securely and drop off at any authorized shipping location.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">When will I receive my refund?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Refunds are processed within 3-5 business days after we receive and inspect your return. Depending on your bank, it may take an additional 5-7 business days to appear in your account.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I exchange an item?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes! During the return process, select "Exchange" and choose your replacement item. We'll ship the new item with priority processing once we receive your return.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Payment Questions -->
+        <!-- Group 2: Payment Terms -->
         <div class="mb-12 faq-category" data-category="payment">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payment</h2>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payment Terms &amp; Settlement</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Deposits, letters of credit, and price locking for phased projects.</p>
+            </div>
           </div>
 
           <div class="space-y-4">
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">What payment methods do you accept?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">What payment terms do you accept for sample orders and bulk containers?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, Apple Pay, Google Pay, and bank transfers for large orders. All transactions are secure and encrypted.
+                  For sample orders, we accept 100% upfront payment via T/T (wire transfer) or Wise/PayPal. For standard bulk orders, our term is 30% T/T deposit to start production and 70% balance before container loading (after you approve our pre-shipment QC photos and inspection report).
                 </p>
               </div>
             </div>
 
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Is my payment information secure?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">Do you accept Letters of Credit (L/C) for large commercial projects?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  Absolutely. We use industry-standard SSL encryption and PCI-DSS compliant payment processing. Your payment information is never stored on our servers and is processed securely through trusted payment gateways.
+                  Yes. For full container orders (40HQ) or large multi-phase hotel and apartment contracts, we accept irrevocable L/C at sight from top-tier international banks, subject to project review.
                 </p>
               </div>
             </div>
 
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do you offer financing options?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">Can I lock in material costs for a multi-phase building project?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  Yes! We offer financing through Affirm and Klarna for orders over $500. Choose "Pay in installments" at checkout to see available options with flexible payment plans.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I get an invoice for my purchase?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes. An invoice is automatically sent to your email after purchase. You can also download invoices from your account dashboard under "Order History".
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do you charge sales tax?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Sales tax is calculated based on your shipping address and local tax rates. Tax-exempt customers can upload their exemption certificate during checkout.
+                  Yes. Once you confirm a master supply contract and place a deposit, we lock your unit pricing for scheduled phased shipments (for example, 3 containers over 6 months) so raw material fluctuations do not break your budget.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Account Questions -->
-        <div class="mb-12 faq-category" data-category="account">
+        <!-- Group 3: Lead Times -->
+        <div class="mb-12 faq-category" data-category="leadtime">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Account</h2>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Sampling &amp; Production Lead Times</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Sample turnaround, bulk schedules, and when the clock starts.</p>
+            </div>
           </div>
 
           <div class="space-y-4">
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Do I need an account to place an order?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">How long does it take to produce samples vs. a full container?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  While you can checkout as a guest, we recommend creating an account to track orders, save addresses, view order history, and access exclusive member benefits.
+                  Standard catalogue samples ship in 7 to 10 days, while custom-sized vanity samples take 12 to 15 days. For bulk production, standard orders take 30 to 35 days after deposit and drawing approval. Custom OEM finishes or large 40HQ mixed containers take 35 to 45 days.
                 </p>
               </div>
             </div>
 
             <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
               <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">How do I reset my password?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="font-semibold text-gray-900 dark:text-white">When does the production clock officially start?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div class="faq-content hidden px-6 pb-5">
                 <p class="text-gray-600 dark:text-gray-400">
-                  Click "Forgot Password" on the login page, enter your email address, and we'll send you a password reset link. Follow the instructions in the email to create a new password.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I save multiple shipping addresses?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes! You can save multiple shipping addresses in your account. Go to Account Settings > Addresses to add, edit, or remove addresses. Select your preferred address at checkout.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">How do I update my account information?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Log in to your account and go to Account Settings. You can update your name, email, phone number, password, and saved addresses. Changes are saved automatically.
-                </p>
-              </div>
-            </div>
-
-            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
-              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <span class="font-semibold text-gray-900 dark:text-white">Can I delete my account?</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="faq-content hidden px-6 pb-5">
-                <p class="text-gray-600 dark:text-gray-400">
-                  Yes. Contact our support team at support@kantongaplikasi.com to request account deletion. Please note that order history and related data will be permanently removed.
+                  Production starts on the day we receive both your 30% deposit and your signed 2D CAD / finish confirmation sheet. Getting drawings approved early prevents production delays.
                 </p>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Group 4: Shipping & Customs -->
+        <div class="mb-12 faq-category" data-category="shipping">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Shipping, FCL Consolidation &amp; Customs</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Incoterms, cavity loading, and clearance paperwork.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">Which shipping terms (Incoterms) do you quote?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  We quote EXW, FOB (Shenzhen, Guangzhou, or Nansha), CIF to your destination port, and DDP (door-to-door) for select markets. If you already work with your own freight forwarder in China, we coordinate loading directly with them at zero extra handling fees.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">How do you consolidate faucets inside vanity containers without customs issues?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  We place boxed faucets and drains inside protected vanity bottom cavities with high-density EPE foam to save container space (CBM). On your Commercial Invoice and Packing List, every item is listed separately with its exact quantity, weight, and HS Code, ensuring smooth customs clearance at your port.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">Do you hold ready-to-ship stock in local US or overseas warehouses?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  No. All orders ship 100% factory-direct from China. Skipping overseas warehouse storage fees keeps our unit prices significantly lower for your project bids.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 5: QC & Warranty -->
+        <div class="mb-12 faq-category" data-category="quality">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 013.296-1.043 3.745 3.745 0 013.296 1.043A3.745 3.745 0 0121 12z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Quality Control, Claims &amp; Warranty</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Pre-shipment inspection, damage claims, and warranty coverage.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">How do you inspect goods before loading, and can I send my own inspector?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Our independent QC team checks every batch before loading &mdash; verifying cross-factory color match (Delta E &lt; 1.5), 1.6 MPa faucet water pressure, and pre-cut drainage openings. You receive a full photo and video inspection log before paying the balance. You are also welcome to send third-party inspectors (such as SGS, BV, or Intertek) to our factories.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">What happens if goods arrive damaged, and what is your warranty?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5 space-y-3">
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>12-Month Limited Warranty (From B/L Date):</strong> We provide a 12-month limited warranty from the Bill of Lading (B/L) date, covering manufacturing defects in material and workmanship only (such as brass casting defects, faulty ceramic cartridges, substandard plating peel-off, or cabinet structural defects).
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>What Is Excluded:</strong> Normal wear and tear, shipping damage reported more than 14 days after delivery, improper installation, high water pressure / water hammer, scale or corrosion from local hard water, chemical or abrasive cleaning, and modified units. Consumables&mdash;including seals, hoses, aerators, and filters&mdash;carry a 3-to-6-month defect coverage only.
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>How Claims Are Resolved (Parts &amp; Replacement Only):</strong> Send photos or videos of the defect along with the carton batch number within the warranty period. We respond within 48 hours and, once confirmed, supply free replacement parts or units shipped with your next container order (or via courier at buyer's freight cost for urgent job sites). (Note: Warranty covers replacement parts/units only and does not cover local installation or labor costs).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="faq-empty" class="hidden text-center py-12">
+          <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <p class="text-gray-600 dark:text-gray-400">No answers matched that search. Try a different keyword or contact our trade desk.</p>
         </div>
 
       </div>
@@ -483,45 +355,39 @@ function localizeUrl(url: string): string {
             <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
           </div>
-          
+
           <div class="relative z-10 text-center">
             <h2 class="text-3xl sm:text-4xl font-bold mb-4">Still Have Questions?</h2>
             <p class="text-lg text-white/90 mb-8">
-              Our customer support team is here to help you with any questions or concerns.
+              Send us your project BOM or drawings. Our trade desk will come back with pricing, lead time, and shipping terms.
             </p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <h3 class="font-bold mb-2">Email Us</h3>
-                <p class="text-sm text-white/80">support@kantongaplikasi.com</p>
+                <h3 class="font-bold mb-2">General Inquiries</h3>
+                <a href="mailto:info@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">info@mrkb.net</a>
               </div>
 
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <h3 class="font-bold mb-2">Call Us</h3>
-                <p class="text-sm text-white/80">(555) 123-4567</p>
+                <h3 class="font-bold mb-2">WhatsApp</h3>
+                <a href="https://wa.me/6281392442358" target="_blank" rel="noopener" class="text-sm text-white/80 hover:text-white">+62 813-9244-2358</a>
               </div>
 
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <h3 class="font-bold mb-2">Live Chat</h3>
-                <p class="text-sm text-white/80">Available 24/7</p>
+                <h3 class="font-bold mb-2">Technical Support</h3>
+                <a href="mailto:projects@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">projects@mrkb.net</a>
               </div>
             </div>
-
-            <a href={localizeUrl("/contact")} class="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
-              Contact Support
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
           </div>
         </div>
       </div>
@@ -529,87 +395,71 @@ function localizeUrl(url: string): string {
   </section>
 
   <script>
-    // FAQ Toggle
-    document.querySelectorAll('.faq-trigger').forEach(trigger => {
+    const triggers = document.querySelectorAll('.faq-trigger');
+    const categoryButtons = document.querySelectorAll('.category-filter');
+    const faqCategories = document.querySelectorAll('.faq-category');
+    const searchInput = document.getElementById('faq-search');
+    const emptyState = document.getElementById('faq-empty');
+
+    const inactiveClasses = ['bg-white', 'dark:bg-dark-900', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-dark-700'];
+    const activeClasses = ['bg-primary-600', 'text-white'];
+
+    let activeCategory = 'all';
+
+    function applyFilter() {
+      const term = (searchInput.value || '').trim().toLowerCase();
+      let totalVisible = 0;
+
+      faqCategories.forEach(category => {
+        const categoryMatch = activeCategory === 'all' || category.dataset.category === activeCategory;
+        let visibleItems = 0;
+
+        category.querySelectorAll('.faq-item').forEach(item => {
+          const text = item.textContent.toLowerCase();
+          const matchesTerm = !term || text.includes(term);
+          const show = categoryMatch && matchesTerm;
+          item.style.display = show ? '' : 'none';
+          if (show) visibleItems++;
+        });
+
+        category.style.display = categoryMatch && visibleItems > 0 ? '' : 'none';
+        totalVisible += visibleItems;
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', totalVisible > 0);
+      }
+    }
+
+    triggers.forEach(trigger => {
       trigger.addEventListener('click', () => {
         const content = trigger.nextElementSibling;
         const icon = trigger.querySelector('.faq-icon');
-        
+
         content.classList.toggle('hidden');
         icon.classList.toggle('rotate-180');
       });
     });
 
-    // Category Filter
-    const categoryButtons = document.querySelectorAll('.category-filter');
-    const faqCategories = document.querySelectorAll('.faq-category');
-
     categoryButtons.forEach(button => {
       button.addEventListener('click', () => {
-        const category = button.dataset.category;
-        
-        // Update active button
+        activeCategory = button.dataset.category;
+
         categoryButtons.forEach(btn => {
-          btn.classList.remove('active', 'bg-primary-600', 'text-white');
-          btn.classList.add('bg-white', 'dark:bg-dark-900', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-dark-700');
-        });
-        button.classList.add('active', 'bg-primary-600', 'text-white');
-        button.classList.remove('bg-white', 'dark:bg-dark-900', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-dark-700');
-        
-        // Filter categories
-        faqCategories.forEach(cat => {
-          if (category === 'all' || cat.dataset.category === category) {
-            cat.style.display = 'block';
+          btn.classList.remove('active', ...activeClasses, ...inactiveClasses);
+          if (btn === button) {
+            btn.classList.add('active', ...activeClasses);
           } else {
-            cat.style.display = 'none';
+            btn.classList.add(...inactiveClasses);
           }
         });
+
+        applyFilter();
       });
     });
 
-    // Search Functionality
-    const searchInput = document.getElementById('faq-search');
-    const faqItems = document.querySelectorAll('.faq-item');
-
-    searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      
-      faqItems.forEach(item => {
-        const question = item.querySelector('.faq-trigger span').textContent.toLowerCase();
-        const answer = item.querySelector('.faq-content p').textContent.toLowerCase();
-        
-        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-          item.style.display = 'block';
-          
-          // Highlight matching text if search term exists
-          if (searchTerm) {
-            item.classList.add('ring-2', 'ring-primary-500');
-          } else {
-            item.classList.remove('ring-2', 'ring-primary-500');
-          }
-        } else {
-          item.style.display = 'none';
-        }
-      });
-
-      // Show/hide category headers based on visible items
-      faqCategories.forEach(category => {
-        const visibleItems = category.querySelectorAll('.faq-item[style="display: block"]');
-        if (visibleItems.length === 0) {
-          category.style.display = 'none';
-        } else {
-          category.style.display = 'block';
-        }
-      });
-
-      // If searching, show all categories
-      if (searchTerm) {
-        categoryButtons.forEach(btn => {
-          if (btn.dataset.category === 'all') {
-            btn.click();
-          }
-        });
-      }
-    });
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilter);
+    }
   </script>
 </BaseLayout>
