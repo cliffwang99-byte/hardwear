@@ -74,20 +74,6 @@ const customizable = isVanityListProduct({ category, categories, enableVanityCus
   <div class="absolute top-2 sm:top-3 end-2 sm:end-3 z-30 hidden sm:flex flex-col gap-2.5 opacity-0 group-hover:opacity-100 transform translate-x-6 group-hover:translate-x-0 transition-all duration-300 delay-75">
     <div class="relative group/tooltip">
       <button
-        data-quick-view={id}
-        class="w-11 h-11 bg-white/95 dark:bg-dark-900/95 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-primary-600 hover:text-white transition-all duration-300 shadow-xl hover:scale-110 hover:shadow-[0_0_20px_rgba(251,146,60,0.5)] active:scale-95 border border-gray-200 dark:border-dark-700"
-        aria-label="Quick view"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-      </button>
-      <span class="absolute end-full me-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-dark-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">Quick View</span>
-    </div>
-    
-    <div class="relative group/tooltip">
-      <button
         data-wishlist-toggle={id}
         class="w-11 h-11 bg-white/95 dark:bg-dark-900/95 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all duration-300 shadow-xl hover:scale-110 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 border border-gray-200 dark:border-dark-700"
         aria-label="Add to wishlist"
@@ -133,9 +119,6 @@ const customizable = isVanityListProduct({ category, categories, enableVanityCus
 
     <!-- Project-Based Pricing Info - Mobile Optimized -->
     <div class="flex items-center gap-1 sm:gap-1.5 mb-3 sm:mb-4 text-[10px] sm:text-xs text-green-600 dark:text-green-400 font-medium">
-      <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
       <span>Project-Based Pricing Available</span>
     </div>
 
@@ -159,11 +142,6 @@ const customizable = isVanityListProduct({ category, categories, enableVanityCus
           
           <!-- Layer 3: Shine Effect -->
           <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-out"></span>
-          
-          <!-- Layer 4: Icon with Scale Animation -->
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 relative z-10 group-hover/btn:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
           
           <!-- Text -->
           <span class="relative z-10 tracking-wide">{customizable ? "Customize" : "Add to Quote List"}</span>
@@ -221,13 +199,11 @@ const customizable = isVanityListProduct({ category, categories, enableVanityCus
       });
 
       // Enhanced visual feedback with success animation
-      const cartIcon = target.querySelector('svg:not(.success-icon)');
       const successIcon = target.querySelector('.success-icon');
       const textSpan = target.querySelector('span:last-of-type');
       
-      if (cartIcon && successIcon && textSpan) {
-        // Hide cart icon, show success icon
-        cartIcon.classList.add('hidden');
+      if (successIcon && textSpan) {
+        // Show success icon
         successIcon.classList.remove('hidden');
         successIcon.classList.add('animate-bounce');
         textSpan.textContent = 'Added to Quote List!';
@@ -237,23 +213,12 @@ const customizable = isVanityListProduct({ category, categories, enableVanityCus
         
         // Reset after 2 seconds
         setTimeout(() => {
-          cartIcon.classList.remove('hidden');
           successIcon.classList.add('hidden');
           successIcon.classList.remove('animate-bounce');
           textSpan.textContent = 'Add to Quote List';
           target.classList.remove('!bg-green-600', '!from-green-600', '!to-green-700');
         }, 2000);
       }
-    });
-  });
-
-  // Quick View
-  document.querySelectorAll('[data-quick-view]').forEach(button => {
-    button.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = (e.currentTarget as HTMLElement).dataset.quickView!;
-      // In production, this would open a modal with product details
-      window.location.href = `/product/${id}`;
     });
   });
 
