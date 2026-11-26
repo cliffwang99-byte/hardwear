@@ -212,7 +212,8 @@ export interface ShopProductDetail extends ShopProduct {
 	features: string[];
 	descriptionRich?: unknown;
 	featuresRich?: unknown;
-	specifications: Record<string, string>;
+	// 技术规格：portableText 富文本（后台直接插入表格），前端整段渲染。
+	specificationsRich?: unknown;
 	seoTitle: string;
 	seoDescription: string;
 	seoImage: string;
@@ -297,7 +298,6 @@ const fallbackDetail: ShopProductDetail = {
 	topics: [],
 	description: "",
 	features: [],
-	specifications: {},
 	seoTitle: "",
 	seoDescription: "",
 	seoImage: "",
@@ -430,10 +430,7 @@ export async function getProductDetail(slug: string): Promise<ShopProductDetail>
 			Array.isArray(d.features) && d.features.every((f) => typeof f === "string")
 				? (d.features as string[])
 				: fallbackDetail.features,
-		specifications:
-			d.specifications && typeof d.specifications === "object" && !Array.isArray(d.specifications)
-				? (d.specifications as Record<string, string>)
-				: fallbackDetail.specifications,
+		specificationsRich: Array.isArray(d.specifications) ? d.specifications : undefined,
 		seoTitle: typeof seo.title === "string" ? seo.title : "",
 		seoDescription: typeof seo.description === "string" ? seo.description : "",
 		seoImage: mediaUrl(seo.image),

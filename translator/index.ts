@@ -1,4 +1,6 @@
 import type { PluginContext, SandboxedPlugin, SandboxedRouteContext } from "emdash/plugin";
+// 构建时内联的翻译质量标准（Vite ?raw），修改 .md 即改质量规范，无需改代码
+import translationStandards from "./translation-standards.md?raw";
 
 /**
  * 翻译插件（standard 格式，就地定义，不发布）。
@@ -87,7 +89,7 @@ function isTranslatableValue(v: unknown): boolean {
 		return v.some((x) => isTranslatableValue(x));
 	}
 	if (isPlainObject(v)) {
-		// 纯 key->value 字符串映射（如 specifications）翻译
+		// 纯 key->value 字符串映射翻译
 		const entries = Object.entries(v);
 		const allStrings = entries.length > 0 && entries.every(([, val]) => typeof val === "string");
 		if (allStrings) {
@@ -106,6 +108,89 @@ interface GatherResult {
 	payload: Record<string, unknown>;
 	/** 原样复制的敏感字段 */
 	passThrough: Record<string, unknown>;
+	/** portableText 字段的原始块数组，翻译后按 id 回填文本 */
+	portableText: Record<string, unknown[]>;
+}
+
+/** portableText 数组：每一项都是带 `_type` 的对象块 */
+function isPortableTextValue(v: unknown): v is unknown[] {
+	if (!Array.isArray(v) || v.length === 0) return false;
+	return v.every((block) => isPlainObject(block) && typeof block._type === "string");
+}
+
+/**
+ * portableText 中允许翻译的文本键。
+ * `_type` / `_key` / `marks` / `markDefs` / `href` / `style` / `code` 等结构键
+ * 一律不采集，避免表格（table/tableRow/tableCell）与富文本结构被 LLM 改写。
+ */
+const PORTABLE_TEXT_TEXT_KEYS = new Set(["text", "alt", "caption", "title", "label"]);
+
+/** 富文本文本片段在 payload 中的临时容器键（下划线前缀，避免与真实字段撞名） */
+const PORTABLE_TEXT_PAYLOAD_KEY = "__portableText";
+
+interface PortableTextSegment {
+	id: string;
+	text: string;
+}
+
+/**
+ * 按固定顺序（数组索引 + 对象键顺序）抽取待翻译文本，编号 `字段名#pt0`、`字段名#pt1`…
+ * 采集与回填使用同一遍历规则与同一前缀，保证 id 一一对应。
+ */
+function collectPortableTextSegments(
+	value: unknown,
+	fieldKey: string,
+	segments: PortableTextSegment[],
+): void {
+	if (Array.isArray(value)) {
+		for (const item of value) collectPortableTextSegments(item, fieldKey, segments);
+		return;
+	}
+	if (!isPlainObject(value)) return;
+	for (const [key, child] of Object.entries(value)) {
+		if (PORTABLE_TEXT_TEXT_KEYS.has(key) && typeof child === "string") {
+			if (child.trim()) segments.push({ id: `${fieldKey}#pt${segments.length}`, text: child });
+			continue;
+		}
+		collectPortableTextSegments(child, fieldKey, segments);
+	}
+}
+
+/** 把 LLM 回传的 `{ "字段名#pt0": "译文" }` 按 id 回填进原始块结构，缺失项保留原文 */
+function applyPortableTextTranslations(
+	value: unknown,
+	fieldKey: string,
+	translations: Map<string, string>,
+	counter: { value: number },
+): unknown {
+	if (Array.isArray(value)) {
+		return value.map((item) => applyPortableTextTranslations(item, fieldKey, translations, counter));
+	}
+	if (!isPlainObject(value)) return value;
+	const out: Record<string, unknown> = {};
+	for (const [key, child] of Object.entries(value)) {
+		if (PORTABLE_TEXT_TEXT_KEYS.has(key) && typeof child === "string") {
+			if (child.trim()) {
+				const id = `${fieldKey}#pt${counter.value++}`;
+				out[key] = translations.get(id) ?? child;
+			} else {
+				out[key] = child;
+			}
+			continue;
+		}
+		out[key] = applyPortableTextTranslations(child, fieldKey, translations, counter);
+	}
+	return out;
+}
+
+/** LLM 返回值转成 id → 译文映射；非对象或空值一律忽略，交给原文兜底 */
+function toPortableTextTranslationMap(raw: unknown): Map<string, string> {
+	const map = new Map<string, string>();
+	if (!isPlainObject(raw)) return map;
+	for (const [id, text] of Object.entries(raw)) {
+		if (typeof text === "string" && text.trim()) map.set(id, text);
+	}
+	return map;
 }
 
 /**
@@ -115,6 +200,7 @@ interface GatherResult {
 function splitFields(data: Record<string, unknown>): GatherResult {
 	const payload: Record<string, unknown> = {};
 	const passThrough: Record<string, unknown> = {};
+	const portableText: Record<string, unknown[]> = {};
 
 	for (const [key, value] of Object.entries(data)) {
 		// SEO 对象：取 title/description 翻译，其余原样
@@ -149,6 +235,15 @@ function splitFields(data: Record<string, unknown>): GatherResult {
 			continue;
 		}
 
+		// portableText：只抽文本片段送翻译，块结构（_type/_key/marks/表格行列）原样保留
+		if (isPortableTextValue(value)) {
+			const segments: PortableTextSegment[] = [];
+			collectPortableTextSegments(value, key, segments);
+			if (segments.length > 0) portableText[key] = value;
+			else passThrough[key] = value;
+			continue;
+		}
+
 		if (isTranslatableValue(value)) {
 			payload[key] = value;
 		} else {
@@ -156,30 +251,40 @@ function splitFields(data: Record<string, unknown>): GatherResult {
 		}
 	}
 
-	return { payload, passThrough };
+	return { payload, passThrough, portableText };
 }
 
 /** 组装发送给 DeepSeek 的翻译请求体 */
-function buildPrompt(source: Record<string, unknown>, language: string, locale: string): string {
+function buildPrompt(
+	source: Record<string, unknown>,
+	language: string,
+	locale: string,
+	hasPortableText: boolean,
+): string {
 	const json = JSON.stringify(source, null, 2);
-	return [
-		"You are a professional translator for a bathroom & sanitary hardware e-commerce site.",
+	const lines = [
 		`Translate the following JSON from English (${SOURCE_LOCALE}) to ${language} (${locale}).`,
-		"Rules:",
-		"- Translate only human-readable text values (product names, descriptions, feature lists, specification values, SEO title/description).",
-		"- Do NOT translate brand names, model numbers, measurements, technical codes, URLs, slugs, or proper nouns.",
-		"- Preserve any HTML tags inside string values exactly (e.g. <strong>, <br>, <p>).",
-		"- Keep object keys unchanged. Only translate string VALUES.",
-		"- Keep keys in specifications keys translated too (translate both key and value).",
-		"- Keep array order and structure identical.",
-		"- Do not invent fields. Do not omit fields. Keep every key present in the source.",
-		"- Output ONLY valid JSON. No markdown fences. No commentary.",
+		"Complete the three tasks in order:",
+		"1. Apply the mandatory quality standards from the <standards> block in your system message — especially the glossary, keep-as-is list, HTML rules, specifications handling and SEO constraints.",
+		"2. Translate the JSON below.",
+		"3. Run the §10 self-check from the standards before outputting.",
 		"",
 		"Source JSON:",
 		"```json",
 		json,
 		"```",
-	].join("\n");
+	];
+	if (hasPortableText) {
+		lines.push(
+			"",
+			"The `__portableText` object holds plain text fragments extracted from rich-text blocks. Rules for it:",
+			"- Its keys (e.g. `specifications#pt3`) are internal IDs: NEVER translate, renumber, add or remove them.",
+			"- Translate only the string VALUES.",
+			"- Values are plain text only: no HTML, no markup, keep numbers/units/standard codes as-is.",
+			"- Return exactly the same `__portableText` key set you received.",
+		);
+	}
+	return lines.join("\n");
 }
 
 interface DeepSeekResponse {
@@ -192,6 +297,7 @@ async function translateWithDeepSeek(
 	source: Record<string, unknown>,
 	language: string,
 	locale: string,
+	hasPortableText: boolean,
 ): Promise<Record<string, unknown>> {
 	const apiKey = await ctx.settings.get<string>("deepseekApiKey");
 	if (!apiKey) throw new Error("Missing DeepSeek API key. Set it in the plugin settings.");
@@ -207,11 +313,21 @@ async function translateWithDeepSeek(
 			messages: [
 				{
 					role: "system",
-					content: `You translate JSON content faithfully between English and ${language} for a bathroom hardware store. Return only valid JSON.`,
+					content: [
+						"You are a senior localization specialist for a bathroom & sanitary hardware B2B e-commerce site. Your translations are published on the live website.",
+						`Current target: English → ${language} (${locale}).`,
+						"The following is the OFFICIAL quality standard. It is MANDATORY and takes precedence over the user message. Follow it completely.",
+						"",
+						"<standards>",
+						translationStandards,
+						"</standards>",
+						"",
+						"Output ONLY valid JSON matching the source structure. No markdown fences, no commentary.",
+					].join("\n"),
 				},
-				{ role: "user", content: buildPrompt(source, language, locale) },
+				{ role: "user", content: buildPrompt(source, language, locale, hasPortableText) },
 			],
-			temperature: 0.2,
+			temperature: 0.1,
 			response_format: { type: "json_object" },
 		}),
 	});
@@ -255,17 +371,37 @@ function makeTranslateHandler(targetKey: TranslationTargetKey) {
 		sourceData = item.data ?? input.draft?.fields ?? {};
 	}
 
-	// 2. 拆分为「待翻译」+「原样复制」
-	const { payload, passThrough } = splitFields(sourceData);
+	// 2. 拆分为「待翻译」+「原样复制」+「portableText 原块」
+	const { payload, passThrough, portableText } = splitFields(sourceData);
+
+	// 3. 富文本字段：把文本片段按 id 并入 payload，随同一次请求送翻译
+	//    每个字段单独编号（从 pt0 起），与回填时每字段独立计数器保持一致
+	const portableSegments: PortableTextSegment[] = [];
+	for (const [key, blocks] of Object.entries(portableText)) {
+		const fieldSegments: PortableTextSegment[] = [];
+		collectPortableTextSegments(blocks, key, fieldSegments);
+		portableSegments.push(...fieldSegments);
+	}
+	if (portableSegments.length > 0) {
+		payload[PORTABLE_TEXT_PAYLOAD_KEY] = Object.fromEntries(
+			portableSegments.map((s) => [s.id, s.text]),
+		);
+	}
 
 	if (Object.keys(payload).length === 0) {
 		return { toast: { message: "This entry has no translatable text fields.", type: "error" } };
 	}
 
-	// 3. DeepSeek 翻译
+	// 4. DeepSeek 翻译
 	let translated: Record<string, unknown>;
 	try {
-		translated = await translateWithDeepSeek(ctx, payload, target.language, target.locale);
+		translated = await translateWithDeepSeek(
+			ctx,
+			payload,
+			target.language,
+			target.locale,
+			portableSegments.length > 0,
+		);
 	} catch (e) {
 		return {
 			toast: {
@@ -275,12 +411,23 @@ function makeTranslateHandler(targetKey: TranslationTargetKey) {
 		};
 	}
 
-	// 4. 合并：翻译字段 + 敏感字段原样
+	// 5. 富文本回填：用译文替换原始块中的文本，结构键（_type/_key/marks/表格行列）不变
+	const ptTranslations = toPortableTextTranslationMap(translated[PORTABLE_TEXT_PAYLOAD_KEY]);
+	delete translated[PORTABLE_TEXT_PAYLOAD_KEY];
+	const restoredPortableText: Record<string, unknown> = {};
+	for (const [key, blocks] of Object.entries(portableText)) {
+		restoredPortableText[key] = applyPortableTextTranslations(blocks, key, ptTranslations, {
+			value: 0,
+		});
+	}
+
+	// 6. 合并：翻译字段 + 敏感字段原样 + 回填后的富文本
 	//    注意 seo 需按对象深合并——passThrough.seo 只含非 title/description 字段，
 	//    若整体覆盖会顶掉已翻译的 title/description，导致 SEO 不翻译。
 	const data: Record<string, unknown> = {
 		...translated,
 		...passThrough,
+		...restoredPortableText,
 	};
 	if (
 		isPlainObject(data.seo) &&
@@ -290,7 +437,7 @@ function makeTranslateHandler(targetKey: TranslationTargetKey) {
 		data.seo = { ...(translated.seo as Record<string, unknown>), ...passThrough.seo };
 	}
 
-	// 5. 写入目标语种草稿（关联英文行的 translationGroup）
+	// 7. 写入目标语种草稿（关联英文行的 translationGroup）
 	if (!ctx.content || !("create" in ctx.content) || !ctx.content.create) {
 		return { toast: { message: "Plugin lacks content:write access", type: "error" } };
 	}
@@ -299,7 +446,7 @@ function makeTranslateHandler(targetKey: TranslationTargetKey) {
 		translationOf: entryId,
 	});
 
-	// 6. 在英文条目上写一个可见标记字段，便于后台识别翻译状态（不阻断草稿生成）
+	// 8. 在英文条目上写一个可见标记字段，便于后台识别翻译状态（不阻断草稿生成）
 	const statusKey = `${target.locale}_status`;
 	try {
 		const updateData =
@@ -310,7 +457,7 @@ function makeTranslateHandler(targetKey: TranslationTargetKey) {
 	} catch (e) {
 		ctx.log?.debug?.(`[translator] failed to mark ${statusKey}: ${String(e)}`);
 	}
-	// 7. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
+	// 9. 成功提示；return refresh 让 admin 翻译面板刷新显示新草稿
 	return {
 		toast: {
 			message: `${target.name} draft created: ${created.id ?? ""}`,
@@ -398,26 +545,88 @@ function overviewTitle(
 }
 
 /**
- * admin 总览页 handler：列出各集合英文条目 + ES/AR 翻译状态，支持分页。
- * 表尾的 「Load more」 会以 page_action_id 触发 block_action，
- * value.cursor 携带上一页返回的 next_cursor（本处为字符串化的偏移量）。
+ * admin 总览页 handler：按内容类型分组展示英文条目 + ES/AR 翻译状态。
+ * 每个分组独立一张表格，每页 50 条；分组底部通过 actions 翻页按钮切换页码，
+ * 不使用原生 next_cursor「Load more」。
+ * 翻页按钮 value 携带 { pages, group, page }：pages 为各分组当前页码快照，
+ * 点击后 handler 据此更新目标分组页码并重绘整页，其余分组页码保持不变。
  */
 const PAGE_SIZE = 50;
+
+/** 内容类型分组：每组渲染一张独立的翻译状态表格 */
+const OVERVIEW_GROUPS = [
+	{ key: "products", label: "Products", collections: ["products"] },
+	{ key: "posts", label: "Articles / Posts", collections: ["posts"] },
+	{ key: "pages", label: "Pages", collections: ["pages"] },
+	{ key: "categories", label: "Categories", collections: ["categories"] },
+	{
+		key: "landing",
+		label: "Landing & Wholesale",
+		collections: [
+			"wholesales",
+			"landing",
+			"landings",
+			"wholesale_oem",
+			"wholesale_landing",
+			"landing_page",
+		],
+	},
+	{
+		key: "topics",
+		label: "Topics / SEO",
+		collections: ["topicseo", "topicss", "topics", "topic_seo", "topic"],
+	},
+] as const;
 
 async function handleAdminStatus(
 	routeCtx: SandboxedRouteContext,
 	ctx: PluginContext,
 ) {
-	const input = (routeCtx.input ?? {}) as {
-		cursor?: string;
-		sort?: { column?: string; direction?: "asc" | "desc" };
+	// EmDash admin 面板请求体是完整 interaction 对象：
+	// { type: "page_load", page } 或 { type: "block_action", action_id, block_id, value, page }。
+	// 按钮携带的翻页数据在 interaction.value 中，而非顶层。
+	const interaction = (routeCtx.input ?? {}) as {
+		type?: string;
+		value?: {
+			pages?: Record<string, number>;
+			group?: string;
+			page?: number;
+		};
 	};
-	const cursor = Math.max(0, Number(input.cursor ?? "0") || 0);
+	const input = (interaction.value ?? {}) as {
+		pages?: Record<string, number>;
+		group?: string;
+		page?: number;
+	};
 
-	const allRows: OverviewRow[] = [];
-	const collections = [...new Set([...OVERVIEW_COLLECTIONS])];
+	// 各分组当前页码：默认第 0 页；翻页按钮 value 携带全组页码快照避免其余组页码丢失
+	const pages: Record<string, number> = {};
+	for (const g of OVERVIEW_GROUPS) {
+		const raw = input.pages?.[g.key];
+		pages[g.key] =
+			typeof raw === "number" && Number.isFinite(raw) && raw >= 0
+				? Math.floor(raw)
+				: 0;
+	}
+	if (
+		input.group &&
+		input.group in pages &&
+		typeof input.page === "number" &&
+		Number.isFinite(input.page) &&
+		input.page >= 0
+	) {
+		pages[input.group] = Math.floor(input.page);
+	}
 
-	for (const collection of collections) {
+	// 按内容类型分组收集各集合三种语种条目
+	const grouped: Record<string, OverviewRow[]> = {};
+	for (const g of OVERVIEW_GROUPS) grouped[g.key] = [];
+
+	for (const collection of [...new Set(OVERVIEW_COLLECTIONS)]) {
+		const slot = OVERVIEW_GROUPS.find((g) =>
+			(g.collections as readonly string[]).includes(collection),
+		);
+		if (!slot) continue;
 		let en: Awaited<ReturnType<typeof listAllByLocale>>;
 		let es: Awaited<ReturnType<typeof listAllByLocale>>;
 		let ar: Awaited<ReturnType<typeof listAllByLocale>>;
@@ -451,7 +660,7 @@ async function handleAdminStatus(
 			const [arStatus, arStyle] = badge(
 				item.translationGroup ? arByGroup.get(item.translationGroup) : undefined,
 			);
-			allRows.push({
+			grouped[slot.key].push({
 				collection,
 				id: item.id,
 				title: overviewTitle(item.data, item.slug, item.id),
@@ -464,12 +673,6 @@ async function handleAdminStatus(
 		}
 	}
 
-	// 按偏移分页（cursor 即下一页起始偏移）
-	const pageRows = allRows.slice(cursor, cursor + PAGE_SIZE);
-	const total = allRows.length;
-	const nextCursor = cursor + PAGE_SIZE < total ? String(cursor + PAGE_SIZE) : undefined;
-	const rows = pageRows;
-
 	// 每种状态入口固定 action_id，便于侧边栏快速定位对应条目
 	const STATUS_ACTIONS: Record<string, string> = {
 		"Not translated": "translation-open-not-translated",
@@ -477,84 +680,109 @@ async function handleAdminStatus(
 		"Published": "translation-open-published",
 	};
 
-	return {
-		blocks: [
-			{
-				type: "header",
-				text: "Translation Status",
-				block_id: "translation-status-header",
-			},
-			{
+	const columns = [
+		{ key: "collection", label: "Collection", format: "badge", sortable: false },
+		{ key: "entry", label: "Entry", format: "element", sortable: false },
+		{ key: "es", label: "Spanish", format: "element", sortable: false },
+		{ key: "ar", label: "Arabic", format: "element", sortable: false },
+		{ key: "updated", label: "Updated", format: "relative_time", sortable: false },
+	];
+
+	const blocks: Array<Record<string, unknown>> = [];
+
+	for (const g of OVERVIEW_GROUPS) {
+		const rows = grouped[g.key];
+		const total = rows.length;
+		const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+		const page = Math.min(Math.max(0, pages[g.key]), totalPages - 1);
+		const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+		blocks.push({
+			type: "header",
+			text: `${g.label} (${total} entries)`,
+			block_id: `translation-status-header-${g.key}`,
+		});
+
+		blocks.push({
+			type: "table",
+			block_id: `translation-status-table-${g.key}`,
+			page_action_id: "translation-status",
+			// 不设置 next_cursor：避免渲染「Load more」，翻页由组底的 actions 按钮控制
+			empty_text:
+				"No entries yet. Generate Spanish or Arabic drafts from the content editor toolbar.",
+			columns,
+			rows: pageRows.map((r) => ({
+				collection: r.collection,
+				// 可点击跳转英文条目编辑页（admin content 页）
+				entry: {
+					type: "link",
+					label: r.title,
+					target: {
+						kind: "content",
+						collection: r.collection,
+						id: r.id,
+						locale: "en",
+					},
+					appearance: "primary",
+				},
+				es: {
+					type: "button",
+					action_id: STATUS_ACTIONS[r.es] ?? "translation-open-entry",
+					label: r.es,
+					style: r.esStyle as "primary" | "secondary" | "danger",
+					value: { collection: r.collection, id: r.id, locale: "es" },
+				},
+				ar: {
+					type: "button",
+					action_id: STATUS_ACTIONS[r.ar] ?? "translation-open-entry",
+					label: r.ar,
+					style: r.arStyle as "primary" | "secondary" | "danger",
+					value: { collection: r.collection, id: r.id, locale: "ar" },
+				},
+				updated: r.updated,
+			})),
+		});
+
+		// 翻页控件：仅当总页数 > 1 时渲染，按钮 value 携带页码快照
+		if (totalPages > 1) {
+			blocks.push({
 				type: "section",
-				text: `English entries vs. Spanish (es) & Arabic (ar) translations. ${total} English entry(s), showing ${rows.length}. Click an entry to open its editor.`,
-				block_id: "translation-status-summary",
-			},
-			{
-				type: "divider",
-				block_id: "translation-status-divider",
-			},
-			{
-				type: "table",
-				block_id: "translation-status-table",
-				page_action_id: "translation-status",
-				next_cursor: nextCursor,
-				empty_text:
-					"No entries yet. Generate Spanish or Arabic drafts from the content editor toolbar.",
-				columns: [
-					{ key: "collection", label: "Collection", format: "badge", sortable: false },
-					{
-						key: "entry",
-						label: "Entry",
-						format: "element",
-						sortable: true,
-					},
-					{
-						key: "es",
-						label: "Spanish",
-						format: "element",
-						sortable: true,
-					},
-					{
-						key: "ar",
-						label: "Arabic",
-						format: "element",
-						sortable: true,
-					},
-					{ key: "updated", label: "Updated", format: "relative_time", sortable: false },
-				],
-				rows: rows.map((r) => ({
-					collection: r.collection,
-					// 可点击跳转英文条目编辑页（admin content 页）
-					entry: {
-						type: "link",
-						label: r.title,
-						target: {
-							kind: "content",
-							collection: r.collection,
-							id: r.id,
-							locale: "en",
-						},
-						appearance: "primary",
-					},
-					es: {
-						type: "button",
-						action_id: STATUS_ACTIONS[r.es] ?? "translation-open-entry",
-						label: r.es,
-						style: r.esStyle as "primary" | "secondary" | "danger",
-						value: { collection: r.collection, id: r.id, locale: "es" },
-					},
-					ar: {
-						type: "button",
-						action_id: STATUS_ACTIONS[r.ar] ?? "translation-open-entry",
-						label: r.ar,
-						style: r.arStyle as "primary" | "secondary" | "danger",
-						value: { collection: r.collection, id: r.id, locale: "ar" },
-					},
-					updated: r.updated,
-				})),
-			},
-		],
-	};
+				text: `Page ${page + 1} of ${totalPages} · ${total} entries`,
+				block_id: `translation-status-pager-info-${g.key}`,
+			});
+			const pagerValue = (target: number) => ({
+				pages,
+				group: g.key,
+				page: target,
+			});
+			const elements: Array<Record<string, unknown>> = [];
+			if (page > 0) {
+				elements.push({
+					type: "button",
+					action_id: "translation-status",
+					label: "‹ Prev",
+					style: "secondary",
+					value: pagerValue(page - 1),
+				});
+			}
+			if (page < totalPages - 1) {
+				elements.push({
+					type: "button",
+					action_id: "translation-status",
+					label: "Next ›",
+					style: "primary",
+					value: pagerValue(page + 1),
+				});
+			}
+			blocks.push({
+				type: "actions",
+				block_id: `translation-status-pager-${g.key}`,
+				elements,
+			});
+		}
+	}
+
+	return { blocks };
 }
 
 // standard 插件默认导出：routes（hooks 本插件不需要）
