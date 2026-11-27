@@ -24,6 +24,7 @@ const STATIC_PATHS: Record<string, number> = {
   "/privacy": 0.3,
   "/terms": 0.3,
   "/shipping-info-combined": 0.5,
+  "/how-to-order": 0.7,
   "/support": 0.5,
 };
 
