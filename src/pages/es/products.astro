@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import FilterSidebar from '../../components/FilterSidebar.astro';
+
+import { getProducts, getCategories, getTopics } from '../../lib/shop';
+
+const products = await getProducts();
+const categories = await getCategories();
+const topics = await getTopics();
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+// Apoya la búsqueda del encabezado: filtra por nombre de producto según ?q= (insensible a mayúsculas).
+const rawQuery = Astro.url.searchParams.get('q') ?? '';
+const query = rawQuery.trim().toLowerCase();
+const visibleProducts = query
+  ? products.filter((p) => (p.name || '').toLowerCase().includes(query))
+  : products;
+---
+
+<BaseLayout title="Productos - MrKB">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-sm mb-8 animate-fade-in">
+      <a href={localizeUrl("/")} class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Inicio</a>
+      <span class="text-gray-400">/</span>
+      <span class="text-gray-900 dark:text-white font-semibold">Productos</span>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Filters -->
+      <FilterSidebar categories={categories} topics={topics} />
+
+      <!-- Products Grid -->
+      <div class="flex-1">
+        <!-- Toolbar - Mobile Optimized -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 animate-slide-down">
+          <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            Mostrando <span class="font-semibold text-gray-900 dark:text-white" data-filter-count>{visibleProducts.length}</span> de <span class="font-semibold text-gray-900 dark:text-white">{visibleProducts.length}</span> productos
+          </p>
+          
+          <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+            <!-- View Toggle - Hidden on Mobile -->
+            <div class="hidden sm:flex items-center gap-2 bg-white dark:bg-dark-800 rounded-lg p-1 border border-gray-200 dark:border-dark-700">
+              <button class="p-2 rounded bg-primary-600 text-white" aria-label="Vista de cuadrícula">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button class="p-2 rounded hover:bg-gray-100 dark:hover:bg-dark-700" aria-label="Vista de lista">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Sort - Mobile Optimized -->
+            <select class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 text-sm bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-lg focus:outline-none focus:border-primary-500 cursor-pointer">
+              <option>Ordenar por: Destacados</option>
+              <option>Precio: Menor a mayor</option>
+              <option>Precio: Mayor a menor</option>
+              <option>Más nuevos</option>
+              <option>Mejor valorados</option>
+              <option>Más populares</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products - Mobile Optimized Grid -->
+        <div data-filter-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+          {visibleProducts.map(product => (
+            <ProductCard {...product} />
+          ))}
+        </div>
+
+        <p data-filter-empty class="hidden text-center text-gray-500 dark:text-gray-400 py-16">
+          Ningún producto coincide con los filtros seleccionados.
+        </p>
+
+        <!-- Pagination - Mobile Optimized -->
+        <div class="flex flex-wrap justify-center items-center gap-2 animate-fade-in">
+          <button class="px-3 sm:px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-dark-700 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors disabled:opacity-50 active:scale-95" disabled>
+            Anterior
+          </button>
+          {[1, 2, 3, 4, 5].map(page => (
+            <button class={`px-3 sm:px-4 py-2 text-sm rounded-lg border transition-colors active:scale-95 ${page === 1 ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-200 dark:border-dark-700 hover:bg-gray-100 dark:hover:bg-dark-800'}`}>
+              {page}
+            </button>
+          ))}
+          <button class="px-3 sm:px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-dark-700 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors active:scale-95">
+            Siguiente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

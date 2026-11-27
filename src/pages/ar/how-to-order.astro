@@ -1,0 +1,477 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getSiteSettings } from 'emdash';
+import { localizePath } from '../../lib/i18n';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const pageTitle = 'كيفية تقديم طلب بالجملة | دليل مصادر التوريد B2B';
+const pageDescription =
+  'دليل طلبات B2B خطوة بخطوة لمغاسل الحمامات والأحواض الخزفية والخلاطات من الصين. تعرف على كيفية الحصول على عروض أسعار مفصلة وخطط تحميل الحاويات.';
+
+const siteSettings = await getSiteSettings();
+const siteUrl = (siteSettings.url || Astro.url.origin).replace(/\/+$/, '');
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+
+const buyerRoles = [
+  {
+    title: 'المقاولون ومطورو العقارات',
+    bestFor:
+      'مشاريع الفنادق أو المساكن المتعددة أو المباني التجارية التي تحتاج حزم مغاسل حمامات وسباكة كاملة مطابقة للرسومات المعمارية.',
+    fastest:
+      'أرسل مخططات الطوابق أو قائمة المواد (BOM) مباشرة، دون الحاجة لتصفح صفحات الكتالوج واحدة تلو الأخرى.',
+    details: [
+      'العدد الإجمالي للغرف أو الوحدات والجدول الزمني المستهدف للتسليم؛',
+      'جداول كمية الأصناف (BOQ) / قائمة المواد (BOM) أو رسومات تخطيط الحمام (PDF أو Excel أو DWG)؛',
+      'ميناء الوجهة ومتطلبات الكود المحلي (مثل cUPC لأمريكا الشمالية أو SABER للسعودية).',
+    ],
+    action: { label: 'رفع قائمة المواد أو الرسومات الخاصة بمشروعك', url: '/contact' },
+  },
+  {
+    title: 'تجار مواد البناء والمستوردون الإقليميون',
+    bestFor:
+      'الموزعون الذين يقارنون الأنماط والمواد وأحجام الحاويات لتوسيع خطوط المخزون المحلي.',
+    fastest:
+      'تصفح فئات منتجاتنا وأضف الأصناف المستهدفة إلى قائمة عرض السعر الخاصة بك لحساب هوامش الحاوية الكاملة.',
+    details: [
+      'البلد المستهدف وميناء الوجهة (لنطابق خيوط السباكة NPT 1/2 بوصة أو BSP G1/2" )؛',
+      'حجم طلبك المقدر (مثل حاوية مختلطة 20GP أو 40HQ)؛',
+      'الطرازات المفضلة ومستوى المواد (درجة مقاول اقتصادية أو درجة مواصفات عالية التحمل).',
+    ],
+    action: { label: 'تصفح الكتالوج وبناء قائمة عرض السعر', url: '/categories' },
+  },
+  {
+    title: 'العلامات الخاصة وسلاسل التجزئة',
+    bestFor:
+      'أصحاب العلامات الذين يشترون منتجات OEM أو ODM مصنعة تحت اسم علامتهم وتغليفهم الخاص.',
+    fastest:
+      'اختر طرازات أساسية موجودة أو أرسل صورًا/عينات مرجعية لتأكيد مواصفات العلامة والتغليف.',
+    details: [
+      'خطوط المنتج المستهدفة وكميات الطلب (ابتداءً من 10 مجموعات لكل طراز مغسلة و50-100 قطعة لكل طراز خلاطة)؛',
+      'ملفات الشعار المتجهة وإرشادات الصندوق المخصص أو علامات الشحن؛',
+      'احتياجات الامتثال للسوق المستهدف (نوفر توثيقًا تقنيًا كاملًا لتسجيل الشهادات تحت علامتك).',
+    ],
+    action: { label: 'إرسال متطلبات OEM / ODM الخاصة بك', url: '/contact' },
+  },
+  {
+    title: 'مصنعو الأسطح والحجر',
+    bestFor:
+      'محلات الحجر التي تقطع الكوارتز أو الرخام الطبيعي محليًا وتحتاج فقط قواعد خزائن من الصين.',
+    fastest:
+      'اختر أنماط الخزائن والعروض القياسية، وتخطَّ تمامًا اختيار الأسطح والأحواض.',
+    details: [
+      'عروض قواعد الخزائن المطلوبة (مثل المقاسات القياسية من 600 مم إلى 1800 مم)؛',
+      'مادة الهيكل المفضلة وتشطيب الباب (مثل لوح رغوة PVC مقاوم للماء 100% أو خشب رقائقي مقاوم للرطوبة)؛',
+      'أي احتياجات تقوية للسطح (مثل قضبان شد فولاذية ثقيلة لدعم ألواح الحجر السميكة).',
+    ],
+    action: { label: 'استكشاف مواصفات قواعد الخزائن وطلب الأسعار', url: '/categories/bathroom-vanities' },
+  },
+];
+
+const orderSteps = [
+  {
+    title: 'شارك قائمتك أو خطط مشروعك',
+    body: 'أضف طرازات إلى قائمة عروض أسعار مشروعك على موقعنا، أو أرسل لنا قائمة المواد أو مخططات الطوابق أو صورًا مرجعية. فقط أدرج ميناء الوجهة والكميات التقديرية.',
+  },
+  {
+    title: 'احصل على عرض السعر التفصيلي وخطة الحاوية خلال 24-72 ساعة',
+    body: 'يتحقق فريق الهندسة لدينا من معايير الخيوط (NPT 1/2 بوصة أو BSP G1/2") والامتثال المحلي لسوقك. اعتمادًا على تعقيد الطلب، ستحصل على عرض سعر واضح خلال 24-72 ساعة عمل، مع أسعار الوحدات والحجم الإجمالي (CBM) وخطة لتعبئة كل شيء في حاوية واحدة.',
+  },
+  {
+    title: 'وافق على الرسومات والعينات الاختيارية (بدون تأخير غير ضروري)',
+    bullets: [
+      'طرازات الكتالوج القياسية: أكد ورقة المواصفات والتشطيب واذهب مباشرة إلى الإنتاج، دون انتظار عينات.',
+      'الطلبات المخصصة والمشاريع: راجع ووقّع على رسومات CAD ثنائية الأبعاد غير الموسومة قبل البدء. هل تريد التحقق من لون التشطيب يدويًا أولًا؟ نشحن عينات مادية عند الطلب (تُخصم رسوم العينات من طلبك بالجملة).',
+    ],
+  },
+  {
+    title: 'يبدأ الإنتاج مع مطابقة الألوان بين المصانع',
+    body: 'بمجرد تأكيد الفاتورة المبدئية (PI) والدفعة المقدمة، تبدأ ورشنا الشريكة الإنتاج (مدة 30-45 يومًا قياسية). إذا كان طلبك يمزج الخلاطات والقطع والتجهيزات والمغاسل، يفحص مهندسونا في الموقع عينات الألوان بين المصانع بحيث تتطابق التشطيبات مثل الذهب المصقول أو الأسود غير اللامع بدون أي اختلاف في اللون (دلتا E أقل من 1.5).',
+  },
+  {
+    title: 'الفحص قبل الشحن والتحميل الذكي للحاوية',
+    body: 'يختبر مفتشونا ضغط الماء ويفحصون تشطيبات الأسطح ويرسلون لك صورًا ومقاطع فيديو للفحص قبل الشحن. عند التحميل، نضع صناديق الخلاطات والتجهيزات الأصغر داخل تجاويف المغاسل (تحميل متداخل) لتعظيم مساحة حاوية 20GP أو 40HQ وخفض تكاليف الشحن البحري.',
+  },
+  {
+    title: 'مستندات جمركية سلسة وقطع غيار لموقع العمل',
+    body: 'بعد الرصيد النهائي، نشحن بشروطك المفضلة (FOB أو CIF أو DDP) ونرسل جميع الفواتير التجارية وقوائم التعبئة وسندات الشحن وملفات الامتثال فورًا. نضمن أيضًا قطع غيار مجانية في كل شحنة مشروع لإبقاء تركيبك في الجدول الزمني.',
+  },
+];
+
+const tradeTerms = [
+  {
+    term: 'الحد الأدنى لكمية الطلب (MOQ)',
+    policy:
+      '10 مجموعات لكل طراز مغسلة؛ 50 قطعة لكل طراز خلاطة/تجهيزات كروم قياسي، أو 100 قطعة لتشطيب PVD خاص (الذهب المصقول أو ميتال داكن أو الأسود غير اللامع). امزج الفئات في حاوية واحدة.',
+  },
+  {
+    term: 'مدة الإنتاج',
+    policy:
+      '30-45 يومًا بعد توقيع ورقة المواصفات أو CAD ثنائي الأبعاد واستلام الدفعة المقدمة. التسليم المرحلي حسب الطوابق متاح للمشاريع الكبيرة.',
+  },
+  {
+    term: 'الشروط التجارية والدفع',
+    policy:
+      'EXW أو FOB قوانغتشو / شنتشن أو CIF ميناء الوجهة أو DDP. الدفع القياسي هو دفعة مقدمة 30% ورصيد 70% قبل الشحن مقابل تقارير الفحص وصور التحميل.',
+  },
+  {
+    term: 'تجميع الحاويات',
+    policy:
+      'نحمّل الحاويات المجمعة في موانئ قوانغتشو أو شنتشن. إذا كنت تعمل بالفعل مع وكيل شحن في الصين أو تشتري بلاطًا وإنارة من مكان آخر، يمكننا أيضًا تسليم بضائعك إلى المستودع المخصص للتحميل المدمج.',
+  },
+];
+
+const avoidItems = [
+  {
+    title: 'اطلب "قائمة أسعار عامة كاملة".',
+    why: 'نوحّد عدة ورش متخصصة تعمل بالنحاس الصلب والفولاذ المقاوم للصدأ SUS304 وسبائك الزنك ولوح رغوة PVC المقاوم للماء والألمنيوم العسلي. تختلف التكاليف كثيرًا حسب مواصفات الخرطوشة وتشطيبات PVD وشهادات السوق.',
+    instead:
+      'اختر 3-10 طرازات مستهدفة (أو أرسل قائمة المواد) بكميات تقديرية لنقدم لك أسعارًا حقيقية مفصلة.',
+  },
+  {
+    title: 'اطلب كتالوجًا دون مشاركة سوقك المستهدف.',
+    why: 'تستخدم أمريكا الشمالية والمكسيك خيوط NPT 1/2 بوصة، بينما يستخدم الشرق الأوسط وأمريكا الجنوبية وأوروبا غالبًا G1/2" المتري (BSP). قواعد ضغط الماء والامتثال تختلف أيضًا حسب البلد.',
+    instead: 'اذكر دائمًا بلد الوجهة أو الميناء وقطاع المشتري المستهدف أولًا.',
+  },
+  {
+    title: 'استفسر عن طلبات تجزئة لقطع واحدة أو دروبشيبينغ.',
+    why: 'نتعامل فقط مع طلبات الجملة والمشاريع المباشرة من المصنع، لا مخزون تجزئة ولا مستودعات تجزئة خارجية ولا دروبشيبينغ.',
+    instead:
+      'خطط حول حدود الجملة لدينا: 10 مجموعات لكل طراز مغسلة و50 قطعة لكل طراز خلاطة، واجمع الفئات في حاوية واحدة.',
+  },
+  {
+    title: 'تستعجل الإنتاج قبل التوقيع على المواصفات.',
+    why: 'نوع الخيط الخاطئ أو فتحة السطح الخاطئة تسبب تأخيرات مكلفة بمجرد وصول البضائع إلى موقع عملك.',
+    instead: 'راجع ووافق دائمًا على ورقة المواصفات أو رسم CAD ثنائي الأبعاد قبل بدء الإنتاج.',
+  },
+  {
+    title: 'تطلب منتجات غير مرتبطة في طلبك الأول.',
+    why: 'بالنسبة للمشترين الجدد، نركز فقط على خطوطنا الأساسية: مغاسل الحمام والأحواض الخزفية والخلاطات والمغاسل والدش ومرايا LED وتجهيزات الحمام. هذا يحافظ على سرعة أول شحنة لك وخلوها من الأخطاء.',
+    instead:
+      'ابدأ بخطوط المطبخ والحمام الأساسية في طلبك الأول. بعد بناء شراكة متكررة، يمكن لفريقنا العمل كوكيل توريد لك في الصين لشراء مواد بناء أخرى وملحقات تجهيزات لحاوياتك.',
+  },
+  {
+    title: 'تفترض أن كل طراز يحمل كل الشهادات العالمية.',
+    why: 'تختلف الشهادات حسب الطراز والوجهة، والشهادات الخاصة بالعلامات مملوكة لحاملي التراخيص المسجلين.',
+    instead:
+      'أخبرنا بمتطلبات الامتثال (cUPC أو NSF-61 أو CE أو SABER) مقدمًا. سنطابق الطرازات المعتمدة مسبقًا أو نوفر ملفات تقنية كاملة لدعم الشهادة تحت علامتك.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'هل يمكنني طلب عرض سعر إذا كان مشروعي لا يزال في مرحلة الميزانية المبكرة؟',
+    answer:
+      'نعم. شارك نوع مشروعك (فندق أو مساكن متعددة أو مساكن اقتصادية) والعدد التقديري للوحدات ومستوى الميزانية (هندسة القيمة أو درجة المواصفات). سيوصي فريق الهندسة لدينا بحزمتي-3 منتجات مجربة مع تقديرات تقريبية للحاويات.',
+  },
+  {
+    question: 'هل أحتاج طلبات منفصلة للمغاسل والأحواض الخزفية والخلاطات وملحقات الحمام؟',
+    answer:
+      'لا. كموحّد سلسلة توريد متعدد الورش، نجمع كل الفئات تحت أمر شراء واحد (PO) وفاتورة تجارية واحدة. نطابق التشطيبات بين المصانع ونحمّل كل شيء في حاوية واحدة.',
+  },
+  {
+    question:
+      'كيف تضمنون مطابقة الخلاطات والمصارف للسباكة المحلية في الولايات المتحدة أو الشرق الأوسط أو أمريكا اللاتينية؟',
+    answer:
+      'قبل بدء الإنتاج، نتحقق من معيار التوصيل الدقيق لميناء وجهتك. تُشحن طلبات الولايات المتحدة والمكسيك بخيوط NPT 1/2 بوصة، بينما تُشحن طلبات الشرق الأوسط وأمريكا الجنوبية وأوروبا بخيوط G1/2" المترية (BSP).',
+  },
+  {
+    question: 'لماذا الأسعار الدقيقة مخفية خلف قائمة عرض السعر بدلًا من نشرها علنًا؟',
+    answer:
+      'نوفر حصريًا للموزعين بالجملة والمقاولين التجاريين. تعتمد تكاليف الوحدات على حجم طلبك والمواد الأساسية (مثل النحاس الصلب مقابل سبائك الزنك أو PVC المقاوم للماء مقابل الخشب الرقائقي) وعملية التشطيب ومزيج الحاوية. إرسال قائمة عرض سعر يحمي أسعار قناتك المحلية ويضمن حصولك على عروض أسعار مصنعية متدرجة دقيقة.',
+  },
+];
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={pageUrl} ogType="article">
+  <script type="application/ld+json" set:html={faqJsonLd} />
+
+  <!-- Hero -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-sm sm:text-base font-semibold tracking-widest uppercase text-white/80 mb-4">
+          دليل مصادر التوريد B2B
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6">
+          كيفية تقديم طلب: دليل التوريد المباشر من المصنع وتجميع الحاويات الكاملة
+        </h1>
+        <p class="text-lg sm:text-xl font-semibold text-white/95 mb-4">
+          احصل على عروض أسعار دقيقة بشكل أسرع، ووفّر الوقت، وقلّل الرسائل المتبادلة&mdash;ثم
+          وفّر المغاسل والأحواض الخزفية والخلاطات من مصانع صينية متخصصة في حاوية واحدة لتوفير
+          حتى 30% على الشحن البحري.
+        </p>
+        <p class="text-base sm:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto mb-4">
+          لسنا وسيطًا ولسنا ورشة واحدة. نحن فريقك الهندسي في الموقع في الصين.
+        </p>
+        <p class="text-base sm:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto">
+          نحن نوحّد ورشًا متخصصة في جميع أنحاء الصين، تغطي مغاسل الحمام والأحواض الخزفية المزججة
+          والخلاطات النحاسية الصلبة وتجهيزات الحمام، تحت نظام مراقبة جودة واحد وحاوية شحن واحدة.
+          سواء كان لديك مخطط طابق كامل لمشروع أو بضعة طرازات مستهدفة فقط، اتبع الخطوات أدناه
+          للحصول على عرض سعر مفصّل وخطة تحميل حاوية خلال
+          <strong>24-72 ساعة عمل</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1: Buyer role routing -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content data-ai-type="page">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            الخطوة 1: اختر دور المشتري لتبدأ بسرعة
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            يبدأ المشترون المختلفون بملفات مشروع مختلفة. ابحث عن نوع نشاطك التجاري أدناه وشارك
+            التفاصيل الأساسية الثلاثة المذكورة لبدء عرض السعر فورًا:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {buyerRoles.map((role, index) => (
+            <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="w-10 h-10 shrink-0 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">
+                  {index + 1}
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-snug">
+                  {role.title}
+                </h3>
+              </div>
+
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                <strong class="text-gray-900 dark:text-white">الأفضل لـ:</strong> {role.bestFor}
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+                <strong class="text-gray-900 dark:text-white">أسرع طريقة للبدء:</strong>
+                {' '}{role.fastest}
+              </p>
+
+              <p class="font-semibold text-gray-900 dark:text-white mb-2">
+                يرجى مشاركة هذه التفاصيل الثلاثة:
+              </p>
+              <ul class="space-y-2 mb-6">
+                {role.details.map((detail) => (
+                  <li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span class="mt-1.5 w-1.5 h-1.5 shrink-0 rounded-full bg-primary-500"></span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={localizeUrl(role.action.url)}
+                class="mt-auto inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:underline"
+              >
+                {role.action.label} &rarr;
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 2: Six-step order process -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            الخطوة 2: كيف ينتقل طلبك من عرض السعر إلى مينائك
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            من فحص المواصفات إلى تحميل الحاوية، يدير فريقنا الهندسي في الموقع كل خطوة في الورش
+            بحيث يصل طلبك في الوقت المحدد ودون مفاجآت.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {orderSteps.map((step, index) => (
+            <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex gap-5">
+              <div class="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-primary-600 to-orange-500 text-white flex items-center justify-center text-lg font-bold">
+                {index + 1}
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {step.title}
+                </h3>
+                {step.body && (
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{step.body}</p>
+                )}
+                {step.bullets && (
+                  <ul class="space-y-2">
+                    {step.bullets.map((bullet) => (
+                      <li class="flex items-start gap-2 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <span class="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-primary-500"></span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trade terms -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            الحدود الدنيا للطلبات القياسية والشروط التجارية
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200 dark:border-dark-700 shadow-lg">
+          <table class="w-full text-start">
+            <thead class="bg-gray-100 dark:bg-dark-800">
+              <tr>
+                <th class="px-5 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                  شرط الطلب
+                </th>
+                <th class="px-5 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                  السياسة القياسية
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-dark-700">
+              {tradeTerms.map((row) => (
+                <tr class="bg-white dark:bg-dark-900">
+                  <td class="px-5 py-4 align-top text-sm font-semibold text-gray-900 dark:text-white w-1/3">
+                    {row.term}
+                  </td>
+                  <td class="px-5 py-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {row.policy}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before you request a quote -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            كيف تحصل على عرض سعر أسرع: 6 أخطاء شائعة يجب تجنبها
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            لتوفير وقت فريقك ومنع الأسعار غير الدقيقة، يرجى تجنب هذه الأخطاء الستة الشائعة عند
+            إرسال استفسارك.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {avoidItems.map((item, index) => (
+            <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg border-s-4 border-red-500">
+              <div class="flex items-start gap-4">
+                <span class="w-8 h-8 shrink-0 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-sm">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    يرجى عدم {item.title}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+                    {item.why}
+                  </p>
+                  <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <strong class="text-primary-600 dark:text-primary-400">ماذا تفعل بدلًا من ذلك:</strong>
+                    {' '}{item.instead}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            الأسئلة الشائعة حول تقديم الطلبات
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map((item) => (
+            <div class="bg-gray-50 dark:bg-dark-800 rounded-xl p-6 shadow-sm">
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{item.question}</h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-20 bg-gradient-to-br from-primary-700 via-primary-600 to-orange-500 dark:from-primary-800 dark:via-primary-700 dark:to-orange-600 text-white">
+    <div class="container mx-auto px-4" data-ai-ignore>
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">مستعد لبدء طلب مشروعك التالي؟</h2>
+        <p class="text-lg text-white/90 mb-8 leading-relaxed">
+          اختر أسهل طريقة لمشاركة مواصفاتك، وسيرد فريقنا الهندسي في الصين خلال 24-72 ساعة عمل.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href={localizeUrl('/categories')}
+            class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            أضف منتجات إلى قائمة عرض السعر &rarr;
+          </a>
+          <a
+            href={localizeUrl('/contact')}
+            class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          >
+            إرسال قائمة مواد المشروع / طلب عرض سعر
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

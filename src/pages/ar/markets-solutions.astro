@@ -1,0 +1,674 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getSiteSettings } from 'emdash';
+import { createPublicPageContext, safeJsonLdSerialize } from 'emdash/page';
+import { localizePath } from '../../lib/i18n';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const pageName = 'الأسواق والحلول';
+const pageHeading = 'الأسواق العالمية وحلول التجهيزات التجارية';
+const pageDescription =
+  'تجهيزات مطابخ وحمامات بمستوى المواصفات حسب المنطقة (cUPC وWaterMark وSASO وCE) ونوع المشروع (متعدد الوحدات وADA ومساكن كبار السن وموتيلات). اطلب عروض أسعار بالجملة.';
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'MrKB';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+const siteBaseUrl = siteUrl.replace(/\/+$/, '');
+const pageUrl = `${siteBaseUrl}${Astro.url.pathname}`;
+
+const marketBlocks = [
+  {
+    id: 'north-america',
+    title: 'أمريكا الشمالية (الولايات المتحدة وكندا)',
+    short: 'أمريكا الشمالية',
+    badge: 'cUPC · NSF-61 خالٍ من الرصاص · ADA · UL 962 / ETL',
+    pitch: 'مصمم لاجتياز فحوصات السباكة البلدية في أمريكا الشمالية دون تأخير.',
+    specs: [
+      {
+        label: 'التوصيلات',
+        text: 'مداخل NPT 1/2 بوصة وخطوط إمداد ضغط 3/8 بوصة جاهزة للتوصيلات الداخلية الأمريكية/الكندية.',
+      },
+      {
+        label: 'دعم التقديمات',
+        text: 'رسومات CAD ثنائية الأبعاد غير موسومة وأوراق مواصفات مقدمة لعطاءات المقاولين.',
+      },
+      {
+        label: 'مغاسل خالية من الرسوم الجمركية',
+        text: 'مغاسل من الفولاذ المقاوم للصدأ SUS 304 والألمنيوم العسلي تلغي رسوم إجراءات مكافحة الإغراق/الرسوم التعويضية لخزائن الخشب.',
+      },
+    ],
+    lines: 'مغاسل مطابخ · أنظمة دش مخفية · مغاسل معدنية ومرايا LED',
+    action: 'أضف حزمة مواصفات أمريكا الشمالية إلى قائمة عرض السعر',
+  },
+  {
+    id: 'australia-nz',
+    title: 'أستراليا ونيوزيلندا',
+    short: 'أستراليا ونيوزيلندا',
+    badge: 'WaterMark · تصنيف المياه WELS · SAA / RCM',
+    pitch: 'هندسة وفق أكواد السباكة الأسترالية الصارمة وتصاميم حديثة مدمجة.',
+    specs: [
+      {
+        label: 'التوصيلات',
+        text: 'خيوط مترية قياسية G1/2" (BSP) وخراطيم مرنة متوافقة.',
+      },
+      {
+        label: 'مقاسات مترية مدمجة',
+        text: 'مغاسل معدنية معلقة على الحائط (600 مم-1000 مم) ومرايا LED بإطار نحيف (220 فولت-240 فولت / 50 هرتز).',
+      },
+      {
+        label: 'كفاءة المياه',
+        text: 'مهويات متوافقة مع WELS وخلاطات دش ثرموستاتية مبنية للأبراج السكنية والفندقية.',
+      },
+    ],
+    lines: 'خلاطات أحواض ومغاسل · أنظمة دش · مغاسل ومرايا LED',
+    action: 'أضف حزمة مواصفات ANZ إلى قائمة عرض السعر',
+  },
+  {
+    id: 'middle-east',
+    title: 'الشرق الأوسط (السعودية والإمارات)',
+    short: 'الشرق الأوسط',
+    badge: 'SASO / SABER · رذاذ ملح حمضي 48-72 ساعة · اختبار 1.6 ميجا باسكال',
+    pitch: 'تجهيزات نحاس صلب وSUS 304 عالية التحمل مبنية للحرارة العالية والضغط العالي ورطوبة السواحل.',
+    specs: [
+      {
+        label: 'اشتراط توفير المياه',
+        text: 'مهويات سويسرية Neoperl محددة بما لا يتجاوز 5.7 لتر/دقيقة (1.5 جالون/دقيقة) لاجتياز رؤية السعودية 2030 وقواعد المباني الخضراء في الإمارات.',
+      },
+      {
+        label: 'حماية الضغط العالي',
+        text: 'خراطيش سيراميك مضادة للمطرقة المائية مختبرة حتى 1.6 ميجا باسكال (16 بار) لمضخات التعزيز في الأبراج العالية.',
+      },
+      {
+        label: 'تشطيبات ثابتة ضد الأشعة فوق البنفسجية',
+        text: 'تشطيبات PVD ذهب مصقول وداكن مقاومة لحرارة الصحراء وتآكل ملح السواحل (خيوط BSP G1/2").',
+      },
+    ],
+    lines: 'خلاطات نحاس صلب · دشات ثرموستاتية · مصارف أرضية 304',
+    action: 'أضف حزمة مواصفات الشرق الأوسط إلى قائمة عرض السعر',
+  },
+  {
+    id: 'europe-uk',
+    title: 'أوروبا والمملكة المتحدة',
+    short: 'أوروبا والمملكة المتحدة',
+    badge: 'CE (EN-817) · UKCA · RoHS · كهربائي IP44',
+    pitch: 'مقاسات مترية أوروبية نظيفة مع امتثال خالٍ من الرصاص ومرايا LED محكمة ضد الرطوبة.',
+    specs: [
+      {
+        label: 'التوصيلات',
+        text: 'خراطيم إمداد مضفورة BSP G1/2" وG3/8" متطابقة مع صمامات الزاوية الأوروبية.',
+      },
+      {
+        label: 'السلامة الكهربائية',
+        text: 'مرايا LED وخزائن مرايا 220 فولت-240 فولت / 50 هرتز بفضة خالية من النحاس وغشاء حماية.',
+      },
+      {
+        label: 'تناسق الألوان',
+        text: 'مطابقة لون رقمية دلتا E أقل من 1.5 عبر خلاطات الأسود غير اللامع وأعمدة الدش وحوامل المناشف.',
+      },
+    ],
+    lines: 'خلاطات مطابخ · أعمدة دش · اكسسوارات حمام',
+    action: 'أضف حزمة مواصفات الاتحاد الأوروبي/المملكة المتحدة إلى قائمة عرض السعر',
+  },
+  {
+    id: 'latin-america',
+    title: 'أمريكا اللاتينية (المكسيك وأمريكا الجنوبية)',
+    short: 'أمريكا اللاتينية',
+    badge: 'قيمة درجة المقاول · خيط مزدوج (NPT + BSP) · جاهز للتدفق بالجاذبية',
+    pitch: 'تجهيزات بتحكم في التكلفة مبنية لضغط مياه منخفض ودوران جملة سريع.',
+    specs: [
+      {
+        label: 'خيوط مزدوجة المعايير',
+        text: 'خطوط NPT 1/2 بوصة + 3/8 بوصة للمكسيك؛ خيوط مترية BSP G1/2" لتشيلي وكولومبيا وبيرو والأرجنتين.',
+      },
+      {
+        label: 'ضغط منخفض ومضاد للرواسب',
+        text: 'هندسة لخزانات الجاذبية على الأسطح (Flujo por Gravedad) مع مهويات قابلة للإزالة بدون أدوات تزيل الرمال بسرعة.',
+      },
+      {
+        label: 'التحكم في تكلفة الوحدة',
+        text: 'خيارات سبائك زنك متينة وفولاذ مقاوم للصدأ مضغوط معبأة للتحميل عالي الحجم في الحاويات.',
+      },
+    ],
+    lines: 'خلاطات زنك وفولاذ · مغاسل مطابخ مضغوطة · أرفف تخزين قابلة للطي',
+    action: 'أضف حزمة مواصفات أمريكا اللاتينية إلى قائمة عرض السعر',
+  },
+];
+
+const solutionBlocks = [
+  {
+    id: 'multifamily',
+    title: 'التطورات متعددة الوحدات والشقق',
+    short: 'متعدد الوحدات',
+    risk: 'الأجزاء المفقودة توقف فرق السباكة عبر أكثر من 200 وحدة، بينما تتطلب الميزانيات المحدودة هندسة قيمة ذكية.',
+    points: [
+      {
+        label: 'تجهيزات معبأة لكل وحدة',
+        text: 'نعبأ الخلاطات وصمامات الزاوية والمصارف ومنظمات الخزانة حسب وحدة الشقة بحيث لا تهدر الفرق ساعات في فرز الصناديق.',
+      },
+      {
+        label: 'هندسة القيمة',
+        text: 'امزج مغاسل فولاذ مضغوط قياس 18 في الوحدات القياسية مع مغاسل مصنوعة يدويًا قياس 16 في وحدات البنتهاوس، كل ذلك في حاوية واحدة.',
+      },
+    ],
+    bundle:
+      'خلاط مطبخ بتدفق سفلي بمقبض واحد + مغسلة فولاذ أسفل السطح + مجموعة دش متوازنة الضغط + منظم خزانة قابل للسحب.',
+    action: 'أضف حزمة متعدد الوحدات إلى قائمة عرض السعر',
+    guide: '',
+  },
+  {
+    id: 'ada-compliance',
+    title: 'مشاريع متوافقة مع ADA (ANSI A117.1)',
+    short: 'الامتثال ADA',
+    risk: 'الأحواض العميقة أو المقابض القاسية أو عناصر التحكم في الدش في غير مكانها تفشل في فحوصات إمكانية الوصول البلدية وتفرض إزالة مكلفة.',
+    points: [
+      {
+        label: 'أحواض ADA ضحلة',
+        text: 'مغاسل مطبخ وحمام من الفولاذ المقاوم للصدأ بعمق حوض حتى 5.5 بوصات ومصارف مزاحة للخلف لمساحة كاملة لركبتي الكرسي المتحرك.',
+      },
+      {
+        label: 'عناصر تحكم برافعة منخفضة القوة',
+        text: 'خلاطات ومحوّلات أحادية الرافعة تتطلب أقل من 5 أرطال من قوة التشغيل دون إمساك قوي أو لف المعصم.',
+      },
+      {
+        label: 'دش ADA وقضبان الإمساك',
+        text: 'دشات يدوية بشريط منزلق (مدى وصول 38-48 بوصة) مع قضبان إمساك جدارية SUS 304 عالية التحمل.',
+      },
+    ],
+    bundle:
+      'مغسلة مطبخ ADA بعمق 5.5 بوصات + خلاط مطبخ برافعة + نظام دش ADA بشريط منزلق + مجموعة قضبان إمساك 304.',
+    action: 'أضف حزمة ADA إلى قائمة عرض السعر',
+    guide: '',
+  },
+  {
+    id: 'senior-living',
+    title: 'مساكن كبار السن ومنشآت الرعاية الصحية',
+    short: 'رعاية كبار السن',
+    risk: 'ارتفاعات درجة حرارة الماء المفاجئة تحرق المقيمين، بينما قوة الإمساك الضعيفة تجعل المقابض القياسية صعبة الدوران.',
+    points: [
+      {
+        label: 'صمامات ثرموستاتية مضادة للحرق',
+        text: 'صمامات ثرموستاتية 38 درجة مئوية (100 درجة فهرنهايت) تثبّت درجة حرارة الماء الآمنة فورًا حتى عندما يفرغ الجيران المراحيض.',
+      },
+      {
+        label: 'مقابض طبية/شفرة ممتدة',
+        text: 'مقابض رافعة طويلة مريحة تسمح بالتشغيل بسهولة بالمعصم أو الكوع.',
+      },
+      {
+        label: 'الوقاية من الانزلاق والسقوط',
+        text: 'قضبان إمساك SUS 304 عالية الحمل ومصارف أرضية خطية مدمجة في البلاط تلغي مخاطر التعثر بحواف الدش.',
+      },
+    ],
+    bundle:
+      'صمام دش ثرموستاتي مضاد للحرق + خلاط حوض بمقبض شفرة + مصرف أرضي خطي + قضبان إمساك أمان 304.',
+    action: 'أضف حزمة رعاية كبار السن إلى قائمة عرض السعر',
+    guide: '',
+  },
+  {
+    id: 'hospitality-motels',
+    title: 'الضيافة والفنادق والموتيلات',
+    short: 'الضيافة والموتيلات',
+    risk: 'دوران النزلاء العالي يسبب خراطيش تسريب ومغاسل خشبية منتفخة وقضبان مناشف فضفاضة.',
+    points: [
+      {
+        label: 'مغاسل معدنية مقاومة للرطوبة',
+        text: 'مغاسل بفتحات خشبية من SUS 304 والألمنيوم العسلي تصد البخار وماء المسح، متجاوزة الخزائن الخشبية في الفنادق والموتيلات الساحلية.',
+      },
+      {
+        label: 'صناديق تثبيت سريعة التركيب',
+        text: 'صمامات دش مخفية نحاسية بميزان فقاعات مدمج تقلل عمالة سباكة التجديد حتى 40%.',
+      },
+      {
+        label: 'مرايا LED مضادة للتكسر',
+        text: 'مرايا بفضة خالية من النحاس وغشاء أمان CAT II ومشغلات LED IP44 قابلة للاستبدال.',
+      },
+    ],
+    bundle:
+      'مغسلة معدنية + مرآة LED مضادة للضباب + مجموعة دش مخفية + مجموعة تجهيزات حمام ثقيلة من 4 قطع.',
+    action: 'أضف حزمة الضيافة إلى قائمة عرض السعر',
+    guide: '',
+  },
+  {
+    id: 'cabinet-storage',
+    title: 'ترقية جملة تخزين خزائن المطبخ',
+    short: 'تخزين الخزائن',
+    risk: 'خزائن المطبخ القياسية بالجملة تُشحن كصناديق خشبية فارغة بدون أي تنظيم داخلي.',
+    points: [
+      {
+        label: 'تركيز معدني فقط',
+        text: 'لا نبيع خزائن خشبية، بل نوفر أرفف توابل قابلة للسحب عالية التحمل ومنظمات زوايا عمياء وأنظمة جدارية سوداء غير لامعة.',
+      },
+      {
+        label: 'مضاعف الهامش',
+        text: 'ضاعف هامش إعادة بيع الخزائن بدون أي تعرض جمركي لخزائن الخشب.',
+      },
+    ],
+    bundle: 'أرفف توابل قابلة للسحب + منظمات زوايا عمياء + أنظمة جدارية سوداء غير لامعة.',
+    action: 'أضف حزمة تخزين الخزائن إلى قائمة عرض السعر',
+    guide: '/solutions/wholesale-kitchen-cabinets-storage/',
+  },
+];
+
+const faqs = [
+  {
+    question: 'هل يمكنني مزج منتجات من مواصفات إقليمية أو حزم مشاريع مختلفة في حاوية واحدة؟',
+    answer:
+      'نعم. نوحّد الخلاطات ومغاسل الفولاذ المقاوم للصدأ وصمامات الدش المخفية ومنظمات الخزائن والمغاسل المعدنية في حاوية واحدة 20 قدمًا أو 40HQ من قوانغتشو أو شنتشن، مع وضع علامات واضحة على الكراتين حسب مرحلة المشروع أو نوع الغرفة.',
+  },
+  {
+    question: 'هل توفرون خزائن مطابخ خشبية أو أسطح حجرية؟',
+    answer:
+      'لا. نركز حصريًا على التجهيزات المعدنية وتركيبات السباكة ومنظمات التخزين. إذا كنت تشتري صناديق الخزائن أو ألواح الحجر بشكل منفصل، نوفر لك السلال القابلة للسحب المطابقة والمغاسل أسفل السطح مع قوالب قص 1:1 والخلاطات المطابقة للألوان.',
+  },
+  {
+    question: 'كيف تمنعون اختلافات الألوان عبر الخلاطات ومجموعات تشطيب الدش وتجهيزات الخزائن؟',
+    answer:
+      'نطبق معيار ألوان رقمي موحد (دلتا E أقل من 1.5) عبر ورش التشطيب الشريكة. قطعك بالأسود غير اللامع وPVD الذهب المصقول والداكن متطابقة باستمرار في كل غرفة.',
+  },
+  {
+    question: 'كيف نطلب أسعار الحجم المتدرجة ورسومات CAD غير الموسومة؟',
+    answer:
+      'انقر فوق إضافة إلى قائمة عرض سعر المشروع على أي حزمة أو صفحة منتج، ثم أرسل ميناء الوجهة أو الرمز البريدي لمشروعك. يرسل فريق الهندسة لدينا أسعارًا مفصلة FOB/CIF وحسابات تحميل الحاوية CBM وأوراق مواصفات غير موسومة خلال 24 ساعة.',
+  },
+];
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'custom',
+  pageType: 'website',
+  title: `${pageName}${titleSeparator}توريد تجاري للمطبخ والحمام`,
+  description: pageDescription,
+  canonical: pageUrl,
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'الرئيسية', url: localizeUrl('/') },
+    { name: pageName, url: Astro.url.pathname },
+  ],
+});
+
+const breadcrumbJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumb`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: `${siteBaseUrl}${localizeUrl('/')}` },
+    { '@type': 'ListItem', position: 2, name: pageName, item: pageUrl },
+  ],
+});
+
+const collectionJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: pageHeading,
+  description: pageDescription,
+  url: pageUrl,
+  isPartOf: { '@id': siteBaseUrl },
+  breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+  about: [
+    { '@type': 'Thing', name: 'تجهيزات المطبخ' },
+    { '@type': 'Thing', name: 'تجهيزات الحمام' },
+  ],
+  hasPart: {
+    '@type': 'WebPageElement',
+    name: 'الأسواق والحلول',
+    cssSelector: '#solutions',
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: solutionBlocks.length,
+    itemListElement: solutionBlocks.map((block, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: block.title,
+      url: `${siteBaseUrl}${localizeUrl(`/markets-solutions#${block.id}`)}`,
+    })),
+  },
+});
+
+const faqJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <script type="application/ld+json" set:html={breadcrumbJsonLd}></script>
+  <script type="application/ld+json" set:html={collectionJsonLd}></script>
+  <script type="application/ld+json" set:html={faqJsonLd}></script>
+  <style is:global>
+    html { scroll-behavior: smooth; }
+    :root { --site-header-h: 76px; }
+    [id] { scroll-margin-top: calc(var(--site-header-h) + 74px); }
+    #markets-solutions-subnav { top: var(--site-header-h); }
+    @keyframes anchor-flash {
+      0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.8); }
+      100% { box-shadow: 0 0 0 14px rgba(249, 115, 22, 0); }
+    }
+    .anchor-flash { animation: anchor-flash 2s ease-out; }
+  </style>
+
+  <section class="relative overflow-hidden text-white">
+    <div class="absolute inset-0 bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950"></div>
+    <div class="absolute inset-0 opacity-[0.04]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="markets-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#markets-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 py-16 md:py-24 relative z-10">
+      <div class="max-w-4xl">
+        <nav class="flex items-center gap-2 text-sm mb-6">
+          <a href={localizeUrl("/")} class="text-primary-300 hover:text-white transition-colors duration-300">الرئيسية</a>
+          <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span class="text-white font-medium">{pageName}</span>
+        </nav>
+
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-primary-200 mb-6">
+          {pageName}
+        </span>
+
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">{pageHeading}</h1>
+
+        <p class="text-lg text-white/90 leading-relaxed mb-4">
+          شبكة توريد واحدة مباشرة من المصنع مبنية للأكواد الإقليمية وجداول مواقع العمل.
+        </p>
+        <p class="text-base text-white/70 leading-relaxed mb-8 max-w-3xl">
+          لا نصنع خزائن خشبية أو ألواح حجرية. نوفر خلاطات معدنية معتمدة ومغاسل ودشات مخفية ومنظمات خزائن ومغاسل معدنية، بمطابقة تشطيب دلتا E أقل من 1.5 ومجمعة في حاوية واحدة من قوانغتشو أو شنتشن.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            href="#markets"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            تصفح حسب السوق الإقليمي (#markets)
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7M12 21V3" />
+            </svg>
+          </a>
+          <a
+            href="#solutions"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          >
+            تصفح حسب حل المشروع (#solutions)
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7M12 21V3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="markets-solutions-subnav" class="sticky z-40 bg-white/90 dark:bg-dark-900/90 backdrop-blur-xl border-b border-gray-200/60 dark:border-dark-800/60 shadow-sm">
+    <div class="container mx-auto px-4 py-3 overflow-x-auto">
+      <div class="flex items-center gap-2 text-sm whitespace-nowrap min-w-max">
+        <span class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide text-xs me-1">الانتقال إلى:</span>
+        <a href="#markets" class="px-3 py-1.5 rounded-lg font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">الأسواق</a>
+        {marketBlocks.map((block) => (
+          <a href={`#${block.id}`} class="px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors">{block.short}</a>
+        ))}
+        <a href="#solutions" class="px-3 py-1.5 rounded-lg font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">الحلول</a>
+        {solutionBlocks.map((block) => (
+          <a href={`#${block.id}`} class="px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors">{block.short}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <section id="markets" class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2 inline-block">حسب السوق الإقليمي والكود</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">الأسواق الإقليمية ومعايير الامتثال</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            خلاط مبني لأمريكا الشمالية سيفشل في الشرق الأوسط أو أمريكا اللاتينية. اختر منطقتك لرؤية مواصفات الخيط والضغط والاعتماد الدقيقة.
+          </p>
+        </div>
+
+        <div class="space-y-10">
+          {marketBlocks.map((block, blockIndex) => (
+            <div id={block.id} class="anchor-target bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 sm:p-10 border border-gray-200 dark:border-dark-700 shadow-sm">
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  <span class="text-primary-600 dark:text-primary-400 me-2 font-mono">{String(blockIndex + 1).padStart(2, '0')}</span>
+                  {block.title}
+                </h3>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-600 rounded-full text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                  {block.badge}
+                </span>
+              </div>
+
+              <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">{block.pitch}</p>
+
+              <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {block.specs.map((spec) => (
+                  <li class="bg-white dark:bg-dark-900 rounded-xl p-5 border border-gray-200 dark:border-dark-700">
+                    <p class="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-1">{spec.label}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{spec.text}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="flex flex-wrap items-center gap-3 mb-6">
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">الخطوط المحددة:</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{block.lines}</p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-gray-200 dark:border-dark-700">
+                <p class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span class="font-semibold text-gray-900 dark:text-white">تسعير متدرج: $ ??.?? / وحدة</span>
+                  <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-dark-700 px-2 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
+                    🔒 محمي
+                  </span>
+                </p>
+                <a
+                  href={localizeUrl("/cart")}
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
+                >
+                  + {block.action}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="solutions" class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2 inline-block">حسب حل المشروع والصناعة</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">حلول التجهيزات التجارية والصناعية</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            المباني المختلفة تفشل بطرق مختلفة. اختر نوع مشروعك لرؤية حزم التجهيزات المطابقة مسبقًا التي تخفض التكلفة الإجمالية للملكية.
+          </p>
+        </div>
+
+        <div class="space-y-10">
+          {solutionBlocks.map((block, blockIndex) => (
+            <div id={block.id} class="anchor-target bg-white dark:bg-dark-900 rounded-2xl p-8 sm:p-10 border border-gray-200 dark:border-dark-700 shadow-sm">
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  <span class="text-primary-600 dark:text-primary-400 me-2 font-mono">{String(blockIndex + 1).padStart(2, '0')}</span>
+                  {block.title}
+                </h3>
+              </div>
+
+              <div class="bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 rounded-xl px-5 py-4 mb-6">
+                <p class="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1">مخاطر موقع العمل</p>
+                <p class="text-gray-700 dark:text-gray-300">{block.risk}</p>
+              </div>
+
+              <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {block.points.map((point) => (
+                  <li class="bg-gray-50 dark:bg-dark-800 rounded-xl p-5 border border-gray-200 dark:border-dark-700">
+                    <p class="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-1">{point.label}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{point.text}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="flex flex-wrap items-center gap-3 mb-6">
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">الحزمة الموصى بها:</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{block.bundle}</p>
+              </div>
+
+              {block.guide && (
+                <div class="flex flex-wrap items-center gap-3 mb-6">
+                  <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">دليل مخصص:</p>
+                  <a href={localizeUrl(block.guide)} class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+                    استكشف حلول تخزين خزائن المطبخ بالجملة الكاملة
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-gray-200 dark:border-dark-700">
+                <p class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span class="font-semibold text-gray-900 dark:text-white">تسعير BOM المشروع: $ ??.?? / وحدة</span>
+                  <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-dark-700 px-2 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
+                    🔒 محمي
+                  </span>
+                </p>
+                <a
+                  href={localizeUrl("/cart")}
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
+                >
+                  + {block.action}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">الأسئلة الشائعة عن الأسواق والحلول</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map((item) => (
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700">
+              <button type="button" class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white pe-4">{item.question}</span>
+                <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-bold mb-4">مستعد لتجميع طلب المطبخ والحمام التالي؟</h2>
+              <p class="text-lg text-white/90 leading-relaxed">
+                أرسل لنا قائمة مواد مشروعك أو قائمة SKU المستهدفة. سنطابق تشطيباتك ونتحقق من مواصفات الكود الإقليمي ونخطط حمولة حاوية 20 قدمًا أو 40HQ.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row md:justify-end gap-4">
+              <a href={localizeUrl("/cart")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                + فتح قائمة عرض سعر المشروع
+              </a>
+              <a href={localizeUrl("/contact")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-colors">
+                الاتصال بمكتب الهندسة
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function syncHeaderOffset() {
+      var header = document.querySelector('header.sticky');
+      if (!header) return;
+      var h = Math.round(header.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--site-header-h', h + 'px');
+    }
+
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+
+    function flashAnchor() {
+      var hash = window.location.hash;
+      if (!hash) return;
+      var target = document.querySelector(hash);
+      if (!target || !target.classList.contains('anchor-target')) return;
+      target.classList.remove('anchor-flash');
+      void target.offsetWidth;
+      target.classList.add('anchor-flash');
+      setTimeout(function () {
+        target.classList.remove('anchor-flash');
+      }, 2200);
+    }
+
+    syncHeaderOffset();
+    window.addEventListener('load', syncHeaderOffset);
+    window.addEventListener('resize', syncHeaderOffset);
+    window.addEventListener('hashchange', function () {
+      syncHeaderOffset();
+      flashAnchor();
+    });
+    window.addEventListener('load', flashAnchor);
+  </script>
+</BaseLayout>

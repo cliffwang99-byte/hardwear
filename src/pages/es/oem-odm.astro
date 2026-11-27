@@ -1,0 +1,294 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout
+  title="Soporte de Certificación OEM y Paquetes de Presentación de Etiqueta Blanca | MrKB"
+  description="Herrajes pre-certificados para pedidos mayoristas rápidos, además de documentación técnica completa para ayudar a clientes OEM/ODM a registrar certificaciones locales de mercado bajo su propia marca."
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-20 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">Soporte de Certificación OEM &amp; Paquetes de Presentación de Etiqueta Blanca</h1>
+        <p class="text-lg sm:text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
+          Suministramos herrajes pre-certificados para pedidos mayoristas rápidos y proporcionamos documentación técnica completa para ayudar a clientes OEM/ODM a registrar certificaciones locales de mercado bajo su propia marca.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={localizeUrl("/products")} class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            Explorar Líneas de Productos
+          </a>
+          <a href={localizeUrl("/contact")} class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            Obtener una Propuesta OEM
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two Clear Paths -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">1. Dos Caminos Claros para el Cumplimiento de Mercado</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Diferentes proyectos tienen diferentes necesidades de cumplimiento. Elija el camino que se ajuste a su cronograma y estrategia de marca.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Path A -->
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg border-t-4 border-blue-500">
+            <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-4">
+              Camino A
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Pedidos Mayoristas de Vía Rápida <span class="text-gray-500 dark:text-gray-400 font-normal">(Usando Certificaciones de Fábrica Existentes)</span></h3>
+            <ul class="space-y-4 text-gray-600 dark:text-gray-400">
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>¿Necesita enviar rápido sin esperar pruebas de laboratorio? Elija entre nuestras líneas de productos pre-certificados.</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Los modelos seleccionados ya tienen listados activos para América del Norte (cUPC, NSF/ANSI 61 &amp; 372, ADA, SGCC, UL/ETL), Europa (CE, EN 817, ACS) y Medio Oriente (SASO / SABER).</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Los pedidos se envían con empaque neutro de etiqueta blanca o con marcas de cumplimiento estándar.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Path B -->
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg border-t-4 border-primary-500">
+            <div class="w-14 h-14 bg-primary-500/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-semibold mb-4">
+              Camino B
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Programas de Etiqueta Privada OEM / ODM <span class="text-gray-500 dark:text-gray-400 font-normal">(Certificación Bajo su Marca)</span></h3>
+            <ul class="space-y-4 text-gray-600 dark:text-gray-400">
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>¿Está construyendo su propia marca? Bajo las regulaciones internacionales, las certificaciones locales deben registrarse a nombre legal del propietario de la marca.</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Usted lidera la solicitud local con su organismo de pruebas regional (como IAPMO, NSF, SASO o WaterMark).</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Actuamos como su consorcio de fabricación detrás de escena. Suministramos todos los datos brutos de pruebas de laboratorio, certificados de materiales y archivos de auditoría de fábrica necesarios para pasar el registro.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Documents We Deliver -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-6">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">2. Qué Documentos Entregamos para sus Presentaciones y Registro de Proyecto</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+        <p class="text-center text-orange-600 dark:text-orange-400 font-semibold mb-10">
+          Cada archivo se depura de nombres de fábrica originales, marcas de agua chinas y datos de contacto de terceros.
+        </p>
+
+        <div class="overflow-x-auto rounded-2xl shadow-lg">
+          <table class="min-w-full bg-white dark:bg-dark-900 divide-y divide-gray-200 dark:divide-dark-700">
+            <thead class="bg-gray-100 dark:bg-dark-800">
+              <tr>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Categoría de Documento</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Archivos y Formatos Incluidos</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Cómo Ayuda a su Equipo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-dark-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">Hojas de Presentación de Etiqueta Blanca</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">PDF editable con caja de sello en blanco en la esquina superior izquierda</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Sus ingenieros o contratistas agregan el logotipo de su empresa y lo envían directamente a los arquitectos.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">Dibujos de Ingeniería Sin Marca</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">CAD 2D (.dwg / .dxf) &amp; BIM/Revit 3D (.rfa / .stp)</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Inserte nuestras griferías, fregaderos y sistemas de ducha directamente en sus planos de construcción.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">Informes de Materiales y Pruebas de Laboratorio</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Certificados de Prueba de Molino (MTC), Informes de Niebla Salina Ácida 48h/72h, Datos de Estallido 1.6 MPa y Ciclos de 500k</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Comprueba latón sin plomo (CW511L) o grado SUS304 real ante los inspectores del proyecto.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">Paquete de Soporte de Certificación OEM</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Certificados ISO 9001, diagramas de piezas despiezados, lista de materiales (BOM) y cartas de autorización de listado múltiple</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Acelera su registro de etiqueta privada o listado secundario ante las autoridades locales.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">Guías de Instalación para Obra</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Manuales neutros en inglés / español / árabe y plantillas de recorte 1:1</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">Previene errores de instalación en obra mientras mantiene su marca en primer plano.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">3. Preguntas Frecuentes</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">P1: ¿Todos los productos de su catálogo ya tienen certificaciones cUPC, CE o SASO?</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                No. Los requisitos de certificación varían según el país y el tipo de producto. Los modelos seleccionados de nuestro catálogo tienen listados activos cUPC, NSF-61, CE o SASO para abastecimiento mayorista inmediato. Para modelos sin certificar o diseños OEM personalizados, proporcionamos documentación técnica completa y muestras de prueba para que pueda obtener la aprobación local.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">P2: ¿Pueden ayudarnos a registrar cUPC, WaterMark o SABER bajo nuestra propia marca de etiqueta privada?</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                Sí. Mientras su empresa actúa como solicitante oficial en su mercado objetivo, nuestro consorcio proporciona el expediente técnico completo. Esto incluye certificados de molino de materiales crudos, dibujos 3D/2D, informes de pruebas de laboratorio internos y cartas de cooperación de listado múltiple cuando corresponda. Nota: Los plazos de aprobación dependen de su agencia de certificación local.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">P3: ¿Nuestros contratistas o clientes finales verán el nombre de la fábrica china en las hojas de especificaciones o cajas?</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                Nunca. Aplicamos un estricto protocolo de etiqueta blanca en todas las fábricas miembros. Cada Hoja de Presentación de Producto deja una esquina en blanco para el sello de su empresa. Todos los archivos CAD, manuales de instalación, marcados láser y cajas de exportación están 100% libres de logotipos de fábrica o identificadores de origen.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">P4: ¿Cómo aseguran que los productos coincidan exactamente con las especificaciones enviadas para la certificación?</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                Nuestro equipo independiente de QA/QC inspecciona cada lote en los talleres socios antes de la consolidación en los puertos de Guangzhou o Shenzhen. Verificamos los grados de material, probamos el 100% de los herrajes que transportan agua para detectar fugas de aire y presión de agua, y comprobamos la consistencia del acabado (Delta E &lt; 1.5) contra su muestra maestra aprobada.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-bold mb-4">¿Listo para Registrarse Bajo su Propia Marca?</h2>
+              <p class="text-lg text-white/90 leading-relaxed">
+                Cuéntenos su mercado objetivo y su gama de productos. Ensamblaremos un expediente técnico completo de etiqueta blanca y cotizaremos su programa OEM / ODM en 1 día hábil.
+              </p>
+            </div>
+            <div class="text-center md:text-end md:justify-self-end">
+              <a href={localizeUrl("/contact")} class="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                Solicitar una Propuesta OEM
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // FAQ Toggle
+    document.querySelectorAll('.faq-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const content = trigger.nextElementSibling;
+        const icon = trigger.querySelector('.faq-icon');
+
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,576 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import RecentlyViewed from '../../components/RecentlyViewed.astro';
+
+import { getSiteSettings } from 'emdash';
+import { Image } from 'emdash/ui';
+import { getProducts, getHomeCategories } from '../../lib/shop';
+
+const siteSettings = await getSiteSettings();
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const homeCategories = await getHomeCategories();
+
+const allFeatured = (await getProducts()).filter((p) => p.featured);
+const featuredProducts = [...allFeatured].sort(() => Math.random() - 0.5).slice(0, 8);
+
+
+const homeFaqs = [
+  {
+    question: 'لماذا الأسعار مخفية ($??.??) وكيف أحصل على عرض سعر دون تسجيل الدخول؟',
+    answer: 'نبيع حصريًا للمشترين التجاريين B2B وليس للمستهلكين بالتجزئة. إخفاء الأسعار يحمي هوامش عروض مشاريعك من المنافسين المحليين. لا تحتاج لإنشاء حساب، فقط أضف المنتجات إلى قائمة عرض أسعار مشروعك وأرسل معلومات عملك. سيقوم فريقنا بالتحقق من هويتك التجارية وإرسال عرض أسعار FOB/CIF المتدرج خلال 24-48 ساعة.'
+  },
+  {
+    question: 'هل أنتم مصنع واحد أم شركة تجارية وسيطة؟',
+    answer: 'نحن كونسورتيوم تصنيع ومتكامل سلسلة توريد. نوحد مطاحن فانيتي الحمام المتخصصة ومصنّعي أسطح الحجر ومصانع الأحواض الخزفية ومصانع خلاطات النحاس في الصين تحت معيار جودة موحد، لتحصل على أسعار مباشرة من المصنع دون إدارة خمسة موردين منفصلين.'
+  },
+  {
+    question: 'ما هو الحد الأدنى لكمية الطلب (MOQ) وهل يمكنني طلب عينات أولاً؟',
+    answer: 'الحد الأدنى القياسي لجملة الفانيتي هو 10 مجموعات، و50 قطعة لخلاطات الأحواض والمصارف. هل تحتاج فحص جودة البناء أو اختبار مقاس مخصص قبل الإنتاج الكمي؟ نقبل طلبات عينات من قطعة واحدة أو فانيتي مخصص بوحدة واحدة بسعر مستوى العينة.'
+  },
+  {
+    question: 'هل يمكنني خلط الفانيتي والأسطح والأحواض والخلاطات في حاوية واحدة بألوان متطابقة؟',
+    answer: 'نعم. نضع خلاطات النحاس المعبأة والمصارف المنبثقة داخل التجاويف السفلية المحمية لفانيتي حمامك لتوفير مساحة الشحن (CBM)، ونتحقق من التشطيبات بمقياس الألوان لإبقاء اختلاف الألوان ضمن دلتا E أقل من 1.5. (هل تخطط لأحواض مطبخ أو خلاطات لنفس المشروع؟ أرسل قائمة موادك، فنحن ندمج خطوط الحمام والمطبخ في حاوية واحدة).'
+  },
+  {
+    question: 'هل يمكن لمصنّعي الحجر طلب قواعد خزائن الفانيتي فقط بدون أسطح أو أحواض؟',
+    answer: 'نعم. يقوم العديد من مصنّعي الحجر والنجارة في أمريكا الشمالية بقص أسطح الكوارتز أو الرخام بأنفسهم. يمكنك طلب قواعد خزائن الفانيتي فقط (بدون سطح)، أو دمجها مع أسطحنا من الحجر الملبّد 15 ملم والأحواض الخزفية المدمجة والخلاطات.'
+  },
+  {
+    question: 'ما هي شروط الدفع ومهل الإنتاج القياسية؟',
+    answer: 'للطلبات الكبيرة، الشروط القياسية هي 30% دفعة مقدمة T/T و70% رصيد قبل تحميل الحاوية (بعد موافقتك على صور وفيديوهات فحص الجودة قبل الشحن). عينات الكتالوج القياسية تُشحن خلال 7-10 أيام، بينما يستغرق إنتاج الحاويات بالجملة 30-45 يوماً بعد الدفعة المقدمة واعتماد رسم CAD ثنائي الأبعاد.'
+  },
+  {
+    question: 'هل لديكم مخزون جاهز للشحن في مستودعات أمريكية محلية أو إقليمية؟',
+    answer: 'لا. جميع الطلبات تُشحن 100% مباشرة من المصنع في الصين. تخطي رسوم التخزين بالخارج يُبقي أسعار وحداتنا أقل بكثير لعروضك. إذا كنت تعمل بالفعل مع وكيل شحن في الصين، يمكننا التسليم مباشرة إلى مستودع وكيلك.'
+  },
+  {
+    question: 'هل توفرون رسومات CAD بدون علامة تجارية وشهادات سوق وضمانات منتج؟',
+    answer: 'نعم. نوفر رسومات CAD ثنائية الأبعاد بدون علامة للموافقات السريعة في الموقع، مع خيارات امتثال للسوق (مثل cUPC / خالٍ من الرصاص لأمريكا الشمالية ودعم وثائق SASO / SABER للشرق الأوسط). جميع المنتجات تحمل ضمانًا محدودًا لمدة 12 شهرًا من تاريخ بوليصة الشحن يغطي عيوب التصنيع.'
+  }
+];
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'ar';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout
+  title="أجهزة المطبخ والحمام بالجملة للمشاريع التجارية | MrKB.net "
+  description="خلاطات وأحواض ودشات وأجهزة حمام بعلامة بيضاء للمشاريع التجارية والعلامات OEM. توحيد FCL من قوانغتشو/شنتشن. اطلب عرض سعر"
+  keywords="أجهزة المطبخ والحمام بالجملة، مورد أجهزة سباكة تجاري، خلاطات وأحواض بعلامة بيضاء، مصنع أجهزة حمام OEM، حزم سباكة متعددة العائلات، فانيتي الحمام ومرايا LED بالجملة، توحيد FCL الصين، توريد سباكة cUPC NSF-61"
+  canonical={siteUrl + '/'}
+  ogTitle="أجهزة المطبخ والحمام بالجملة للمشاريع التجارية "
+  ogDescription="نطاقات مشاريع موحدة. مسؤولية مصدر واحد. خلاطات وأحواض وأجهزة حمام بعلامة بيضاء تُشحن عبر FCL من قوانغتشو/شنتشن."
+  ogImage={siteUrl + '/og-home.jpg'}
+>
+  <!-- Homepage AI-extracted content container -->
+  <div data-ai-content data-ai-type="home">
+  <!-- Hero Section - Flagship Quality with 5-Layer Background - Mobile Optimized -->
+  <section class="relative text-white overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[650px] flex items-center">
+    <!-- Layer 1: Deep Gradient Base -->
+    <div data-ai-ignore class="absolute inset-0 bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950"></div>
+    
+    <!-- Layer 2: Blueprint Pattern (Very Subtle) -->
+    <div data-ai-ignore class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="blueprint" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+            <circle cx="100" cy="0" r="2" fill="white"/>
+            <circle cx="0" cy="100" r="2" fill="white"/>
+            <line x1="0" y1="50" x2="100" y2="50" stroke="white" stroke-width="0.3" stroke-dasharray="5,5"/>
+            <line x1="50" y1="0" x2="50" y2="100" stroke="white" stroke-width="0.3" stroke-dasharray="5,5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#blueprint)"/>
+      </svg>
+    </div>
+
+    <!-- Layer 3: Animated Film Grain Texture (Premium Feel) -->
+    <div data-ai-ignore class="absolute inset-0 opacity-[0.012] mix-blend-overlay animate-grain">
+      <svg class="w-full h-full">
+        <filter id="noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch">
+            <animate attributeName="baseFrequency" values="0.85;0.88;0.85" dur="8s" repeatCount="indefinite"/>
+          </feTurbulence>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)"/>
+      </svg>
+    </div>
+
+    <!-- Layer 4: Radial Spotlight with Gentle Pulse -->
+    <div data-ai-ignore class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary-500/20 rounded-full blur-[150px] animate-pulse-slow"></div>
+    
+    <!-- Layer 5: Vignette Overlay -->
+    <div data-ai-ignore class="absolute inset-0 bg-gradient-to-b from-dark-950/40 via-transparent to-dark-950/60"></div>
+    
+    <!-- Layer 6: Radial Glow Behind Headline -->
+    <div data-ai-ignore class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-radial from-primary-400/15 via-primary-500/5 to-transparent rounded-full blur-[100px]"></div>
+
+    <div class="container mx-auto px-4 py-16 sm:py-20 md:py-24 lg:py-28 relative z-10">
+      <div class="max-w-5xl mx-auto text-center">
+        <!-- Headline - Flagship Typography with Staggered Animation - Mobile Optimized -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-5 sm:mb-7 leading-[1.05] tracking-tight relative z-10">
+          <span class="block mb-2 sm:mb-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.3s both;">شريك B2B الشامل الخاص بك</span>
+          <span class="block bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style="animation: fadeInUp 0.8s ease-in-out 0.45s both, shimmer 3s linear infinite;">
+            لأجهزة بمستوى المواصفات
+          </span>
+          <span class="block mt-2 sm:mt-3 text-white" style="animation: fadeInUp 0.8s ease-in-out 0.6s both;">المطبخ والحمام</span>
+        </h1>
+        
+        <!-- Subheadline - Refined Hierarchy - Mobile Optimized -->
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl mb-8 sm:mb-12 text-white/70 leading-relaxed max-w-3xl mx-auto font-light px-4" style="animation: fadeInUp 0.8s ease-in-out 0.75s both;">
+          حزم أجهزة مطبخ وحمام B2B مباشرة من المصنع، مستندات CAD بدون علامة تجارية، وفحص جودة مستقل، تُشحن مباشرة عبر توحيد FCL الآمن من موانئ قوانغتشو وشنتشن.
+        </p>
+        
+        <!-- CTA Buttons - Enhanced with 60px Glow and Staggered Animation - Mobile Optimized -->
+        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-5 mb-10 sm:mb-14 px-4" style="animation: fadeInUp 0.8s ease-in-out 0.9s both;">
+          <a href={localizeUrl("/contact")} class="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white text-primary-600 rounded-2xl font-bold text-base sm:text-lg hover:bg-primary-50 transition-all duration-500 ease-in-out hover:shadow-[0_0_60px_rgba(255,255,255,0.6)] transform hover:scale-105 hover:-translate-y-1 overflow-hidden w-full sm:w-auto">
+            <span class="relative z-10">اطلب عرض سعر</span>
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 relative z-10 group-hover:translate-x-2 transition-transform duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            <!-- Shine Effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+          </a>
+          
+          <a href={localizeUrl("/catalog")} class="group inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-12 py-3.5 sm:py-5 bg-white/10 backdrop-blur-xl hover:bg-white/20 rounded-2xl font-bold text-base sm:text-lg border-2 border-white/30 hover:border-white/50 transition-all duration-500 ease-in-out hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transform hover:scale-105 hover:-translate-y-1 w-full sm:w-auto">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-500 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>عرض الكتالوج</span>
+          </a>
+        </div>
+
+        <!-- Scroll Indicator with Bounce Animation - Hidden on Mobile -->
+        <div data-ai-ignore class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce hidden sm:block">
+          <div class="flex flex-col items-center gap-2 text-white/60 hover:text-white/90 transition-colors cursor-pointer">
+            <span class="text-xs font-medium uppercase tracking-wider">مرر</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decorative Wave with Shadow -->
+    <div data-ai-ignore class="absolute bottom-0 start-0 end-0">
+      <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-2xl">
+        <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" class="fill-white dark:fill-dark-950"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 3-Wide Application Scenarios / Solutions - Vertical Images with Floating H3 and Arrow Link -->
+  <section class="py-16 sm:py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-on-scroll">المطبخ والحمام للمشاريع</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto animate-on-scroll">برامج توريد بمستوى المواصفات للمطورين والمقاولين ومشغلي الفنادق، بتشطيب ثابت وتسليم في الموعد ولوجستيات FCL موحدة.</p>
+    </div>
+
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {[
+          {
+            image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=800&fit=crop",
+            title: 'تطويرات متعددة العائلات',
+            description: 'نسق الخلاطات والفانيتي والأجهزة عبر آلاف الوحدات بمواصفة واحدة ثابتة وشحنة موحدة واحدة.',
+            link: localizeUrl('/products')
+          },
+          {
+            image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=800&fit=crop",
+            title: 'تجديدات الفنادق والضيافة',
+            description: 'أجهزة سريعة التسليم وثابتة العلامة للغرف والمناطق المشتركة، مع فحص جودة صارم ونوافذ تسليم موثوقة.',
+            link: localizeUrl('/blog')
+          },
+          {
+            image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&h=800&fit=crop",
+            title: 'المشاريع التجارية',
+            description: 'أجهزة متينة ومطابقة للمواصفات للمكاتب والتجزئة، مدعومة بأسعار تجارية ودعم توحيد FCL كامل.',
+            link: localizeUrl('/contact')
+          }
+        ].map((scenario, i) => (
+          <a href={scenario.link} class="group relative block overflow-hidden rounded-3xl aspect-[3/4] animate-on-scroll" style={`animation-delay: ${i * 0.15}s;`}>
+            <img src={scenario.image} alt={scenario.title} width="600" height="800" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" />
+
+            <!-- Dark Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-950/85 via-dark-950/20 to-transparent transition-opacity duration-500"></div>
+
+            <!-- Floating H3 - Bottom Left -->
+            <div class="absolute bottom-0 start-0 end-0 p-5 sm:p-6">
+              <h3 class="font-bold text-xl sm:text-2xl text-white group-hover:text-primary-300 transition-colors duration-300">{scenario.title}</h3>
+              <p class="text-primary-100/80 text-sm mt-2 leading-relaxed opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">{scenario.description}</p>
+            </div>
+
+            <!-- Arrow Link - Bottom Right -->
+            <div class="absolute bottom-5 sm:bottom-6 end-5 sm:end-6 flex items-center justify-center w-10 h-10 rounded-full bg-white/15 backdrop-blur-md border border-white/30 text-white group-hover:bg-primary-500 group-hover:border-primary-500 group-hover:scale-110 transition-all duration-500 ease-in-out">
+              <svg class="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7M21 12H3"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Value Proposition with Animated Icons and Enhanced Hover -->
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">لماذا تختار MrKB؟</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">نطاق كامل. بيان شحن واحد. شحن موحد.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[
+        { 
+          icon: `<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>`,
+          title: 'توحيد FCL جماعي', 
+          desc: 'عظيم كل حاوية بتداخل SKUs الملحقات الصغيرة في المساحات غير المستخدمة، مما يخفض الشحن الإضافي والطلبات المتعددة إلى الصفر تقريبا.',
+          color: 'from-blue-500 via-blue-400 to-cyan-500'
+        },
+        { 
+          icon: `<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`,
+          title: 'مستندات CAD/BIM بدون علامة', 
+          desc: 'رسومات فنية بعلامة بيضاء تُحمّلها وتقدّمها تحت ختمك الخاص لتلبية متطلبات الموافقة البلدية المحلية.',
+          color: 'from-green-500 via-green-400 to-emerald-500'
+        },
+        { 
+          icon: `<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`,
+          title: 'التحكم في ثبات التشطيب', 
+          desc: 'اختبارات قياس ألوان إلكترونية موحدة تزيل انحراف لون المعدن بين الدفعات تحت إضاءة موقع العمل.',
+          color: 'from-orange-500 via-orange-400 to-red-500'
+        },
+        {
+          icon: `<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 17.5v-5l3-1 3 1 3-2 3 2 3-1 3 1v5l-3 1-3-1-3 1-3-1-3 1-3-1zM12 5.5l-2 3h4l-2-3zM12 5.5V3.5M6 5.5c0 1 1.5 1.5 3 1.5M18 5.5c0 1-1.5 1.5-3 1.5"/></svg>`,
+          title: 'شحن مباشر من جنوب الصين', 
+          desc: 'تُمشح جميع الكميات التعاقدية مباشرة من موانئ قوانغتشو أو شنتشن إلى موقعك دون أي هوامش وسطاء.',
+          color: 'from-cyan-500 via-teal-400 to-blue-500'
+        }
+      ].map((feature, i) => (
+        <div class="group relative bg-white dark:bg-dark-800 rounded-3xl p-8 text-center border border-gray-200 dark:border-dark-700 hover:border-transparent transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll overflow-hidden" style={`animation-delay: ${i * 0.1}s;`}>
+          <!-- Gradient Background on Hover -->
+          <div class={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-in-out`}></div>
+          
+          <!-- Animated Icon with Loop -->
+          <div class={`relative inline-flex items-center justify-center w-20 h-20 mb-5 rounded-2xl bg-gradient-to-br ${feature.color} text-white transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-in-out shadow-lg group-hover:shadow-2xl animate-float-slow`}>
+            <div class="transform group-hover:scale-110 transition-transform duration-500 ease-in-out" set:html={feature.icon} />
+          </div>
+          
+          <h3 class="font-bold text-xl mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">{feature.title}</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+          
+          <!-- Glow Effect -->
+          <div class={`absolute -inset-1 bg-gradient-to-r ${feature.color} rounded-3xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out -z-10`}></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Shop by Category with 2-Layer Gradient and Smooth Hover -->
+  <section class="container mx-auto px-4 py-16 bg-gradient-to-b from-transparent via-gray-50/50 to-transparent dark:via-dark-900/50">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-on-scroll">خطوط منتجات جاهزة للمواصفات</h2>
+      <p class="text-gray-600 dark:text-gray-400 animate-on-scroll">مصنفة حسب الأداء العالي. ادمج بسلاسة خطوط السباكة والتخزين المنسق في تخطيطات العقارات القادمة.</p>
+    </div>
+    
+    {homeCategories.length > 0 ? (
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[240px]">
+        {homeCategories.slice(0, 6).map((cat, i) => {
+          const isHero = i === 0;
+          const spanClass = isHero ? 'col-span-2 lg:col-span-2 lg:row-span-2' : '';
+          return (
+            <a
+              href={localizeUrl(`/categories/${cat.slug}`)}
+              class={`group relative overflow-hidden rounded-3xl text-white transition-all duration-500 ease-in-out hover:shadow-2xl hover:scale-[1.02] animate-on-scroll ${spanClass}`}
+              style={`animation-delay: ${i * 0.05}s;`}
+            >
+              {cat.image ? (
+                <Image
+                  image={cat.image}
+                  alt={cat.name}
+                  width={800}
+                  height={600}
+                  class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                />
+              ) : (
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800"></div>
+              )}
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
+
+              <div class="absolute -inset-1 bg-gradient-to-r from-white/40 to-white/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-in-out -z-10"></div>
+
+              <div class="relative z-10 p-5 md:p-6 h-full flex flex-col justify-end">
+                <h3 class={`font-bold leading-tight drop-shadow-md ${isHero ? 'text-2xl md:text-4xl' : 'text-base md:text-lg'}`}>{cat.name}</h3>
+                {isHero && cat.count > 0 && (
+                  <p class="mt-2 text-sm text-white/80">{cat.count} SKUs جاهزة للمواصفات</p>
+                )}
+              </div>
+
+              <div class="absolute bottom-4 end-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="col-span-2 md:col-span-4 text-center text-gray-500 dark:text-gray-400">لا توجد فئات بعد</p>
+    )}
+
+    {homeCategories.length > 0 && (
+      <div class="text-center mt-10">
+        <a href={localizeUrl("/categories")} class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 animate-on-scroll">
+          عرض جميع الفئات
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- Four Roles: How We Work For You In China -->
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <span class="inline-block text-sm font-bold tracking-widest text-primary-600 dark:text-primary-400 uppercase animate-on-scroll">كيف نعمل لك في الصين</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 animate-on-scroll">لسنا وسيطًا ولا ورشة واحدة. بل فريق الهندسة الموقعي الخاص بك.</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto animate-on-scroll">
+        لا يمكن لمصنع واحد صنع الفانيتي الخشبي والأحواض الخزفية وخلاطات النحاس. نوحّد الورش المتخصصة في الصين ونملأ أربعة أدوار أساسية في كل طلب:
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Role 1: Technical Director -->
+      <div class="group relative bg-white dark:bg-dark-800 rounded-3xl p-8 text-center border border-gray-200 dark:border-dark-700 hover:border-transparent transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll" style="animation-delay: 0s;">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-400 to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-in-out"></div>
+        <div class="relative inline-flex items-center justify-center w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-400 to-cyan-500 text-white transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-in-out shadow-lg group-hover:shadow-2xl">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">مديرك الفني الموقعي</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">نحول قائمة موادك أو رسوماتك إلى مواصفات مصنع دقيقة، ونثبّت قواطع تصريف الجدار أو الأرض ووصلات NPT / BSP قبل بدء الإنتاج.</p>
+        <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out -z-10"></div>
+      </div>
+
+      <!-- Role 2: QC Inspector -->
+      <div class="group relative bg-white dark:bg-dark-800 rounded-3xl p-8 text-center border border-gray-200 dark:border-dark-700 hover:border-transparent transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll" style="animation-delay: 0.1s;">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-500 via-green-400 to-emerald-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-in-out"></div>
+        <div class="relative inline-flex items-center justify-center w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-green-500 via-green-400 to-emerald-500 text-white transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-in-out shadow-lg group-hover:shadow-2xl">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+            <rect x="8" y="2" width="8" height="4" rx="1" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l2 2 4-4" />
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">مفتش الجودة المستقل الخاص بك (QC)</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">نتحقق من كل دفعة بأدوات الاختبار، متحققين من تطابق اللون دلتا E &lt; 1.5 بين المصانع وضغط الماء 1.6 ميجا باسكال والتجميع الجاف قبل التعبئة.</p>
+        <div class="absolute -inset-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out -z-10"></div>
+      </div>
+
+      <!-- Role 3: Container Space Optimizer -->
+      <div class="group relative bg-white dark:bg-dark-800 rounded-3xl p-8 text-center border border-gray-200 dark:border-dark-700 hover:border-transparent transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll" style="animation-delay: 0.2s;">
+        <div class="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-400 to-red-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-in-out"></div>
+        <div class="relative inline-flex items-center justify-center w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-orange-500 via-orange-400 to-red-500 text-white transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-in-out shadow-lg group-hover:shadow-2xl">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" />
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">محسّن مساحة الحاوية الخاص بك</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">نضع الخلاطات والمصارف المعبأة داخل تجاويف الفانيتي المحمية (توحيد FCL المتداخل) لزيادة مساحة الحاوية (CBM) وخفض تكاليف الشحن.</p>
+        <div class="absolute -inset-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out -z-10"></div>
+      </div>
+
+      <!-- Role 4: Customs & Warranty Shield -->
+      <div class="group relative bg-white dark:bg-dark-800 rounded-3xl p-8 text-center border border-gray-200 dark:border-dark-700 hover:border-transparent transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll" style="animation-delay: 0.3s;">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-in-out"></div>
+        <div class="relative inline-flex items-center justify-center w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 text-white transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-in-out shadow-lg group-hover:shadow-2xl">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">درع الجمارك والضمان الخاص بك</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">نصدر مستندات مفصلة برموز HS للتخليص السلس، ونضمن 1%–2% قطع غيار مجانية، وندعم طلبك بضمان 12 شهرًا من تاريخ بوليصة الشحن.</p>
+        <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out -z-10"></div>
+      </div>
+    </div>
+
+    <!-- Deep-Dive Guide CTA -->
+    <div class="text-center mt-12 animate-on-scroll">
+      <p class="text-gray-600 dark:text-gray-400 mb-5">هل تريد أن ترى كيف نقارن مع المصانع الفردية والوسطاء التجاريين؟</p>
+      <a href={localizeUrl('/blog/manufacturer-vs-trading-company-kitchen-bath-sourcing')} class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105">
+        اقرأ دليلنا الكامل لتوريد المطبخ والحمام
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="container mx-auto px-4 py-12">
+    <div class="flex justify-between items-center mb-7">
+      <h2 class="text-3xl font-bold animate-on-scroll">المنتجات الأكثر طلباً</h2>
+      <a href={localizeUrl("/products")} class="text-primary-600 dark:text-primary-400 font-semibold hover:underline animate-on-scroll">
+        عرض الكل ←
+      </a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {featuredProducts.map(product => (
+        <ProductCard {...product} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Testimonials with Carousel -->
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-on-scroll">موثوق به من مطوري المباني متعددة العائلات وفرق المشتريات</h2>
+      <p class="text-gray-600 dark:text-gray-400 animate-on-scroll">تنفيذ حقيقي للمشاريع. شاهد كيف يؤمن المقاولون العامون وموزعو الجملة المحليون هوامش المشاريع ويحلون تأخيرات التسليم عبر عمليات توحيد المصنع لدينا.</p>
+    </div>
+    
+    <div class="relative max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { 
+            name: 'Daniel Rivera', 
+            role: 'مدير المشتريات، مطور متعدد العائلات', 
+            text: 'كنا نستأجر عشرات الشحنات الصغيرة من موردين منفصلين. لقد طويوا ملحقاتنا في المساحة الفارغة من حاوية خطنا الرئيسي، فنحن الآن نشحن FCL واحدًا يغطي عدة SKUs، وانخفضت فاتورة الشحن لدينا بنحو الربع.',
+            rating: 5,
+            image: 'https://i.pravatar.cc/150?img=12',
+            verified: true
+          },
+          { 
+            name: 'Alicia Chen', 
+            role: 'مديرة BIM، مقاول عام تجاري', 
+            text: 'ملفات BIM ذات العلامة البيضاء التي نحمّلها تتيح لنا تقديم الموافقة البلدية بختم شركتنا الخاصة دون أي علامة مصنع. ثلاث ولايات قضائية، صفر مراجعات ذهاب وإياب. هذا وحده يوفّر أسبوعًا كاملاً من جدول مشروعنا.',
+            rating: 5,
+            image: 'https://i.pravatar.cc/150?img=45',
+            verified: true
+          },
+          { 
+            name: 'Priya Sharma', 
+            role: 'رئيسة التوريد، موزعة أجهزة تعاقدية', 
+            text: 'الأجهزة ومجموعات الأحواض والخلاطات — كلها محددة وموردة ومشحونة من مورد واحد مسؤول مباشرة من قوانغتشو. بيان شحن واحد، فاتورة واحدة، مورد واحد نتصل به عند أي تغيير. مكتب التوريد لدينا أصبح بسيطًا فعلاً.',
+            rating: 5,
+            image: 'https://i.pravatar.cc/150?img=33',
+            verified: true
+          }
+        ].map((testimonial, i) => (
+          <div class="group bg-white dark:bg-dark-800 rounded-2xl p-7 border border-gray-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 animate-on-scroll flex flex-col h-full relative overflow-hidden" style={`animation-delay: ${i * 0.1}s;`}>
+            <!-- Gradient Overlay -->
+            <div class="absolute top-0 end-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- Rating Stars -->
+            <div class="flex items-center gap-1 mb-4 relative z-10">
+              {Array.from({ length: testimonial.rating }).map(() => (
+                <svg class="w-5 h-5 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            
+            <!-- Quote -->
+            <p class="text-gray-700 dark:text-gray-300 mb-6 flex-grow leading-relaxed relative z-10 italic">
+              "{testimonial.text}"
+            </p>
+            
+            <!-- Author -->
+            <div class="flex items-center gap-4 mt-auto relative z-10">
+              <img 
+                src={testimonial.image} 
+                alt={testimonial.name}
+                class="w-14 h-14 rounded-full border-2 border-primary-500/20 group-hover:border-primary-500 transition-colors shadow-lg"
+              />
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <p class="font-bold text-base text-gray-900 dark:text-white">{testimonial.name}</p>
+                  {testimonial.verified && (
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full" title="مشترٍ موثوق">
+                      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                      موثوق
+                    </span>
+                  )}
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
+              </div>
+            </div>
+
+            <!-- Quote Icon -->
+            <div class="absolute top-6 end-6 text-6xl text-primary-500/10 group-hover:text-primary-500/20 transition-colors">
+              "
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Navigation Dots -->
+      <div data-ai-ignore class="flex justify-center gap-2 mt-8">
+        {[0, 1, 2].map(i => (
+          <button class={`w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-primary-600 w-8' : 'bg-gray-300 dark:bg-dark-600 hover:bg-primary-400'}`} aria-label={`الانتقال إلى الشريحة ${i + 1}`}></button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recently Viewed Products -->
+  <div data-ai-ignore>
+    <RecentlyViewed />
+  </div>
+  <!-- FAQ -->
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-on-scroll">أسئلة شائعة عن المشتريات والهندسة</h2>
+      <p class="text-gray-600 dark:text-gray-400 animate-on-scroll">إجابات سريعة حول عروض الأسعار والتسليم والإرجاع</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto space-y-4">
+      {homeFaqs.map((faq) => (
+        <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden animate-on-scroll">
+          <button type="button" class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white pe-4">{faq.question}</span>
+            <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div class="faq-content hidden px-6 pb-5">
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-10 animate-on-scroll">
+      <a href={localizeUrl("/faq")} class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors">
+        <span>عرض جميع الأسئلة الشائعة</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </a>
+    </div>
+  </section>
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
+</BaseLayout>

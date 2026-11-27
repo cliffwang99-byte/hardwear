@@ -1,0 +1,481 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getSiteSettings } from 'emdash';
+import { localizePath } from '../../lib/i18n';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const pageTitle = 'Cómo Hacer un Pedido Mayorista | Guía de Abastecimiento B2B';
+const pageDescription =
+  'Guía paso a paso de pedidos B2B para lavabos de baño, lavamanos de cerámica y griferías desde China. Aprenda cómo obtener cotizaciones detalladas y planes de carga FCL.';
+
+const siteSettings = await getSiteSettings();
+const siteUrl = (siteSettings.url || Astro.url.origin).replace(/\/+$/, '');
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+
+const buyerRoles = [
+  {
+    title: 'Contratistas y Desarrolladores Inmobiliarios',
+    bestFor:
+      'Proyectos de hoteles, viviendas multifamiliares o comerciales que necesitan paquetes completos de lavabos de baño y fontanería que coincidan con los planos de arquitectura.',
+    fastest:
+      'Envíe sus planos de planta o lista de materiales (BOM) directamente: no necesita explorar las páginas del catálogo una por una.',
+    details: [
+      'Número total de habitaciones o unidades y su calendario de entrega objetivo;',
+      'Su BOQ / hoja de cálculo BOM o planos de distribución del baño (PDF, Excel o DWG);',
+      'Su puerto de destino y los requisitos de código locales (como cUPC para Norteamérica o SABER para Arabia Saudita).',
+    ],
+    action: { label: 'Subir su BOM de Proyecto o Planos', url: '/contact' },
+  },
+  {
+    title: 'Mayoristas de Materiales de Construcción e Importadores Regionales',
+    bestFor:
+      'Distribuidores que comparan estilos, materiales y volúmenes de contenedor para ampliar líneas de inventario local.',
+    fastest:
+      'Explore nuestras categorías de productos y añada los artículos objetivo a su Lista de Cotización para calcular los márgenes de contenedor completo.',
+    details: [
+      'Su país de destino y puerto (para que coincidamos con las roscas de fontanería NPT 1/2" o BSP G1/2");',
+      'Su volumen estimado de pedido (como un contenedor mixto 20GP o 40HQ);',
+      'Sus modelos preferidos y nivel de material (grado constructor rentable o grado especificación resistente).',
+    ],
+    action: { label: 'Explorar Catálogo y Crear su Lista de Cotización', url: '/categories' },
+  },
+  {
+    title: 'Marcas de Etiqueta Privada y Cadenas Minoristas',
+    bestFor:
+      'Propietarios de marca que abastecen productos OEM u ODM fabricados bajo su propia marca y empaque.',
+    fastest:
+      'Seleccione modelos base existentes o envíe fotos/muestras de referencia para confirmar las especificaciones de marca y empaque.',
+    details: [
+      'Sus líneas de producto objetivo y cantidades de pedido (desde 10 unidades por modelo de lavabo y 50–100 piezas por modelo de grifería);',
+      'Sus archivos de logotipo vectorial y pautas de caja personalizada o marcas de envío;',
+      'Sus necesidades de cumplimiento del mercado objetivo (proporcionamos documentación técnica completa para que registre certificaciones bajo su marca).',
+    ],
+    action: { label: 'Enviar sus Requisitos OEM / ODM', url: '/contact' },
+  },
+  {
+    title: 'Fabricantes de Encimeras y Piedra',
+    bestFor:
+      'Talleres de piedra que cortan cuarzo o mármol natural localmente y solo necesitan bases de gabinete desde China.',
+    fastest:
+      'Seleccione sus estilos de gabinete y anchos estándar; omita por completo la selección de encimera y lavamanos.',
+    details: [
+      'Los anchos de base de gabinete que necesita (como tamaños estándar de 600 mm a 1800 mm);',
+      'Su material de carcasa preferido y acabado de puerta (como tablero de espuma PVC 100% impermeable o madera contrachapada resistente a la humedad);',
+      'Cualquier necesidad de refuerzo de la tapa (como tensores de acero pesado para soportar losas de piedra gruesas).',
+    ],
+    action: { label: 'Explorar Especificaciones de Base de Gabinete y Solicitar Precios', url: '/categories/bathroom-vanities' },
+  },
+];
+
+const orderSteps = [
+  {
+    title: 'Comparta su Lista o Planes de Proyecto',
+    body: 'Añada modelos a su Lista de Cotización de Proyecto en nuestro sitio web, o envíenos su BOM, planos de planta o fotos de referencia. Solo incluya su puerto de destino y las cantidades estimadas.',
+  },
+  {
+    title: 'Reciba su Cotización Detallada y Plan de Contenedor en 24–72 Horas',
+    body: 'Nuestro equipo de ingeniería verifica los estándares de rosca (NPT 1/2" o BSP G1/2") y el cumplimiento local para su mercado. Dependiendo de la complejidad del pedido, recibirá una cotización clara dentro de 24–72 horas hábiles, completa con precios unitarios, volumen total (CBM) y un plan para empacar todo en un contenedor.',
+  },
+  {
+    title: 'Apruebe Planos y Muestras Opcionales (Sin Retrasos Innecesarios)',
+    bullets: [
+      'Modelos de Catálogo Estándar: Confirme la hoja de especificaciones y el acabado, y vaya directo a producción, sin retraso de muestra.',
+      'Pedidos Personalizados y de Proyecto: Revise y firme nuestros planos CAD 2D sin marca antes de comenzar. ¿Quiere verificar el color del acabado en mano primero? Enviamos muestras físicas bajo petición (las tarifas de muestra se acreditan a su pedido mayorista).',
+    ],
+  },
+  {
+    title: 'La Producción Comienza con Coincidencia de Color entre Fábricas',
+    body: 'Una vez que confirme la Factura Proforma (PI) y el depósito, nuestros talleres asociados comienzan la producción (plazo estándar de 30–45 días). Si su pedido combina griferías, herrajes y lavabos, nuestros ingenieros en sitio verifican las muestras de color entre fábricas para que acabados como oro cepillado o negro mate coincidan con cero diferencia de color (Delta E < 1.5).',
+  },
+  {
+    title: 'Inspección Previa al Envío y Carga Inteligente del Contenedor',
+    body: 'Nuestros inspectores prueban la presión del agua, verifican los acabados de superficie y le envían fotos y videos de inspección antes del envío. Al cargar, empacamos las cajas más pequeñas de griferías y herrajes dentro de las cavidades de los lavabos (carga anidada) para maximizar el espacio de su contenedor 20GP o 40HQ y reducir los costos de flete marítimo.',
+  },
+  {
+    title: 'Documentos Aduaneros Fluidos y Repuestos para el Sitio de Obra',
+    body: 'Después del saldo final, enviamos bajo sus términos preferidos (FOB, CIF o DDP) y enviamos todas las facturas comerciales, listas de empaque, conocimientos de embarque y archivos de cumplimiento de inmediato. También incluimos repuestos gratuitos en cada envío de proyecto para mantener su instalación según lo programado.',
+  },
+];
+
+const tradeTerms = [
+  {
+    term: 'Cantidad Mínima de Pedido (MOQ)',
+    policy:
+      '10 unidades por modelo de lavabo; 50 piezas por modelo estándar de grifería/herrajes cromados, o 100 piezas por acabado PVD especial (oro cepillado, gunmetal, negro mate). Combine categorías en un contenedor.',
+  },
+  {
+    term: 'Plazo de Producción',
+    policy:
+      '30–45 días después de la firma de la hoja de especificaciones o CAD 2D y la recepción del depósito. La entrega por fases por piso está disponible para grandes desarrollos.',
+  },
+  {
+    term: 'Condiciones Comerciales y de Pago',
+    policy:
+      'EXW, FOB Guangzhou / Shenzhen, CIF Puerto de Destino o DDP. El pago estándar es 30% de depósito y 70% de saldo antes del envío contra informes de inspección y fotos de carga.',
+  },
+  {
+    term: 'Consolidación de Contenedor',
+    policy:
+      'Cargamos contenedores consolidados en los puertos de Guangzhou o Shenzhen. Si ya trabaja con un forwarder en China o compra azulejos e iluminación en otro lugar, también podemos entregar sus productos en su almacén designado para carga combinada.',
+  },
+];
+
+const avoidItems = [
+  {
+    title: 'pida una "Lista de Precios Genérica Completa".',
+    why: 'Unimos múltiples talleres especializados que trabajan con latón macizo, acero inoxidable SUS304, aleación de zinc, tablero de espuma PVC impermeable y aluminio tipo panal. Los costos varían ampliamente según las especificaciones del cartucho, los acabados PVD y las certificaciones de mercado.',
+    instead:
+      'Elija 3–10 modelos objetivo (o envíe su BOM) con cantidades estimadas para que podamos darle precios reales y detallados.',
+  },
+  {
+    title: 'pida un catálogo sin compartir su mercado objetivo.',
+    why: 'Norteamérica y México usan roscas NPT 1/2", mientras que Medio Oriente, Sudamérica y Europa usan principalmente G1/2" métrico (BSP). La presión del agua y las reglas de cumplimiento también varían según el país.',
+    instead: 'Mencione siempre primero su país o puerto de destino y su segmento de compra objetivo.',
+  },
+  {
+    title: 'consulte pedidos minoristas de una sola pieza o dropshipping.',
+    why: 'Solo manejamos pedidos mayoristas directos de fábrica y de proyecto: sin inventario minorista, sin almacenes minoristas en el extranjero y sin dropshipping.',
+    instead:
+      'Planifique en torno a nuestros mínimos mayoristas de 10 unidades por modelo de lavabo y 50 piezas por modelo de grifería, y combine categorías en un contenedor.',
+  },
+  {
+    title: 'apresure la producción antes de firmar las especificaciones.',
+    why: 'Un tipo de rosca incorrecto o un recorte de encimera equivocado causa retrasos costosos una vez que la mercancía llega a su obra.',
+    instead: 'Revise y apruebe siempre nuestra hoja de especificaciones o plano CAD 2D antes de comenzar la producción.',
+  },
+  {
+    title: 'pida productos no relacionados en su primer pedido.',
+    why: 'Para compradores nuevos, nos enfocamos estrictamente en nuestras líneas principales: lavabos de baño, lavamanos de cerámica, griferías, fregaderos, duchas, espejos LED y herrajes de baño. Esto mantiene su primer envío rápido y sin errores.',
+    instead:
+      'Comience con nuestras líneas principales de cocina y baño en su primer pedido. Una vez que construyamos una relación de recompra, nuestro equipo puede actuar como su agente de abastecimiento en China para adquirir otros materiales de construcción y accesorios de herrajes para sus contenedores.',
+  },
+  {
+    title: 'asuma que cada modelo tiene todas las certificaciones globales.',
+    why: 'Las certificaciones varían según el modelo y el destino, y los certificados específicos de marca pertenecen a los titulares de licencia registrados.',
+    instead:
+      'Díganos sus requisitos de cumplimiento (cUPC, NSF-61, CE o SABER) por adelantado. Coincidiremos con modelos pre-certificados o proporcionaremos archivos técnicos completos para respaldar la certificación bajo su propia marca.',
+  },
+];
+
+const faqs = [
+  {
+    question: '¿Puedo solicitar una cotización si mi proyecto aún está en la etapa temprana de presupuesto?',
+    answer:
+      'Sí. Comparta su tipo de proyecto (hotel, vivienda multifamiliar o vivienda asequible), el número estimado de unidades y el nivel de presupuesto (de ingeniería de valor o grado especificación). Nuestro equipo de ingeniería recomendará 2–3 paquetes de producto probados con estimaciones aproximadas de contenedor.',
+  },
+  {
+    question: '¿Necesito pedidos separados para lavabos, lavamanos de cerámica, griferías y accesorios de baño?',
+    answer:
+      'No. Como integrador de cadena de suministro multi-taller, combinamos todas las categorías bajo una sola Orden de Compra (PO) y una sola factura comercial. Coincidimos los acabados entre fábricas y cargamos todo en un contenedor.',
+  },
+  {
+    question:
+      '¿Cómo aseguran que las griferías y desagües se ajusten a la fontanería local en EE. UU., Medio Oriente o Latinoamérica?',
+    answer:
+      'Antes de que comience la producción, verificamos el estándar de conexión exacto para su puerto de destino. Los pedidos para EE. UU. y México se envían con roscas NPT 1/2", mientras que los pedidos para Medio Oriente, Sudamérica y Europa se envían con roscas métricas G1/2" (BSP).',
+  },
+  {
+    question: '¿Por qué los precios exactos están ocultos detrás de la Lista de Cotización en lugar de publicarse?',
+    answer:
+      'Suministramos exclusivamente a distribuidores mayoristas y constructores comerciales. Los costos unitarios dependen de su volumen de pedido, materiales base (como latón macizo vs. aleación de zinc o PVC impermeable vs. contrachapado), proceso de acabado y mezcla de contenedor. Enviar una Lista de Cotización protege su precio de canal local y asegura que reciba cotizaciones de fábrica graduadas precisas.',
+  },
+];
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={pageUrl} ogType="article">
+  <script type="application/ld+json" set:html={faqJsonLd} />
+
+  <!-- Hero -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-sm sm:text-base font-semibold tracking-widest uppercase text-white/80 mb-4">
+          Guía de Abastecimiento B2B
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6">
+          Cómo Hacer un Pedido: Guía de Abastecimiento Directo de Fábrica y Consolidación FCL
+        </h1>
+        <p class="text-lg sm:text-xl font-semibold text-white/95 mb-4">
+          Obtenga cotizaciones precisas más rápido, ahorre tiempo y reduzca los correos de ida y
+          vuelta&mdash;luego abastezca lavabos, lavamanos de cerámica y griferías de fábricas chinas
+          especializadas en un solo contenedor para ahorrar hasta 30% en flete marítimo.
+        </p>
+        <p class="text-base sm:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto mb-4">
+          No somos un bróker. No somos un solo taller. Somos su equipo de ingeniería en sitio en China.
+        </p>
+        <p class="text-base sm:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto">
+          Unimos talleres especializados en toda China, que cubren lavabos de baño, lavamanos de
+          cerámica vidriada, griferías de latón macizo y herrajes de baño, bajo un solo sistema de
+          control de calidad y un solo contenedor de envío. Ya sea que tenga un plano de proyecto
+          completo o solo unos pocos modelos objetivo, siga los pasos a continuación para obtener una
+          cotización detallada y un plan de carga de contenedor dentro de
+          <strong>24–72 horas hábiles</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1: Buyer role routing -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content data-ai-type="page">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Paso 1: Elija su Rol de Comprador para Comenzar Rápido
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Diferentes compradores comienzan con diferentes archivos de proyecto. Encuentre su tipo
+            de negocio a continuación y comparta los 3 detalles básicos indicados para iniciar su
+            cotización de inmediato:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {buyerRoles.map((role, index) => (
+            <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="w-10 h-10 shrink-0 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">
+                  {index + 1}
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-snug">
+                  {role.title}
+                </h3>
+              </div>
+
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                <strong class="text-gray-900 dark:text-white">Mejor para:</strong> {role.bestFor}
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+                <strong class="text-gray-900 dark:text-white">Forma más rápida de comenzar:</strong>
+                {' '}{role.fastest}
+              </p>
+
+              <p class="font-semibold text-gray-900 dark:text-white mb-2">
+                Comparta estos 3 detalles:
+              </p>
+              <ul class="space-y-2 mb-6">
+                {role.details.map((detail) => (
+                  <li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span class="mt-1.5 w-1.5 h-1.5 shrink-0 rounded-full bg-primary-500"></span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={localizeUrl(role.action.url)}
+                class="mt-auto inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:underline"
+              >
+                {role.action.label} &rarr;
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 2: Six-step order process -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Paso 2: Cómo Avanza su Pedido de la Cotización a su Puerto
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Desde la verificación de especificaciones hasta la carga del contenedor, nuestro equipo
+            de ingeniería en sitio gestiona cada paso del taller para que su pedido llegue a tiempo y
+            sin sorpresas.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {orderSteps.map((step, index) => (
+            <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex gap-5">
+              <div class="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-primary-600 to-orange-500 text-white flex items-center justify-center text-lg font-bold">
+                {index + 1}
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {step.title}
+                </h3>
+                {step.body && (
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{step.body}</p>
+                )}
+                {step.bullets && (
+                  <ul class="space-y-2">
+                    {step.bullets.map((bullet) => (
+                      <li class="flex items-start gap-2 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <span class="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-primary-500"></span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trade terms -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Mínimos de Pedido Estándar y Condiciones Comerciales
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200 dark:border-dark-700 shadow-lg">
+          <table class="w-full text-start">
+            <thead class="bg-gray-100 dark:bg-dark-800">
+              <tr>
+                <th class="px-5 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                  Condición de Pedido
+                </th>
+                <th class="px-5 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                  Política Estándar
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-dark-700">
+              {tradeTerms.map((row) => (
+                <tr class="bg-white dark:bg-dark-900">
+                  <td class="px-5 py-4 align-top text-sm font-semibold text-gray-900 dark:text-white w-1/3">
+                    {row.term}
+                  </td>
+                  <td class="px-5 py-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {row.policy}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before you request a quote -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Cómo Obtener su Cotización Más Rápido: 6 Errores Comunes a Evitar
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Para ahorrar tiempo a su equipo y evitar precios inexactos, evite estos 6 errores
+            comunes al enviar su consulta.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {avoidItems.map((item, index) => (
+            <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg border-s-4 border-red-500">
+              <div class="flex items-start gap-4">
+                <span class="w-8 h-8 shrink-0 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-sm">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    Por favor, no {item.title}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+                    {item.why}
+                  </p>
+                  <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <strong class="text-primary-600 dark:text-primary-400">Qué hacer en su lugar:</strong>
+                    {' '}{item.instead}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4" data-ai-content>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Preguntas Frecuentes Sobre Cómo Hacer Pedidos
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map((item) => (
+            <div class="bg-gray-50 dark:bg-dark-800 rounded-xl p-6 shadow-sm">
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{item.question}</h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-20 bg-gradient-to-br from-primary-700 via-primary-600 to-orange-500 dark:from-primary-800 dark:via-primary-700 dark:to-orange-600 text-white">
+    <div class="container mx-auto px-4" data-ai-ignore>
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">¿Listo para Comenzar su Próximo Pedido de Proyecto?</h2>
+        <p class="text-lg text-white/90 mb-8 leading-relaxed">
+          Elija la forma más fácil de compartir sus especificaciones, y nuestro equipo de ingeniería
+          en China responderá dentro de 24–72 horas hábiles.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href={localizeUrl('/categories')}
+            class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            Añadir Productos a Mi Lista de Cotización &rarr;
+          </a>
+          <a
+            href={localizeUrl('/contact')}
+            class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          >
+            Enviar BOM de Proyecto / Solicitar Cotización
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

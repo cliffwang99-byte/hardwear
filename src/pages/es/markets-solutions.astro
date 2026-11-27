@@ -1,0 +1,674 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getSiteSettings } from 'emdash';
+import { createPublicPageContext, safeJsonLdSerialize } from 'emdash/page';
+import { localizePath } from '../../lib/i18n';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+
+const pageName = 'Mercados y Soluciones';
+const pageHeading = 'Mercados Globales y Soluciones de Herrajes Comerciales';
+const pageDescription =
+  'Herrajes de cocina y baño de grado especificación por región (cUPC, WaterMark, SASO, CE) y por tipo de proyecto (Multifamiliar, ADA, Residencias para Mayores, Moteles). Solicite cotizaciones al por mayor.';
+
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'MrKB';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+const siteBaseUrl = siteUrl.replace(/\/+$/, '');
+const pageUrl = `${siteBaseUrl}${Astro.url.pathname}`;
+
+const marketBlocks = [
+  {
+    id: 'north-america',
+    title: 'América del Norte (EE. UU. y Canadá)',
+    short: 'Norteamérica',
+    badge: 'cUPC · NSF-61 Sin Plomo · ADA · UL 962 / ETL',
+    pitch: 'Diseñado para pasar las inspecciones de plomería municipales de América del Norte sin retrasos.',
+    specs: [
+      {
+        label: 'Conexiones',
+        text: 'Entradas NPT 1/2" y líneas de suministro de compresión 3/8" listas para instalaciones empotradas de EE. UU./Canadá.',
+      },
+      {
+        label: 'Soporte de Presentación',
+        text: 'Curvas de nivel CAD 2D sin marca y hojas de especificaciones proporcionadas para licitaciones de contratistas.',
+      },
+      {
+        label: 'Lavabos Libres de Aranceles',
+        text: 'Los lavabos de acero inoxidable SUS 304 y aluminio tipo panal eliminan los aranceles AD/CVD de gabinetes de madera.',
+      },
+    ],
+    lines: 'Fregaderos de Cocina · Sistemas de Ducha Ocultos · Lavabos Metálicos y Espejos LED',
+    action: 'Añadir Paquete de Especificaciones Norteamérica a la Lista de Cotización',
+  },
+  {
+    id: 'australia-nz',
+    title: 'Australia y Nueva Zelanda',
+    short: 'Australia y NZ',
+    badge: 'WaterMark · Clasificación de Agua WELS · SAA / RCM',
+    pitch: 'Ingeniería para los estrictos códigos de plomería australianos y diseños modernos compactos.',
+    specs: [
+      {
+        label: 'Conexiones',
+        text: 'Roscas métricas estándar G1/2" (BSP) y mangueras flexibles conformes.',
+      },
+      {
+        label: 'Dimensiones Métricas Compactas',
+        text: 'Lavabos metálicos de pared (600 mm–1000 mm) y espejos LED de marco delgado (220 V–240 V / 50 Hz).',
+      },
+      {
+        label: 'Eficiencia Hídrica',
+        text: 'Aireadores conformes WELS y mezcladores de ducha termostáticos construidos para torres residenciales y hoteleras.',
+      },
+    ],
+    lines: 'Griferías de Lavamanos y Lavabos · Sistemas de Ducha · Lavabos y Espejos LED',
+    action: 'Añadir Paquete de Especificaciones ANZ a la Lista de Cotización',
+  },
+  {
+    id: 'middle-east',
+    title: 'Medio Oriente (Arabia Saudita y EAU)',
+    short: 'Medio Oriente',
+    badge: 'SASO / SABER · Niebla Salina Ácida 48h–72h · Probado a 1.6 MPa',
+    pitch: 'Herrajes de latón macizo y SUS 304 de alta resistencia construidos para calor extremo, alta presión y humedad costera.',
+    specs: [
+      {
+        label: 'Mandato de Ahorro de Agua',
+        text: 'Aireadores suizos Neoperl limitados a ≤ 5.7 LPM (1.5 GPM) para cumplir la Visión 2030 de Arabia Saudita y las reglas de construcción verde de EAU.',
+      },
+      {
+        label: 'Protección de Alta Presión',
+        text: 'Cartuchos cerámicos antigolpe de ariete probados hasta 1.6 MPa (16 bar) para bombas de refuerzo de rascacielos.',
+      },
+      {
+        label: 'Acabados Estables a UV',
+        text: 'Acabados PVD oro cepillado y gunmetal resisten el calor del desierto y la corrosión salina costera (roscas BSP G1/2").',
+      },
+    ],
+    lines: 'Griferías de Latón Macizo · Duchas Termostáticas · Desagües de Piso 304',
+    action: 'Añadir Paquete de Especificaciones Medio Oriente a la Lista de Cotización',
+  },
+  {
+    id: 'europe-uk',
+    title: 'Europa y Reino Unido',
+    short: 'Europa y RU',
+    badge: 'CE (EN-817) · UKCA · RoHS · Eléctrico IP44',
+    pitch: 'Dimensiones métricas europeas limpias con cumplimiento sin plomo y espejos LED sellados contra la humedad.',
+    specs: [
+      {
+        label: 'Conexiones',
+        text: 'Mangueras de suministro trenzadas BSP G1/2" y G3/8" emparejadas con válvulas de ángulo europeas.',
+      },
+      {
+        label: 'Seguridad Eléctrica',
+        text: 'Espejos LED y armarios de espejo de 220 V–240 V / 50 Hz con plata libre de cobre y película de respaldo de seguridad.',
+      },
+      {
+        label: 'Consistencia de Color',
+        text: 'Coincidencia de color digital Delta E < 1.5 entre griferías negro mate, columnas de ducha y toalleros.',
+      },
+    ],
+    lines: 'Griferías de Cocina · Columnas de Ducha · Accesorios de Baño',
+    action: 'Añadir Paquete de Especificaciones UE/RU a la Lista de Cotización',
+  },
+  {
+    id: 'latin-america',
+    title: 'América Latina (México y Sudamérica)',
+    short: 'Latinoamérica',
+    badge: 'Valor Grado Constructor · Doble Rosca (NPT + BSP) · Listo para Flujo por Gravedad',
+    pitch: 'Herrajes de costo controlado construidos para baja presión de agua y rotación mayorista rápida.',
+    specs: [
+      {
+        label: 'Roscas de Doble Estándar',
+        text: 'Líneas NPT 1/2" + 3/8" para México; roscas métricas BSP G1/2" para Chile, Colombia, Perú y Argentina.',
+      },
+      {
+        label: 'Baja Presión y Antisedimentos',
+        text: 'Ingeniería para tanques de gravedad en azoteas (Flujo por Gravedad) con aireadores removibles sin herramientas que eliminan la arena rápidamente.',
+      },
+      {
+        label: 'Control de Costo Unitario',
+        text: 'Opciones duraderas de aleación de zinc y acero inoxidable prensado empaquetadas para carga de alto volumen en contenedor.',
+      },
+    ],
+    lines: 'Griferías de Zinc y Acero Inoxidable · Fregaderos de Cocina Prensados · Estanterías de Almacenamiento Plegables',
+    action: 'Añadir Paquete de Especificaciones LatAm a la Lista de Cotización',
+  },
+];
+
+const solutionBlocks = [
+  {
+    id: 'multifamily',
+    title: 'Desarrollos Multifamiliares y de Apartamentos',
+    short: 'Multifamiliar',
+    risk: 'Las piezas faltantes detienen a los equipos de plomería en más de 200 unidades, mientras que los presupuestos ajustados requieren ingeniería de valor inteligente.',
+    points: [
+      {
+        label: 'Kits Empacados por Unidad',
+        text: 'Empacamos griferías, válvulas de ángulo, desagües y organizadores de gabinete por unidad de apartamento para que los equipos nunca pierdan horas clasificando cajas.',
+      },
+      {
+        label: 'Ingeniería de Valor',
+        text: 'Combine fregaderos prensados de acero inoxidable calibre 18 en unidades estándar con fregaderos hechos a mano calibre 16 en unidades penthouse, todo en un contenedor.',
+      },
+    ],
+    bundle:
+      'Grifería de Cocina Desplegable de Una Palanca + Fregadero de Acero Inoxidable Bajo Encimera + Kit de Ducha con Balance de Presión + Organizador de Gabinete Extraíble.',
+    action: 'Añadir Paquete Multifamiliar a la Lista de Cotización',
+    guide: '',
+  },
+  {
+    id: 'ada-compliance',
+    title: 'Proyectos Conformes ADA (ANSI A117.1)',
+    short: 'Cumplimiento ADA',
+    risk: 'Tazones profundos, manijas rígidas o controles de ducha mal ubicados fallan las inspecciones municipales de accesibilidad y fuerzan costosos reemplazos.',
+    points: [
+      {
+        label: 'Fregaderos ADA de Tazón Poco Profundo',
+        text: 'Fregaderos de cocina y lavabo de acero inoxidable con profundidad de tazón ≤ 5.5" y desagües desplazados hacia atrás para espacio total para rodillas de silla de ruedas.',
+      },
+      {
+        label: 'Controles de Palanca de Baja Fuerza',
+        text: 'Griferías y desviadores de una palanca que requieren menos de 5 libras de fuerza de operación sin agarre firme ni torsión de muñeca.',
+      },
+      {
+        label: 'Ducha ADA y Barras de Apoyo',
+        text: 'Duchas de mano con barra deslizante (alcance de 38"–48") emparejadas con barras de apoyo de pared SUS 304 de alta resistencia.',
+      },
+    ],
+    bundle:
+      'Fregadero ADA de Cocina de 5.5" de Profundidad + Grifería de Cocina de Palanca + Sistema de Ducha con Barra Deslizante ADA + Set de Barras de Apoyo 304.',
+    action: 'Añadir Paquete ADA a la Lista de Cotización',
+    guide: '',
+  },
+  {
+    id: 'senior-living',
+    title: 'Residencias para Mayores e Instalaciones de Salud',
+    short: 'Vida para Mayores',
+    risk: 'Los picos repentinos de temperatura del agua escaldan a los residentes, mientras que la fuerza de agarre débil hace difícil girar las perillas estándar.',
+    points: [
+      {
+        label: 'Válvulas Termostáticas Antiescaldaduras',
+        text: 'Las válvulas termostáticas de 38 °C (100 °F) fijan una temperatura segura del agua al instante incluso cuando las habitaciones adyacentes descargan inodoros.',
+      },
+      {
+        label: 'Manijas Alargadas Médicas/De Hoja',
+        text: 'Manijas de palanca largas y ergonómicas permiten una operación sin esfuerzo con muñeca o codo.',
+      },
+      {
+        label: 'Prevención de Resbalones y Caídas',
+        text: 'Barras de apoyo SUS 304 de alta carga y desagües de piso lineales de inserción de azulejos que eliminan los riesgos de tropiezo por bordes de ducha.',
+      },
+    ],
+    bundle:
+      'Válvula de Ducha Termostática Antiescaldaduras + Grifería de Lavamanos de Manija de Hoja + Desagüe de Piso Lineal + Barras de Apoyo de Seguridad 304.',
+    action: 'Añadir Paquete Vida para Mayores a la Lista de Cotización',
+    guide: '',
+  },
+  {
+    id: 'hospitality-motels',
+    title: 'Hostelería, Hoteles y Moteles',
+    short: 'Hostelería y Moteles',
+    risk: 'La alta rotación de huéspedes causa cartuchos con fugas, lavabos de madera hinchados y toalleros de baño sueltos.',
+    points: [
+      {
+        label: 'Lavabos Metálicos a Prueba de Humedad',
+        text: 'Lavabos de acero inoxidable SUS 304 con acabado madera y aluminio tipo panal resisten vapor y agua de trapear, superando a los gabinetes de madera en hoteles y moteles costeros.',
+      },
+      {
+        label: 'Cajas Empotradas de Instalación Rápida',
+        text: 'Válvulas de ducha ocultas de latón con niveles de burbuja integrados reducen la mano de obra de plomería en renovaciones hasta 40%.',
+      },
+      {
+        label: 'Espejos LED Antirrompimiento',
+        text: 'Espejos con plata libre de cobre, película de respaldo de seguridad CAT II y controladores LED IP44 reemplazables.',
+      },
+    ],
+    bundle:
+      'Lavabo Metálico + Espejo LED Antivaho + Kit de Ducha Oculto + Set de Herrajes de Baño de 4 Piezas de Alta Resistencia.',
+    action: 'Añadir Paquete Hostelería a la Lista de Cotización',
+    guide: '',
+  },
+  {
+    id: 'cabinet-storage',
+    title: 'Mayoristas de Mejoras de Almacenamiento de Gabinetes de Cocina',
+    short: 'Almacenamiento de Gabinetes',
+    risk: 'Los gabinetes de cocina mayoristas estándar se envían como cajas de madera vacías sin organización interna.',
+    points: [
+      {
+        label: 'Enfoque Solo Metálico',
+        text: 'No vendemos gabinetes de madera: suministramos estantes extraíbles de especias de alta resistencia, organizadores de esquina ciega y sistemas de riel de pared negro mate.',
+      },
+      {
+        label: 'Multiplicador de Margen',
+        text: 'Duplique su margen de reventa de gabinetes con cero exposición arancelaria a gabinetes de madera.',
+      },
+    ],
+    bundle: 'Estantes Extraíbles de Especias + Organizadores de Esquina Ciega + Sistemas de Riel de Pared Negro Mate.',
+    action: 'Añadir Paquete de Almacenamiento de Gabinetes a la Lista de Cotización',
+    guide: '/solutions/wholesale-kitchen-cabinets-storage/',
+  },
+];
+
+const faqs = [
+  {
+    question: '¿Puedo mezclar productos de diferentes especificaciones regionales o paquetes de proyecto en un contenedor?',
+    answer:
+      'Sí. Consolidamos griferías, fregaderos de acero inoxidable, válvulas de ducha ocultas, organizadores de gabinete y lavabos metálicos en un solo contenedor de 20 pies o 40HQ desde Guangzhou o Shenzhen, etiquetando las cajas claramente por fase de proyecto o tipo de habitación.',
+  },
+  {
+    question: '¿Suministran gabinetes de cocina de madera o encimeras de piedra?',
+    answer:
+      'No. Nos enfocamos estrictamente en herrajes metálicos, accesorios de plomería y organizadores de almacenamiento. Si abastece cajas de gabinete o losas de piedra por separado, suministramos las cestas extraíbles correspondientes, fregaderos bajo encimera con plantillas de recorte 1:1 y griferías de color a juego.',
+  },
+  {
+    question: '¿Cómo evitan diferencias de color entre griferías, kits de acabado de ducha y herrajes de gabinete?',
+    answer:
+      'Aplicamos un estándar de color digital unificado (Delta E < 1.5) en nuestros talleres de acabado asociados. Sus piezas negro mate, PVD oro cepillado y gunmetal coinciden consistentemente en cada habitación.',
+  },
+  {
+    question: '¿Cómo solicitamos precios por volumen escalonados y dibujos CAD sin marca?',
+    answer:
+      'Haga clic en Añadir a la Lista de Cotización de Proyecto en cualquier paquete o página de producto, luego envíe su puerto de destino o código postal de proyecto. Nuestro equipo de ingeniería envía precios FOB/CIF detallados, cálculos de carga de contenedor por CBM y hojas de especificaciones sin marca dentro de 24 horas.',
+  },
+];
+
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: 'custom',
+  pageType: 'website',
+  title: `${pageName}${titleSeparator}Suministro Comercial de Cocina y Baño`,
+  description: pageDescription,
+  canonical: pageUrl,
+  siteName: siteTitle,
+  siteUrl,
+  breadcrumbs: [
+    { name: 'Inicio', url: localizeUrl('/') },
+    { name: pageName, url: Astro.url.pathname },
+  ],
+});
+
+const breadcrumbJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumb`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteBaseUrl}${localizeUrl('/')}` },
+    { '@type': 'ListItem', position: 2, name: pageName, item: pageUrl },
+  ],
+});
+
+const collectionJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: pageHeading,
+  description: pageDescription,
+  url: pageUrl,
+  isPartOf: { '@id': siteBaseUrl },
+  breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+  about: [
+    { '@type': 'Thing', name: 'Herrajes de Cocina' },
+    { '@type': 'Thing', name: 'Herrajes de Baño' },
+  ],
+  hasPart: {
+    '@type': 'WebPageElement',
+    name: 'Mercados y Soluciones',
+    cssSelector: '#solutions',
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: solutionBlocks.length,
+    itemListElement: solutionBlocks.map((block, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: block.title,
+      url: `${siteBaseUrl}${localizeUrl(`/markets-solutions#${block.id}`)}`,
+    })),
+  },
+});
+
+const faqJsonLd = safeJsonLdSerialize({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <script type="application/ld+json" set:html={breadcrumbJsonLd}></script>
+  <script type="application/ld+json" set:html={collectionJsonLd}></script>
+  <script type="application/ld+json" set:html={faqJsonLd}></script>
+  <style is:global>
+    html { scroll-behavior: smooth; }
+    :root { --site-header-h: 76px; }
+    [id] { scroll-margin-top: calc(var(--site-header-h) + 74px); }
+    #markets-solutions-subnav { top: var(--site-header-h); }
+    @keyframes anchor-flash {
+      0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.8); }
+      100% { box-shadow: 0 0 0 14px rgba(249, 115, 22, 0); }
+    }
+    .anchor-flash { animation: anchor-flash 2s ease-out; }
+  </style>
+
+  <section class="relative overflow-hidden text-white">
+    <div class="absolute inset-0 bg-gradient-to-br from-dark-950 via-primary-950 to-dark-950"></div>
+    <div class="absolute inset-0 opacity-[0.04]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="markets-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" stroke-width="0.5"/>
+            <circle cx="0" cy="0" r="2" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#markets-pattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 py-16 md:py-24 relative z-10">
+      <div class="max-w-4xl">
+        <nav class="flex items-center gap-2 text-sm mb-6">
+          <a href={localizeUrl("/")} class="text-primary-300 hover:text-white transition-colors duration-300">Inicio</a>
+          <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span class="text-white font-medium">{pageName}</span>
+        </nav>
+
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-primary-200 mb-6">
+          {pageName}
+        </span>
+
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">{pageHeading}</h1>
+
+        <p class="text-lg text-white/90 leading-relaxed mb-4">
+          Una red de suministro directo de fábrica construida para códigos regionales y cronogramas de obra.
+        </p>
+        <p class="text-base text-white/70 leading-relaxed mb-8 max-w-3xl">
+          No fabricamos gabinetes de madera ni losas de piedra. Suministramos griferías metálicas certificadas, fregaderos, duchas ocultas, organizadores de gabinete y lavabos metálicos, con consistencia de acabado Delta E &lt; 1.5 y consolidados en un contenedor desde Guangzhou o Shenzhen.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            href="#markets"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            Explorar por Mercado Regional (#markets)
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7M12 21V3" />
+            </svg>
+          </a>
+          <a
+            href="#solutions"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          >
+            Explorar por Solución de Proyecto (#solutions)
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7M12 21V3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="markets-solutions-subnav" class="sticky z-40 bg-white/90 dark:bg-dark-900/90 backdrop-blur-xl border-b border-gray-200/60 dark:border-dark-800/60 shadow-sm">
+    <div class="container mx-auto px-4 py-3 overflow-x-auto">
+      <div class="flex items-center gap-2 text-sm whitespace-nowrap min-w-max">
+        <span class="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide text-xs me-1">Ir A:</span>
+        <a href="#markets" class="px-3 py-1.5 rounded-lg font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">Mercados</a>
+        {marketBlocks.map((block) => (
+          <a href={`#${block.id}`} class="px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors">{block.short}</a>
+        ))}
+        <a href="#solutions" class="px-3 py-1.5 rounded-lg font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">Soluciones</a>
+        {solutionBlocks.map((block) => (
+          <a href={`#${block.id}`} class="px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors">{block.short}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <section id="markets" class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2 inline-block">Por Mercado Regional y Código</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Mercados Regionales y Estándares de Cumplimiento</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Una grifería construida para Norteamérica fallará en Medio Oriente o América Latina. Elija su región para ver las especificaciones exactas de rosca, presión y certificación.
+          </p>
+        </div>
+
+        <div class="space-y-10">
+          {marketBlocks.map((block, blockIndex) => (
+            <div id={block.id} class="anchor-target bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 sm:p-10 border border-gray-200 dark:border-dark-700 shadow-sm">
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  <span class="text-primary-600 dark:text-primary-400 me-2 font-mono">{String(blockIndex + 1).padStart(2, '0')}</span>
+                  {block.title}
+                </h3>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-600 rounded-full text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                  {block.badge}
+                </span>
+              </div>
+
+              <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">{block.pitch}</p>
+
+              <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {block.specs.map((spec) => (
+                  <li class="bg-white dark:bg-dark-900 rounded-xl p-5 border border-gray-200 dark:border-dark-700">
+                    <p class="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-1">{spec.label}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{spec.text}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="flex flex-wrap items-center gap-3 mb-6">
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Líneas Especificadas:</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{block.lines}</p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-gray-200 dark:border-dark-700">
+                <p class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span class="font-semibold text-gray-900 dark:text-white">Precio por Niveles: $ ??.?? / Unidad</span>
+                  <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-dark-700 px-2 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
+                    🔒 Protegido
+                  </span>
+                </p>
+                <a
+                  href={localizeUrl("/cart")}
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
+                >
+                  + {block.action}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="solutions" class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2 inline-block">Por Solución de Proyecto e Industria</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Soluciones de Herrajes Comerciales e Industriales</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Diferentes edificios fallan de diferentes maneras. Elija su tipo de proyecto para ver paquetes de herrajes pre-combinados que reducen su costo total de propiedad.
+          </p>
+        </div>
+
+        <div class="space-y-10">
+          {solutionBlocks.map((block, blockIndex) => (
+            <div id={block.id} class="anchor-target bg-white dark:bg-dark-900 rounded-2xl p-8 sm:p-10 border border-gray-200 dark:border-dark-700 shadow-sm">
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  <span class="text-primary-600 dark:text-primary-400 me-2 font-mono">{String(blockIndex + 1).padStart(2, '0')}</span>
+                  {block.title}
+                </h3>
+              </div>
+
+              <div class="bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 rounded-xl px-5 py-4 mb-6">
+                <p class="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1">Riesgo en la Obra</p>
+                <p class="text-gray-700 dark:text-gray-300">{block.risk}</p>
+              </div>
+
+              <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {block.points.map((point) => (
+                  <li class="bg-gray-50 dark:bg-dark-800 rounded-xl p-5 border border-gray-200 dark:border-dark-700">
+                    <p class="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-1">{point.label}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{point.text}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="flex flex-wrap items-center gap-3 mb-6">
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Paquete Recomendado:</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{block.bundle}</p>
+              </div>
+
+              {block.guide && (
+                <div class="flex flex-wrap items-center gap-3 mb-6">
+                  <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Guía Dedicada:</p>
+                  <a href={localizeUrl(block.guide)} class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+                    Explorar Soluciones Mayoristas Completas de Almacenamiento de Gabinetes
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-gray-200 dark:border-dark-700">
+                <p class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span class="font-semibold text-gray-900 dark:text-white">Precio BOM de Proyecto: $ ??.?? / Unidad</span>
+                  <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-dark-700 px-2 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
+                    🔒 Protegido
+                  </span>
+                </p>
+                <a
+                  href={localizeUrl("/cart")}
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
+                >
+                  + {block.action}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">FAQ de Mercados y Soluciones</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map((item) => (
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700">
+              <button type="button" class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white pe-4">{item.question}</span>
+                <svg class="w-5 h-5 shrink-0 text-gray-500 transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-bold mb-4">¿Listo para Consolidar su Próximo Pedido de Cocina y Baño?</h2>
+              <p class="text-lg text-white/90 leading-relaxed">
+                Envíenos su BOM de proyecto o lista de SKU objetivo. Coincidiremos sus acabados, verificaremos las especificaciones de código regional y diseñaremos su carga de contenedor de 20 pies o 40HQ.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row md:justify-end gap-4">
+              <a href={localizeUrl("/cart")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                + Abrir Lista de Cotización de Proyecto
+              </a>
+              <a href={localizeUrl("/contact")} class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-colors">
+                Contactar Mesa de Ingeniería
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function syncHeaderOffset() {
+      var header = document.querySelector('header.sticky');
+      if (!header) return;
+      var h = Math.round(header.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--site-header-h', h + 'px');
+    }
+
+    document.querySelectorAll('.faq-trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var content = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.faq-icon');
+        if (!content) return;
+        content.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('rotate-180');
+      });
+    });
+
+    function flashAnchor() {
+      var hash = window.location.hash;
+      if (!hash) return;
+      var target = document.querySelector(hash);
+      if (!target || !target.classList.contains('anchor-target')) return;
+      target.classList.remove('anchor-flash');
+      void target.offsetWidth;
+      target.classList.add('anchor-flash');
+      setTimeout(function () {
+        target.classList.remove('anchor-flash');
+      }, 2200);
+    }
+
+    syncHeaderOffset();
+    window.addEventListener('load', syncHeaderOffset);
+    window.addEventListener('resize', syncHeaderOffset);
+    window.addEventListener('hashchange', function () {
+      syncHeaderOffset();
+      flashAnchor();
+    });
+    window.addEventListener('load', flashAnchor);
+  </script>
+</BaseLayout>

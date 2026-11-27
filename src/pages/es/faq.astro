@@ -1,0 +1,465 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Preguntas Frecuentes - MrKB">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">Preguntas Frecuentes</h1>
+        <p class="text-lg sm:text-xl text-white/90 leading-relaxed">
+          Condiciones de pago, plazos de producción, flete marítimo y aduanas, control de calidad y garantía. Los detalles comerciales detrás de cada cotización de proyecto.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Bar -->
+  <section class="py-8 bg-white dark:bg-dark-900 border-b border-gray-200 dark:border-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-2xl mx-auto">
+        <div class="relative">
+          <input
+            type="text"
+            id="faq-search"
+            placeholder="Buscar respuestas..."
+            class="w-full px-6 py-4 ps-14 bg-gray-50 dark:bg-dark-800 border-2 border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 dark:focus:border-primary-500 text-gray-900 dark:text-white transition-colors"
+          />
+          <svg class="w-6 h-6 text-gray-400 absolute start-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Navigation -->
+  <section class="py-8 bg-gray-50 dark:bg-dark-800 border-b border-gray-200 dark:border-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button class="category-filter active px-6 py-2.5 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors" data-category="all">
+          Todas las Preguntas
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="pricing">
+          Precios y Acceso
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="payment">
+          Condiciones de Pago
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="leadtime">
+          Plazos de Entrega
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="shipping">
+          Envío y Aduanas
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="quality">
+          Control de Calidad y Garantía
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Content -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- Group 1: Pricing & Access -->
+        <div class="mb-12 faq-category" data-category="pricing">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Protección de Precios Comerciales y Acceso al Abastecimiento</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Por qué los precios permanecen ocultos y cómo se verifican los compradores mayoristas.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Por qué los precios exactos están ocultos y por qué no hay inicio de sesión?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Solo vendemos a compradores B2B mayoristas, no a consumidores minoristas. Ocultar los precios ($??.??) protege los márgenes de sus ofertas de proyecto frente a la competencia local. No necesita registrarse &mdash; simplemente añada artículos a su Lista de Cotización y nuestro equipo verificará la información de su empresa y le enviará su cotización escalonada en un plazo de 24 horas.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Cuál es su cantidad mínima de pedido (MOQ) en las distintas categorías?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Nuestro MOQ mayorista estándar es de 10 unidades para lavabos de baño y 50 piezas para griferías y desagües de lavamanos. Si necesita verificar la calidad o ajustarse a un espacio personalizado antes de la producción en volumen, aceptamos pedidos de muestra de 1 pieza o unidades individuales de lavabo a precio de muestra.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 2: Payment Terms -->
+        <div class="mb-12 faq-category" data-category="payment">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Condiciones de Pago y Liquidación</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Depósitos, cartas de crédito y bloqueo de precios para proyectos por fases.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Qué condiciones de pago aceptan para pedidos de muestra y contenedores completos?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Para pedidos de muestra aceptamos el pago por adelantado al 100% mediante T/T (transferencia bancaria) o Wise/PayPal. Para pedidos mayoristas estándar, nuestra condición es un depósito T/T del 30% para iniciar la producción y un saldo del 70% antes de la carga del contenedor (después de que apruebe nuestras fotos de control de calidad previo al envío y el informe de inspección).
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Aceptan cartas de crédito (L/C) para grandes proyectos comerciales?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Sí. Para pedidos de contenedor completo (40HQ) o grandes contratos multifase de hoteles y apartamentos, aceptamos L/C irrevocable a la vista de bancos internacionales de primer nivel, sujeto a revisión del proyecto.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Puedo fijar los costos de materiales para un proyecto de construcción multifase?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Sí. Una vez que confirme un contrato maestro de suministro y realice un depósito, fijamos el precio unitario para los envíos programados por fases (por ejemplo, 3 contenedores en 6 meses) para que las fluctuaciones de materias primas no desequilibren su presupuesto.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 3: Lead Times -->
+        <div class="mb-12 faq-category" data-category="leadtime">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Muestreo y Plazos de Producción</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Tiempo de entrega de muestras, programación de volumen y cuándo comienza el conteo.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Cuánto tiempo se tarda en producir muestras frente a un contenedor completo?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Las muestras de catálogo estándar se envían en 7 a 10 días, mientras que las muestras de lavabos a medida tardan entre 12 y 15 días. Para producción en volumen, los pedidos estándar tardan entre 30 y 35 días después del depósito y la aprobación de los dibujos. Los acabados OEM a medida o los contenedores mixtos grandes de 40HQ tardan entre 35 y 45 días.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Cuándo comienza oficialmente el conteo de producción?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  La producción comienza el día en que recibimos tanto su depósito del 30% como su hoja de confirmación de CAD 2D/acabado firmada. Aprobar los dibujos temprano evita retrasos en la producción.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 4: Shipping & Customs -->
+        <div class="mb-12 faq-category" data-category="shipping">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Envío, Consolidación FCL y Aduanas</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Incoterms, carga en cavidades y trámites de despacho.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Qué términos de envío (Incoterms) cotizan?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Cotizamos EXW, FOB (Shenzhen, Guangzhou o Nansha), CIF a su puerto de destino y DDP (puerta a puerta) para mercados seleccionados. Si ya trabaja con su propio agente de carga en China, coordinamos la carga directamente con él sin tarifas de manipulación adicionales.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Cómo consolidan las griferías dentro de los contenedores de lavabos sin problemas aduaneros?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Colocamos griferías y desagües embalados dentro de las cavidades inferiores protegidas de los lavabos con espuma EPE de alta densidad para ahorrar espacio (CBM). En su Factura Comercial y Lista de Empaque, cada artículo se lista por separado con su cantidad, peso y código HS exactos, garantizando un despacho aduanero fluido en su puerto.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Mantienen inventario listo para enviar en almacenes locales de EE. UU. o en el extranjero?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  No. Todos los pedidos se envían 100% directos de fábrica desde China. Omitir los cargos de almacenamiento en el extranjero mantiene nuestros precios unitarios significativamente más bajos para sus ofertas de proyecto.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 5: QC & Warranty -->
+        <div class="mb-12 faq-category" data-category="quality">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 013.296-1.043 3.745 3.745 0 013.296 1.043A3.745 3.745 0 0121 12z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Control de Calidad, Reclamaciones y Garantía</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Inspección previa al envío, reclamaciones por daños y cobertura de garantía.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Cómo inspeccionan la mercancía antes de la carga y puedo enviar mi propio inspector?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  Nuestro equipo de control de calidad independiente revisa cada lote antes de la carga &mdash; verificando la coincidencia de color entre fábricas (Delta E &lt; 1.5), la presión de agua de 1.6 MPa de las griferías y las aberturas de drenaje precortadas. Recibe un registro completo de inspección con fotos y videos antes de pagar el saldo. También puede enviar inspectores de terceros (como SGS, BV o Intertek) a nuestras fábricas.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">¿Qué sucede si la mercancía llega dañada y cuál es su garantía?</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5 space-y-3">
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>Garantía Limitada de 12 Meses (Desde la Fecha del Conocimiento de Embarque):</strong> Proporcionamos una garantía limitada de 12 meses desde la fecha del Conocimiento de Embarque (B/L), que cubre únicamente defectos de fabricación en material y mano de obra (como defectos de fundición de latón, cartuchos de cerámica defectuosos, descascarillado del recubrimiento o defectos estructurales del gabinete).
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>Qué Está Excluido:</strong> Desgaste normal, daños de envío informados más de 14 días después de la entrega, instalación incorrecta, alta presión de agua / golpe de ariete, sarro o corrosión por agua dura local, limpieza con químicos o abrasivos y unidades modificadas. Los consumibles, incluyendo juntas, mangueras, aireadores y filtros, tienen solo 3 a 6 meses de cobertura por defectos.
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>Cómo Se Resuelven las Reclamaciones (Solo Piezas y Reemplazos):</strong> Envíe fotos o videos del defecto junto con el número de lote de la caja dentro del período de garantía. Respondemos dentro de 48 horas y, una vez confirmado, suministramos piezas o unidades de repuesto gratuitas enviadas con su próximo pedido de contenedor (o por mensajería a costa del comprador para obras urgentes). (Nota: la garantía cubre solo piezas/unidades de repuesto y no cubre costos locales de instalación o mano de obra).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="faq-empty" class="hidden text-center py-12">
+          <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <p class="text-gray-600 dark:text-gray-400">Ninguna respuesta coincidió con esa búsqueda. Pruebe otra palabra clave o contacte a nuestra mesa comercial.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Still Have Questions -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">¿Aún Tiene Preguntas?</h2>
+            <p class="text-lg text-white/90 mb-8">
+              Envíenos el BOM de su proyecto o sus dibujos. Nuestra mesa comercial responderá con precios, plazos y condiciones de envío.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <h3 class="font-bold mb-2">Consultas Generales</h3>
+                <a href="mailto:info@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">info@mrkb.net</a>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <h3 class="font-bold mb-2">WhatsApp</h3>
+                <a href="https://wa.me/6281392442358" target="_blank" rel="noopener" class="text-sm text-white/80 hover:text-white">+62 813-9244-2358</a>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <h3 class="font-bold mb-2">Soporte Técnico</h3>
+                <a href="mailto:projects@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">projects@mrkb.net</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const triggers = document.querySelectorAll('.faq-trigger');
+    const categoryButtons = document.querySelectorAll('.category-filter');
+    const faqCategories = document.querySelectorAll('.faq-category');
+    const searchInput = document.getElementById('faq-search');
+    const emptyState = document.getElementById('faq-empty');
+
+    const inactiveClasses = ['bg-white', 'dark:bg-dark-900', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-dark-700'];
+    const activeClasses = ['bg-primary-600', 'text-white'];
+
+    let activeCategory = 'all';
+
+    function applyFilter() {
+      const term = (searchInput.value || '').trim().toLowerCase();
+      let totalVisible = 0;
+
+      faqCategories.forEach(category => {
+        const categoryMatch = activeCategory === 'all' || category.dataset.category === activeCategory;
+        let visibleItems = 0;
+
+        category.querySelectorAll('.faq-item').forEach(item => {
+          const text = item.textContent.toLowerCase();
+          const matchesTerm = !term || text.includes(term);
+          const show = categoryMatch && matchesTerm;
+          item.style.display = show ? '' : 'none';
+          if (show) visibleItems++;
+        });
+
+        category.style.display = categoryMatch && visibleItems > 0 ? '' : 'none';
+        totalVisible += visibleItems;
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', totalVisible > 0);
+      }
+    }
+
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const content = trigger.nextElementSibling;
+        const icon = trigger.querySelector('.faq-icon');
+
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        activeCategory = button.dataset.category;
+
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active', ...activeClasses, ...inactiveClasses);
+          if (btn === button) {
+            btn.classList.add('active', ...activeClasses);
+          } else {
+            btn.classList.add(...inactiveClasses);
+          }
+        });
+
+        applyFilter();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilter);
+    }
+  </script>
+</BaseLayout>

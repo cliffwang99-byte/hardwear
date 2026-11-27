@@ -15,7 +15,6 @@ const STATIC_PATHS: Record<string, number> = {
   "/about-us": 0.6,
   "/contact": 0.6,
   "/faq": 0.5,
-  "/help": 0.5,
   "/blog": 0.7,
   "/cart": 0.4,
   "/wishlist": 0.4,
@@ -23,18 +22,21 @@ const STATIC_PATHS: Record<string, number> = {
   "/markets-solutions": 0.8,
   "/privacy": 0.3,
   "/terms": 0.3,
-  "/shipping-info-combined": 0.5,
   "/how-to-order": 0.7,
-  "/support": 0.5,
 };
 
 export const GET: APIRoute = async ({ request }) => {
   const base = new URL(request.url).origin.replace(/\/+$/, "");
 
-  const entries = Object.entries(STATIC_PATHS).map(([path, priority]) => ({
-    loc: esc(base + path),
-    priority: String(priority),
-  }));
+  // 每种语种各输出一份条目（en 无前缀，es/ar 带前缀）
+  const locales = ["", "/es", "/ar"] as const;
+
+  const entries = locales.flatMap((locale) =>
+    Object.entries(STATIC_PATHS).map(([path, priority]) => ({
+      loc: esc(base + locale + path),
+      priority: String(priority),
+    })),
+  );
 
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',

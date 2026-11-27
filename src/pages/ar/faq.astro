@@ -1,0 +1,465 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="الأسئلة الشائعة - MrKB">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">الأسئلة الشائعة</h1>
+        <p class="text-lg sm:text-xl text-white/90 leading-relaxed">
+          شروط الدفع، ومدة الإنتاج، والشحن البحري والجمارك، ومراقبة الجودة والضمان. التفاصيل التجارية خلف كل عرض سعر للمشاريع.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Bar -->
+  <section class="py-8 bg-white dark:bg-dark-900 border-b border-gray-200 dark:border-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-2xl mx-auto">
+        <div class="relative">
+          <input
+            type="text"
+            id="faq-search"
+            placeholder="ابحث عن إجابات..."
+            class="w-full px-6 py-4 ps-14 bg-gray-50 dark:bg-dark-800 border-2 border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 dark:focus:border-primary-500 text-gray-900 dark:text-white transition-colors"
+          />
+          <svg class="w-6 h-6 text-gray-400 absolute start-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Navigation -->
+  <section class="py-8 bg-gray-50 dark:bg-dark-800 border-b border-gray-200 dark:border-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button class="category-filter active px-6 py-2.5 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors" data-category="all">
+          جميع الأسئلة
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="pricing">
+          الأسعار والوصول
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="payment">
+          شروط الدفع
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="leadtime">
+          مدة التسليم
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="shipping">
+          الشحن والجمارك
+        </button>
+        <button class="category-filter px-6 py-2.5 bg-white dark:bg-dark-900 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-700" data-category="quality">
+          الجودة والضمان
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Content -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- Group 1: Pricing & Access -->
+        <div class="mb-12 faq-category" data-category="pricing">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">حماية الأسعار التجارية والوصول للتوريد</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">لماذا تبقى الأسعار مخفية، وكيف يتم التحقق من المشترين بالتجزئة بالجملة.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">لماذا الأسعار الدقيقة مخفية، ولماذا لا يوجد تسجيل دخول للحساب؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  نحن نبيع فقط للمشترين التجاريين B2B، وليس لمستهلكي التجزئة. إخفاء الأسعار ($??.??) يحمي هوامش عروض مشروعك من المنافسين المحليين. لست بحاجة للتسجيل &mdash; فقط أضف العناصر إلى قائمة عرض السعر الخاصة بك، وسيتحقق فريقنا من معلومات شركتك ويرسل عرض السعر المتدرج خلال 24 ساعة.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">ما الحد الأدنى لكمية الطلب (MOQ) في الفئات المختلفة؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  الحد الأدنى القياسي لدينا للجملة هو 10 مجموعات لمغاسل الحمام و50 قطعة لخلاطات ومصارف الأحواض. إذا كنت بحاجة لفحص الجودة أو مطابقة مساحة مخصصة قبل الإنتاج بالجملة، نقبل طلبات عينة من قطعة واحدة أو وحدات مغسلة مفردة بأسعار العينات.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 2: Payment Terms -->
+        <div class="mb-12 faq-category" data-category="payment">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">شروط الدفع والتسوية</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">الدفعات المقدمة والاعتمادات المستندية وتثبيت الأسعار للمشاريع المرحلية.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">ما شروط الدفع التي تقبلونها لطلبات العينات والحاويات الكاملة؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  لطلبات العينات نقبل الدفع المسبق بنسبة 100% عبر التحويل البنكي (T/T) أو Wise/PayPal. لطلبات الجملة القياسية، شروطنا هي دفعة مقدمة 30% عبر T/T لبدء الإنتاج ورصيد 70% قبل تحميل الحاوية (بعد موافقتك على صور فحص الجودة قبل الشحن وتقرير الفحص).
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">هل تقبلون الاعتمادات المستندية (L/C) للمشاريع التجارية الكبيرة؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  نعم. لطلبات الحاوية الكاملة (40HQ) أو عقود الفنادق والشقق الكبيرة متعددة المراحل، نقبل اعتماد مستندي غير قابل للإلغاء عند الاطلاع من بنوك دولية من الدرجة الأولى، خاضعًا لمراجعة المشروع.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">هل يمكنني تثبيت تكاليف المواد لمشروع بناء متعدد المراحل؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  نعم. بمجرد تأكيد عقد التوريد الرئيسي ودفع دفعة مقدمة، نثبت أسعار الوحدات لشحنات المراحل المجدولة (على سبيل المثال، 3 حاويات على مدى 6 أشهر) حتى لا تؤدي تقلبات المواد الخام إلى كسر ميزانيتك.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 3: Lead Times -->
+        <div class="mb-12 faq-category" data-category="leadtime">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">مدة العينات والإنتاج</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">زمن تسليم العينات وجداول الكميات ومتى يبدأ العد.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">كم يستغرق إنتاج العينات مقارنة بالحاوية الكاملة؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  تشحن عينات الكتالوج القياسية خلال 7 إلى 10 أيام، بينما تستغرق عينات المغاسل المخصصة 12 إلى 15 يومًا. للإنتاج بالجملة، تستغرق الطلبات القياسية 30 إلى 35 يومًا بعد الدفعة المقدمة والموافقة على الرسومات. تشطيبات OEM المخصصة أو الحاويات المختلطة الكبيرة 40HQ تستغرق 35 إلى 45 يومًا.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">متى يبدأ عدّ الإنتاج رسميًا؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  يبدأ الإنتاج في اليوم الذي نستلم فيه دفعتك المقدمة البالغة 30% وورقة تأكيد رسومات CAD ثنائية الأبعاد والتشطيب الموقعة. الموافقة المبكرة على الرسومات تمنع تأخيرات الإنتاج.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 4: Shipping & Customs -->
+        <div class="mb-12 faq-category" data-category="shipping">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">الشحن وتجميع الحاويات الكاملة والجمارك</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">الشروط التجارية الدولية، تحميل التجاويف، وأوراق التخليص.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">ما شروط الشحن (Incoterms) التي تعتمدونها؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  نعتمد EXW وFOB (شنتشن أو قوانغتشو أو نانشا) وCIF إلى ميناء وجهتك وDDP (من الباب إلى الباب) لأسواق مختارة. إذا كنت تعمل بالفعل مع وكيل شحن خاص بك في الصين، فسننسق التحميل مباشرة معه بدون رسوم مناولة إضافية.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">كيف تجمعون الخلاطات داخل حاويات المغاسل دون مشاكل جمركية؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  نضع الخلاطات والمصارف المعبأة داخل التجاويف السفلية المحمية للمغاسل برغوة EPE عالية الكثافة لتوفير مساحة الحاوية (CBM). في الفاتورة التجارية وقائمة التعبئة، يُدرج كل صنف على حدة بكميته ووزنه ورمز HS الدقيق، مما يضمن تخليصًا جمركيًا سلسًا في مينائك.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">هل لديكم مخزون جاهز للشحن في مستودعات محلية بالولايات المتحدة أو بالخارج؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  لا. جميع الطلبات تشحن مباشرة من المصنع 100% من الصين. تخطي رسوم التخزين في المستودعات الخارجية يحافظ على أسعار وحداتنا أقل بكثير لعروض مشروعك.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 5: QC & Warranty -->
+        <div class="mb-12 faq-category" data-category="quality">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 013.296-1.043 3.745 3.745 0 013.296 1.043A3.745 3.745 0 0121 12z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">مراقبة الجودة والمطالبات والضمان</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">الفحص قبل الشحن ومطالبات الأضرار وتغطية الضمان.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">كيف تفحصون البضائع قبل التحميل، وهل يمكنني إرسال مفتشي الخاص؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5">
+                <p class="text-gray-600 dark:text-gray-400">
+                  يفحص فريق الجودة المستقل لدينا كل دفعة قبل التحميل &mdash; مع التحقق من مطابقة الألوان بين المصانع (دلتا E أقل من 1.5) وضغط ماء الخلاطات 1.6 ميجا باسكال وفتحات التصريف المقطوعة مسبقًا. تستلم سجل فحص كامل بالصور والفيديو قبل دفع الرصيد. يمكنك أيضًا إرسال مفتشي أطراف ثالثة (مثل SGS أو BV أو Intertek) إلى مصانعنا.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+              <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                <span class="font-semibold text-gray-900 dark:text-white">ماذا يحدث إذا وصلت البضائع تالفة، وما هو ضمانكم؟</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon shrink-0 ms-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="faq-content hidden px-6 pb-5 space-y-3">
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>ضمان محدود 12 شهرًا (من تاريخ بوليصة الشحن):</strong> نقدم ضمانًا محدودًا لمدة 12 شهرًا من تاريخ بوليصة الشحن (B/L)، ويغطي عيوب التصنيع في المواد والحِرفية فقط (مثل عيوب صب النحاس، خراطيش السيراميك المعيبة، تقشر الطلاء دون المستوى، أو عيوب هيكلية في الخزانة).
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>ما هو مستثنى:</strong> البلى الطبيعي، وأضرار الشحن المبلَّغ عنها بعد أكثر من 14 يومًا من التسليم، والتركيب غير الصحيح، والضغط العالي / المطرقة المائية، والترسبات أو التآكل من الماء العسر المحلي، والتنظيف بالمواد الكيميائية أو الكاشطة، والوحدات المعدلة. المستهلكات &mdash; بما في ذلك الأختام والخراطيم والمهويات والفلاتر &mdash; تغطية العيوب بها 3 إلى 6 أشهر فقط.
+                </p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  <strong>كيف يتم حل المطالبات (قطع وبدائل فقط):</strong> أرسل صورًا أو فيديوهات للخلل مع رقم دفعة الكرتون خلال فترة الضمان. نرد خلال 48 ساعة، وبمجرد التأكيد، نوفر قطع أو وحدات بديلة مجانية تُشحن مع طلب الحاوية التالي (أو عبر شركة توصيل على نفقة المشتري لمواقع العمل العاجلة). (ملاحظة: الضمان يغطي القطع/الوحدات البديلة فقط ولا يغطي التركيب المحلي أو تكاليف العمل).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="faq-empty" class="hidden text-center py-12">
+          <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <p class="text-gray-600 dark:text-gray-400">لا توجد إجابات مطابقة لهذا البحث. جرّب كلمة رئيسية أخرى أو تواصل مع مكتب التجارة لدينا.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Still Have Questions -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">هل ما زلت لديك أسئلة؟</h2>
+            <p class="text-lg text-white/90 mb-8">
+              أرسل لنا قائمة مواد مشروعك أو رسوماتك. سيعود مكتب التجارة لدينا بالأسعار ومدة التسليم وشروط الشحن.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <h3 class="font-bold mb-2">الاستفسارات العامة</h3>
+                <a href="mailto:info@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">info@mrkb.net</a>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <h3 class="font-bold mb-2">واتساب</h3>
+                <a href="https://wa.me/6281392442358" target="_blank" rel="noopener" class="text-sm text-white/80 hover:text-white">+62 813-9244-2358</a>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <svg class="w-8 h-8 text-white mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <h3 class="font-bold mb-2">الدعم الفني</h3>
+                <a href="mailto:projects@mrkb.net" class="text-sm text-white/80 hover:text-white break-all">projects@mrkb.net</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const triggers = document.querySelectorAll('.faq-trigger');
+    const categoryButtons = document.querySelectorAll('.category-filter');
+    const faqCategories = document.querySelectorAll('.faq-category');
+    const searchInput = document.getElementById('faq-search');
+    const emptyState = document.getElementById('faq-empty');
+
+    const inactiveClasses = ['bg-white', 'dark:bg-dark-900', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-dark-700'];
+    const activeClasses = ['bg-primary-600', 'text-white'];
+
+    let activeCategory = 'all';
+
+    function applyFilter() {
+      const term = (searchInput.value || '').trim().toLowerCase();
+      let totalVisible = 0;
+
+      faqCategories.forEach(category => {
+        const categoryMatch = activeCategory === 'all' || category.dataset.category === activeCategory;
+        let visibleItems = 0;
+
+        category.querySelectorAll('.faq-item').forEach(item => {
+          const text = item.textContent.toLowerCase();
+          const matchesTerm = !term || text.includes(term);
+          const show = categoryMatch && matchesTerm;
+          item.style.display = show ? '' : 'none';
+          if (show) visibleItems++;
+        });
+
+        category.style.display = categoryMatch && visibleItems > 0 ? '' : 'none';
+        totalVisible += visibleItems;
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', totalVisible > 0);
+      }
+    }
+
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const content = trigger.nextElementSibling;
+        const icon = trigger.querySelector('.faq-icon');
+
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        activeCategory = button.dataset.category;
+
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active', ...activeClasses, ...inactiveClasses);
+          if (btn === button) {
+            btn.classList.add('active', ...activeClasses);
+          } else {
+            btn.classList.add(...inactiveClasses);
+          }
+        });
+
+        applyFilter();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilter);
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'emdash/ui';
+import { getPosts } from '../../lib/blog';
+
+const posts = await getPosts();
+const categories = ['الكل', ...[...new Set(posts.map((p) => p.category).filter(Boolean))]];
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'ar';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout title="المدونة - نصائح وأدلة البناء | MrKB">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-16 sm:py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">مدونة MrKB</h1>
+        <p class="text-lg sm:text-xl text-white/90 leading-relaxed">
+          نصائح وأدلة ورؤى من الخبراء لمحترفي البناء وهواة الأعمال اليدوية.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter -->
+  <section class="py-8 bg-white dark:bg-dark-900 border-b border-gray-200 dark:border-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+          <div class="w-full lg:w-96">
+            <div class="relative">
+              <input
+                type="search"
+                id="blog-search"
+                placeholder="ابحث في المقالات..."
+                class="w-full px-4 py-3 ps-12 rounded-xl border-2 border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20 transition-all"
+              />
+              <svg class="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 justify-center">
+            {categories.map(cat => (
+              <button
+                class="category-filter px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105"
+                class:list={[
+                  cat === 'الكل'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700'
+                ]}
+                data-category={cat}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Posts -->
+  <section class="py-12 sm:py-16 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8">أحدث المقالات</h2>
+
+        <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map(post => (
+            <article
+              class="blog-post bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group border border-gray-200 dark:border-dark-800"
+              data-category={post.category}
+            >
+              <a href={localizeUrl(`/blog/${post.id}`)} class="block">
+                <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700 overflow-hidden">
+                  {post.image
+                    ? <Image image={post.image} alt={post.title} width={600} height={338} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div class="w-full h-full flex items-center justify-center text-5xl">📰</div>}
+                </div>
+              </a>
+
+              <div class="p-5">
+                <div class="flex items-center gap-2 mb-3">
+                  {post.category && (
+                    <span class="px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-xs font-semibold">
+                      {post.category}
+                    </span>
+                  )}
+                  {post.date && <span class="text-xs text-gray-500 dark:text-gray-400">{post.date}</span>}
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
+                  <a href={localizeUrl(`/blog/${post.id}`)}>{post.title}</a>
+                </h3>
+
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                  {post.excerpt}
+                </p>
+
+                <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-dark-700">
+                  <a href={localizeUrl(`/blog/${post.id}`)} class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold text-xs">
+                    اقرأ ←
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- No Results Message -->
+        <div id="no-results" class="hidden text-center py-12">
+          <div class="w-20 h-20 bg-gray-100 dark:bg-dark-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">لم يتم العثور على مقالات</h3>
+          <p class="text-gray-600 dark:text-gray-400">عدّل بحثك أو الفلتر للعثور على ما تبحث عنه.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Subscription -->
+  <section class="py-16 sm:py-20 bg-gradient-to-br from-primary-600 to-orange-500 dark:from-primary-700 dark:to-orange-600 text-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">اشترك في نشرتنا الإخبارية</h2>
+        <p class="text-lg text-white/90 mb-8">
+          احصل على أحدث نصائح البناء وتحديثات المنتجات والعروض الحصرية في بريدك الإلكتروني.
+        </p>
+
+        <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="أدخل بريدك الإلكتروني"
+            class="flex-1 px-6 py-4 rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/60 focus:border-white focus:outline-none focus:ring-4 focus:ring-white/20 transition-all"
+          />
+          <button
+            type="submit"
+            class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl whitespace-nowrap"
+          >
+            اشتراك
+          </button>
+        </form>
+
+        <p class="text-sm text-white/70 mt-4">
+          بدون رسائل مزعجة، يمكنك إلغاء الاشتراك في أي وقت. اقرأ <a href={localizeUrl("/privacy")} class="underline hover:text-white">سياسة الخصوصية</a>.
+        </p>
+
+        <div id="newsletter-success" class="hidden mt-6 p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30">
+          <div class="flex items-center justify-center gap-3">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-white font-medium">
+              شكرًا لاشتراكك! تحقق من بريدك الإلكتروني للتأكيد.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          هل تحتاج نصيحة خبير؟
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          فريقنا من خبراء البناء هنا لمساعدتك في أسئلة مشروعك واختيار المواد.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={localizeUrl("/contact")} class="px-8 py-4 bg-gradient-to-r from-primary-600 to-orange-500 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-orange-600 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            تواصل مع خبرائنا
+          </a>
+          <a href={localizeUrl("/products")} class="px-8 py-4 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 hover:scale-105">
+            تصفح المنتجات
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  // Category Filter
+  const categoryButtons = document.querySelectorAll('.category-filter');
+  const blogPosts = document.querySelectorAll('.blog-post');
+  const noResults = document.getElementById('no-results');
+
+  categoryButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-category');
+
+      categoryButtons.forEach(btn => {
+        btn.classList.remove('bg-primary-600', 'text-white');
+        btn.classList.add('bg-gray-100', 'dark:bg-dark-800', 'text-gray-700', 'dark:text-gray-300');
+      });
+      button.classList.remove('bg-gray-100', 'dark:bg-dark-800', 'text-gray-700', 'dark:text-gray-300');
+      button.classList.add('bg-primary-600', 'text-white');
+
+      let visibleCount = 0;
+      blogPosts.forEach(post => {
+        const postCategory = post.getAttribute('data-category');
+        if (category === 'الكل' || postCategory === category) {
+          post.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          post.classList.add('hidden');
+        }
+      });
+
+      if (visibleCount === 0) {
+        noResults?.classList.remove('hidden');
+      } else {
+        noResults?.classList.add('hidden');
+      }
+    });
+  });
+
+  // Search Functionality
+  const searchInput = document.getElementById('blog-search');
+
+  searchInput?.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    let visibleCount = 0;
+
+    blogPosts.forEach(post => {
+      const title = post.querySelector('h3 a, h3')?.textContent?.toLowerCase() || '';
+      const excerpt = post.querySelector('p')?.textContent?.toLowerCase() || '';
+      const category = post.getAttribute('data-category')?.toLowerCase() || '';
+
+      if (title.includes(query) || excerpt.includes(query) || category.includes(query)) {
+        post.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        post.classList.add('hidden');
+      }
+    });
+
+    if (visibleCount === 0 && query.length > 0) {
+      noResults?.classList.remove('hidden');
+    } else {
+      noResults?.classList.add('hidden');
+    }
+  });
+
+  // Newsletter Form
+  const newsletterForm = document.getElementById('newsletter-form');
+  const newsletterSuccess = document.getElementById('newsletter-success');
+
+  newsletterForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(newsletterForm);
+    const email = formData.get('email');
+
+    console.log('Newsletter subscription:', email);
+
+    if (newsletterSuccess) {
+      newsletterSuccess.classList.remove('hidden');
+      newsletterForm.reset();
+      setTimeout(() => {
+        newsletterSuccess.classList.add('hidden');
+      }, 5000);
+    }
+  });
+</script>

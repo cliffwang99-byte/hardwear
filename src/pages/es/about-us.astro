@@ -1,0 +1,419 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout
+  title="Sobre Nosotros | Cadena de Suministro OEM/ODM para Cocina y Baño y LCL Consolidado"
+  description="Conozca cómo nuestro consorcio de fabricación suministra lavabos de baño a medida, lavamanos y griferías con acabados a juego, con consolidación FCL y estricto control de calidad. Solicite una cotización."
+>
+  <!-- ===== 1. Hero 身份定调区 ===== -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-20 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-sm sm:text-base font-semibold tracking-widest uppercase text-white/80 mb-4">
+          Sobre Nuestra Cadena de Suministro
+        </p>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          Consorcio de Fabricación y Integrador de Cadena de Suministro para Cocina y Baño
+        </h1>
+        <p class="text-lg sm:text-xl text-white/90 mb-8 leading-relaxed">
+          No somos una pequeña fábrica aislada ni un agente intermediario comercial. Unimos fábricas
+          especializadas en muebles de gabinete y fontanería en China para suministrar lavabos de
+          baño a medida, encimeras, lavamanos y griferías con acabados a juego en un único contenedor
+          consolidado.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#" class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            Explorar Lavabos de Baño &rarr;
+          </a>
+          <a href="#" class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            Enviar BOM de Proyecto / Solicitar Cotización
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2. 硬核业务数据条 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            10 Sets
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">MOQ de Lavabo a Medida</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Muestra de 1 pieza o unidad individual a medida disponible
+          </p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            50 Pcs
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">MOQ de Grifería y Desagüe de Lavamanos</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Acabados cromado y PVD</p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            Delta E &lt; 1.5
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">Coincidencia de Color entre Fábricas</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Verificada con espectrofotómetro en madera y metal
+          </p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            20GP / 40HQ
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">Consolidación FCL Anidada</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Combine lavabos, encimeras, lavamanos y herrajes en una sola carga
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3. 为什么选择多工厂联合体？ ===== -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Un Contenedor. Cero Desajustes de Color.
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Comprar lavabos de baño a una fábrica y griferías a otra suele generar dos problemas:
+            acabados desajustados y espacio de contenedor desperdiciado. Nuestro modelo de suministro
+            resuelve ambos antes de que su mercancía salga de China.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">01</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Consolidación FCL Anidada</h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              ¿Compra de fábricas distintas? Las empacamos en un solo contenedor.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Colocamos griferías de lavamanos embaladas y desagües emergentes dentro de las cavidades
+              inferiores protegidas de sus lavabos de baño. Aprovecha el espacio (CBM) que ya paga y
+              reduce los costos adicionales de flete marítimo.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">02</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Control de Acabado Unificado (Delta E &lt; 1.5)
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              Las manijas de sus gabinetes y las griferías combinan en color.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Fábricas distintas suelen producir tonos ligeramente diferentes de Negro Mate u Oro
+              Cepillado. Comprobamos el herraje metálico y las griferías en paralelo con un
+              espectrofotómetro para mantener la variación de color dentro de Delta E &lt; 1.5.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">03</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Drenaje y Herrajes Precortados en Fábrica
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              Sin cortar madera en la obra.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Indíquenos si su proyecto usa drenaje de pared (sifón P) o drenaje de piso (sifón S).
+              Nuestras fábricas de muebles precortan e impermeabilizan los bordes de los paneles
+              traseros o inferiores antes del envío, ahorrando horas de trabajo a su equipo de
+              instalación.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">04</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Control de Calidad Centralizado y Documentación Aduanera
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              Una factura, códigos HS detallados y evidencia fotográfica.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Nuestro equipo de calidad inspecciona cada lote en la planta de la fábrica. Incluso
+              cuando las griferías van anidadas dentro de las cajas de los lavabos, listamos cada
+              artículo por separado con su código HS exacto en su Factura Comercial y Lista de Empaque
+              para un despacho aduanero fluido.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 核心供应品类与 OEM/ODM 能力 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Enfoque en Lavabos de Baño y Fontanería a Juego
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Aunque nuestro consorcio cubre herrajes de cocina y baño, nuestro enfoque de producción
+            principal son paquetes completos de lavabos de baño para constructores, distribuidores e
+            importadores.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Lavabos de Baño <span class="text-sm text-primary-600 dark:text-primary-400 font-semibold">(Producto Principal)</span>
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              Madera contrachapada resistente a la humedad E1, chapa de madera maciza y gabinetes de
+              aluminio tipo panal impermeables. Disponibles solo como base de gabinete (sin tapa)
+              para talleres de piedra, o como juegos completos.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-vanities" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              Explorar Lavabos de Baño &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Encimeras de Lavabo y Lavamanos
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              Piedra sinterizada de 15 mm, superficie sólida, encimeras de cuarzo de ingeniería y
+              fregaderos de cerámica integrados o montados debajo, cortados 1:1 para ajustarse a sus
+              gabinetes de lavabo.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-sinks" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              Ver Encimeras y Lavamanos &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Griferías de Lavamanos y Desagües Emergentes
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              Griferías de latón sin plomo y acero inoxidable SUS304, válvulas de ángulo y desagües de
+              latón a juego con el herraje de su lavabo.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-faucets" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              Ver Griferías de Baño &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              Programas OEM y de Marca Propia
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Fabricamos según sus planos CAD y estándares de marca. Los servicios incluyen anchos de
+              gabinete personalizados, logotipos grabados con láser en griferías, cajas minoristas o
+              para constructor disponibles a medida y etiquetado de proyecto habitación por habitación.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 工厂车间品控四道防线 ===== -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Cómo Inspeccionamos su Pedido Antes de Cargar
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            No dependemos de informes de autoevaluación de la fábrica. Nuestros ingenieros verifican
+            muestras físicas y corridas completas según cuatro estándares claros.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                Auditoría de Color y Durabilidad de Superficie
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Medimos el color del acabado con un espectrofotómetro (Delta E &lt; 1.5) y realizamos
+                pruebas de niebla salina ácida de 48 horas en acabados PVD para prevenir el
+                descascarillado u oxidación en baños húmedos.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">2</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                Prueba de Válvulas y Presión
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Cada lote de griferías se somete a pruebas de presión hidrostática estática de 1.6 MPa
+                para asegurar que los cartuchos de disco de cerámica (la válvula interna que controla
+                el flujo de agua) no tengan fugas bajo la presión alta del edificio.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">3</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                Verificación de Prueba de Armado y Precorte
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Antes de empaquetar, probamos el ajuste de encimeras, lavamanos empotrados y rieles de
+                cajones en la línea de ensamblaje, y verificamos que todos los cortes de drenaje de
+                pared o piso coincidan con su plano CAD 2D aprobado.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">4</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                Carga en Cavidades Protegidas con Espuma
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Empacamos las griferías en cajas de cartón corrugado reforzado de 5 capas con espuma
+                EPE dentro de las cavidades de los lavabos, marcamos las cajas exteriores claramente
+                (+ Griferías y Desagües Dentro) y le enviamos fotos completas de la carga del contenedor.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. 目标市场合规与工程文档支持 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Diseñado para los Códigos de Construcción de su Mercado
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Las necesidades de certificación varían según el país y el nivel del proyecto.
+            Suministramos especificaciones conformes para su región y proporcionamos archivos
+            técnicos para respaldar su proceso de aprobación local.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Norteamérica (EE. UU. y Canadá)
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              Griferías de latón conformes cUPC y NSF-61 y lavamanos de cerámica, vías de agua sin
+              plomo, roscas NPT de 1/2" y dibujos CAD 2D de preinstalación sin marca para una
+              aprobación rápida de la presentación.
+            </p>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Medio Oriente (Arabia Saudita y EAU)
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              Cuerpos de latón macizo de alta durabilidad, acabados PVD probados con niebla salina
+              ácida de 48 horas, aireadores de ahorro de agua de 5.7 LPM y documentación técnica para
+              respaldar el registro SASO / SABER.
+            </p>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Latinoamérica</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              Compatibilidad de rosca doble (NPT de 1/2" y BSP G1/2"), aireadores de fácil limpieza
+              para tanques de agua por gravedad de baja presión y opciones de calidad constructor
+              con ingeniería de valor.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 p-5 bg-blue-50 dark:bg-blue-900/20 border-s-4 border-blue-500 rounded-e-lg max-w-4xl mx-auto">
+          <p class="text-gray-700 dark:text-gray-300 text-sm">
+            <strong>Nota:</strong> El alcance de la certificación depende del modelo y acabado
+            específicos. Para pedidos OEM/ODM de marca propia, proporcionamos documentación técnica
+            completa para asistir su solicitud de certificación local.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. 底部行动号召区 ===== -->
+  <section class="py-16 sm:py-20 bg-gradient-to-br from-primary-700 via-primary-600 to-orange-500 dark:from-primary-800 dark:via-primary-700 dark:to-orange-600 text-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+          ¿Listo para Planear su Próximo Pedido de Contenedor?
+        </h2>
+        <p class="text-lg text-white/90 mb-8 leading-relaxed">
+          Envíenos las especificaciones de sus lavabos, cantidades objetivo o BOM de proyecto. Nuestro
+          equipo de ingeniería responderá dentro de 24 horas con precios FOB o CIF detallados.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/categories/bathroom-vanities" class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            Añadir Productos a Mi Lista de Cotización &rarr;
+          </a>
+          <a href={localizeUrl("/cart")} class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            Solicitar Cotización OEM a Medida
+          </a>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto text-start">
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">Cotizaciones y BOMs</p>
+            <p class="text-white break-all">sales@mrkb.net</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">Proyectos OEM y CAD a Medida</p>
+            <p class="text-white break-all">projects@mrkb.net</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">Centros de Fabricación</p>
+            <p class="text-white">Zhongshan Foshan y Jiangmen, Guangdong, China</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

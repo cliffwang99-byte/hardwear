@@ -1,0 +1,406 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout
+  title="من نحن | مجموعة تصنيع وتكامل سلسلة توريد للأدوات الصحية والمطابخ OEM/ODM"
+  description="تعرّف على كيفية تزويد مجموعة التصنيع لدينا بمغاسل حمامات مخصصة وأحواض وخلاطات مطابقة للألوان مع تجميع حاويات كاملة ورقابة صارمة على الجودة. اطلب عرض سعر."
+>
+  <!-- ===== 1. Hero 身份定调区 ===== -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-20 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-sm sm:text-base font-semibold tracking-widest uppercase text-white/80 mb-4">
+          عن سلسلة التوريد لدينا
+        </p>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          مجموعة تصنيع وتكامل سلسلة توريد للمطابخ والحمامات
+        </h1>
+        <p class="text-lg sm:text-xl text-white/90 mb-8 leading-relaxed">
+          لسنا مصنعًا صغيرًا واحدًا، ولا وكيلًا وسطاء تجاريًا. نحن نوحّد المصانع المتخصصة في
+          الخزائن والسباكة في الصين لتوريد مغاسل حمامات مخصصة وأسطح عمل وأحواض وخلاطات مطابقة
+          للألوان في حاوية واحدة موحّدة.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#" class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            استكشف مغاسل الحمام &rarr;
+          </a>
+          <a href="#" class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            أرسل قائمة المواد / اطلب عرض سعر
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2. 硬核业务数据条 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            10 مجموعات
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">الحد الأدنى لطلب المغاسل المخصصة</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            عينة واحدة أو وحدة مخصصة واحدة متاحة
+          </p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            50 قطعة
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">الحد الأدنى لطلب خلاطات ومصارف الأحواض</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">تشطيبات كروم و PVD</p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            دلتا E أقل من 1.5
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">مطابقة الألوان بين المصانع</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            تم التحقق منها بواسطة مقياس الطيف عبر الخشب والمعادن
+          </p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            20GP / 40HQ
+          </div>
+          <p class="font-semibold text-gray-900 dark:text-white mb-1">تجميع حاوية كاملة متداخل</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            امزج المغاسل والأسطح والأحواض والتجهيزات في شحنة واحدة
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3. 为什么选择多工厂联合体？ ===== -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            حاوية واحدة. عدم تطابق صفري للألوان.
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            شراء مغاسل الحمام من مصنع وخلاطات من مصنع آخر يخلق عادةً مشكلتين: تشطيبات غير متطابقة
+            ومساحة حاوية مهدرة. نموذج التوريد لدينا يحل كلتيهما قبل مغادرة بضائعك للصين.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">01</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">تجميع حاوية كاملة متداخل</h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              هل تشتري من مصانع مختلفة؟ نعبّأها في حاوية واحدة.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              نضع خلاطات الأحواض المعبأة ومصارف الضغط داخل التجاويف السفلية المحمية لمغاسل الحمام
+              الخاصة بك. تستفيد من مساحة الحاوية (CBM) التي تدفع لها بالفعل وتقلل تكاليف الشحن
+              البحري الإضافية.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">02</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              تحكم موحّد في التشطيب (دلتا E أقل من 1.5)
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              مقابض خزائنك وخلاطاتك متطابقة في اللون.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              تنتج المصانع المختلفة غالبًا درجات مختلفة قليلًا من الأسود غير اللامع أو الذهبي
+              المصقول. نختبر التجهيزات المعدنية والخلاطات جنبًا إلى جنب باستخدام مقياس الطيف
+              للحفاظ على تباين الألوان ضمن دلتا E أقل من 1.5.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">03</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              تصريف وتجهيزات مقطوعة مسبقًا في المصنع
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              لا قصّ للخشب في موقع العمل.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              أخبرنا إذا كان مشروعك يستخدم تصريفًا من الجدار (سيفون P) أو تصريفًا من الأرضية (سيفون
+              S). مصانع الخزائن لدينا تقصّ وتغلّف حواف الألواح الخلفية أو السفلية قبل الشحن، مما
+              يوفر ساعات من العمل لطاقم التركيب.
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="text-5xl font-bold text-primary-600/20 dark:text-primary-400/20 mb-4">04</div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              جودة موحّدة وأوراق جمركية من نقطة واحدة
+            </h3>
+            <p class="text-sm text-black/80 dark:text-white/80 font-semibold mb-2">
+              فاتورة واحدة ورموز HS مفصّلة وإثبات بالصور.
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              يقوم فريق الجودة لدينا بفحص كل دفعة في أرضية المصنع. حتى عندما تكون الخلاطات متداخلة
+              داخل صناديق المغاسل، ندرج كل صنف على حدة برمز HS الدقيق في الفاتورة التجارية وقائمة
+              التعبئة لتسهيل التخليص الجمركي.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 核心供应品类与 OEM/ODM 能力 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            التركيز على مغاسل الحمام والسباكة المطابقة
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            بينما تشمل مجموعتنا تجهيزات المطبخ والحمام، فإن تركيز إنتاجنا الأساسي هو حزم مغاسل
+            الحمام الكاملة للمقاولين والموزعين والمستوردين.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              مغاسل الحمام <span class="text-sm text-primary-600 dark:text-primary-400 font-semibold">(المنتج الأساسي)</span>
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              خشب رقائقي مقاوم للرطوبة E1، وقشرة خشب صلب، وخزائن ألمنيوم عسلية مقاومة للماء. متوفر
+              كقواعد خزائن فقط (بدون سطح) لمصنّعي الحجر، أو كمجموعات كاملة.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-vanities" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              تصفح مغاسل الحمام &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              أسطح عمل المغاسل والأحواض
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              حجر متكلس 15 مم، وسطح صلب، وأسطح كوارتز هندسية، وأحواض سيراميك مدمجة أو مثبتة أسفل
+              السطح، مقطوعة 1:1 لتناسب خزائن مغاسلك.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-sinks" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              عرض الأسطح والأحواض &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              خلاطات الأحواض ومصارف الرفع
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+              خلاطات نحاسية خالية من الرصاص وفولاذ مقاوم للصدأ SUS304 وصمامات زاوية ومصارف نحاسية
+              مطابقة للألوان لتجهيزات مغاسلك.
+            </p>
+            <a href="https://mrkb.net/categories/bathroom-faucets" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm hover:gap-3 transition-all duration-300">
+              عرض خلاطات الحمام &rarr;
+            </a>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+              برامج OEM والعلامة الخاصة
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              نصنع وفق رسومات CAD الخاصة بك ومعايير علامتك التجارية. تشمل الخدمات عروض خزائن مخصصة،
+              وشعارات محفورة بالليزر على الخلاطات، وكراتين تجزئة أو مقاولين مخصصة، ووضع علامات
+              للمشروع غرفة بغرفة.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 工厂车间品控四道防线 ===== -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            كيف نفحص طلبك قبل التحميل
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            لا نعتمد على تقارير المصانع الذاتية. يفحص مهندسونا العينات المادية ودفعات الإنتاج وفق
+            أربعة معايير واضحة.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                تدقيق اللون ومتانة السطح
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                نقيس لون التشطيب بمقياس الطيف (دلتا E أقل من 1.5) ونجري اختبارات رذاذ الملح الحمضي
+                لمدة 48 ساعة على تشطيبات PVD لمنع التقشر أو الصدأ في الحمامات الرطبة.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">2</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                اختبار الصمامات والضغط
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                تخضع كل دفعة خلاطات لاختبار ضغط ماء ثابت 1.6 ميجا باسكال لضمان عدم تسرب خراطيش
+                الأقراص الخزفية (الصمام الداخلي الذي يتحكم في تدفق الماء) تحت ضغط المبنى المرتفع.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">3</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                التحقق من التركيب التجريبي والقص المسبق
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                قبل التعبئة، نجرب تركيب الأسطح والأحواض المثبتة أسفل السطح وسكك الأدراج على خط
+                التجميع، ونتحقق من أن جميع قواطع تصريف الجدار أو الأرضية تطابق مخطط CAD ثنائي
+                الأبعاد المعتمد.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 rounded-2xl p-6 sm:p-8 shadow-lg flex items-start gap-5">
+            <div class="flex-shrink-0 w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center font-bold">4</div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                تحميل التجاويف المحمية بالرغوة
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                نعبأ الخلاطات في صناديق كرتون مموج معزز من 5 طبقات برغوة EPE داخل تجاويف المغاسل،
+                ونعلّم الصناديق الخارجية بوضوح (+ خلاطات ومصارف بالداخل)، ونرسل لك صورًا كاملة
+                لتحميل الحاوية.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. 目标市场合规与工程文档支持 ===== -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            مصمّم لرموز البناء في أسواقك
+          </h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            تختلف متطلبات الشهادات حسب البلد ومستوى المشروع. نوفر مواصفات مطابقة لمنطقتك ونقدم
+            ملفات تقنية لدعم عملية الاعتماد المحلية.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              أمريكا الشمالية (الولايات المتحدة وكندا)
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              خلاطات نحاسية مطابقة لمعايير cUPC و NSF-61 وأحواض سيراميك، وقنوات مياه خالية من
+              الرصاص، وخيوط NPT 1/2 بوصة، ورسومات CAD تجهيز أولي بدون علامة للموافقة السريعة على
+              طلبات التقديم.
+            </p>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              الشرق الأوسط (السعودية والإمارات)
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              أجسام نحاسية صلبة عالية المتانة، وتشطيبات PVD مجربة برذاذ الملح الحمضي لمدة 48 ساعة،
+              ومهويات توفير الماء 5.7 لتر/دقيقة، ووثائق فنية لدعم تسجيل SASO / SABER.
+            </p>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">أمريكا اللاتينية</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              توافق خيوط مزدوج (NPT 1/2 بوصة و BSP G1/2)، ومهويات سهلة التنظيف مصممة لخزانات المياه
+              الجاذبية منخفضة الضغط، وخيارات جودة مقاولين مهندسة للقيمة.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 p-5 bg-blue-50 dark:bg-blue-900/20 border-s-4 border-blue-500 rounded-e-lg max-w-4xl mx-auto">
+          <p class="text-gray-700 dark:text-gray-300 text-sm">
+            <strong>ملاحظة:</strong> نطاق الشهادة يعتمد على الطراز والتشطيب المحددين. لطلبات
+            OEM/ODM ذات العلامة الخاصة، نقدم توثيقًا تقنيًا كاملًا لمساعدتك في طلب الشهادة المحلية.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. 底部行动号召区 ===== -->
+  <section class="py-16 sm:py-20 bg-gradient-to-br from-primary-700 via-primary-600 to-orange-500 dark:from-primary-800 dark:via-primary-700 dark:to-orange-600 text-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+          مستعد لتخطيط طلب الحاوية التالي؟
+        </h2>
+        <p class="text-lg text-white/90 mb-8 leading-relaxed">
+          أرسل لنا مواصفات المغاسل أو الكميات المستهدفة أو قائمة مواد المشروع. سيرد فريق الهندسة
+          خلال 24 ساعة بأسعار FOB أو CIF مفصلة.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/categories/bathroom-vanities" class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            أضف منتجات إلى قائمة عرض السعر &rarr;
+          </a>
+          <a href={localizeUrl("/cart")} class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            اطلب عرض سعر OEM مخصص
+          </a>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto text-start">
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">عروض الأسعار وقوائم المواد</p>
+            <p class="text-white break-all">sales@mrkb.net</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">مشاريع CAD و OEM المخصصة</p>
+            <p class="text-white break-all">projects@mrkb.net</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <p class="text-sm font-semibold text-white/70 mb-2">مراكز التصنيع</p>
+            <p class="text-white">تشونغشان فوشان وجيانغمن، قوانغدونغ، الصين</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

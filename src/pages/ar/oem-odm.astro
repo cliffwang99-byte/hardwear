@@ -1,0 +1,294 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizePath } from '../../lib/i18n';
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+  return localizePath(url, currentLocale);
+}
+---
+
+<BaseLayout
+  title="دعم شهادات OEM وحزم تقديم العلامة الخاصة | MrKB"
+  description="تجهيزات معتمدة مسبقًا للطلبات الكبيرة السريعة بالإضافة إلى توثيق تقني كامل لمساعدة عملاء OEM/ODM على تسجيل شهادات السوق المحلية تحت اسم علامتهم التجارية."
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 text-white py-20 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 start-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 end-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">دعم شهادات OEM &amp; حزم تقديم العلامة الخاصة</h1>
+        <p class="text-lg sm:text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
+          نورد تجهيزات معتمدة مسبقًا للطلبات الكبيرة السريعة ونوفر توثيقًا تقنيًا كاملًا لمساعدة عملاء OEM/ODM على تسجيل شهادات السوق المحلية تحت اسم علامتهم التجارية الخاصة.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={localizeUrl("/products")} class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            تصفح خطوط المنتجات
+          </a>
+          <a href={localizeUrl("/contact")} class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            احصل على عرض OEM
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two Clear Paths -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">1. مساران واضحان للامتثال للسوق</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            المشاريع المختلفة لها احتياجات امتثال مختلفة. اختر المسار الذي يناسب جدولك الزمني واستراتيجية علامتك.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Path A -->
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg border-t-4 border-blue-500">
+            <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-4">
+              المسار أ
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">طلبات بالجملة سريعة <span class="text-gray-500 dark:text-gray-400 font-normal">(باستخدام شهادات المصنع الحالية)</span></h3>
+            <ul class="space-y-4 text-gray-600 dark:text-gray-400">
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>هل تحتاج إلى الشحن بسرعة دون انتظار فحوصات المختبر؟ اختر من خطوط منتجاتنا المعتمدة مسبقًا.</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>بعض الطرازات المختارة لديها بالفعل سجلات نشطة لأمريكا الشمالية (cUPC وNSF/ANSI 61 &amp; 372 وADA وSGCC وUL/ETL) وأوروبا (CE وEN 817 وACS) والشرق الأوسط (SASO / SABER).</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>تُشحن الطلبات بتغليف علامة خاصة محايد أو بعلامات امتثال قياسية.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Path B -->
+          <div class="bg-gray-50 dark:bg-dark-800 rounded-2xl p-8 shadow-lg border-t-4 border-primary-500">
+            <div class="w-14 h-14 bg-primary-500/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-semibold mb-4">
+              المسار باء
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">برامج العلامة الخاصة OEM / ODM <span class="text-gray-500 dark:text-gray-400 font-normal">(الشهادة تحت علامتك التجارية)</span></h3>
+            <ul class="space-y-4 text-gray-600 dark:text-gray-400">
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>هل تبني علامتك الخاصة؟ بموجب اللوائح الدولية، يجب تسجيل الشهادات المحلية تحت الاسم القانوني لمالك العلامة.</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>أنت تقود الطلب المحلي مع هيئة الاختبار الإقليمية لديك (مثل IAPMO أو NSF أو SASO أو WaterMark).</span>
+              </li>
+              <li class="flex gap-3">
+                <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>نعمل كاتحادك التصنيعي خلف الكواليس. نوفر جميع بيانات اختبارات المختبر الخام وشهادات المواد وملفات تدقيق المصنع اللازمة لاجتياز التسجيل.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Documents We Deliver -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-6">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">2. الوثائق التي نوفرها لتقديمات مشروعك وتسجيله</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+        <p class="text-center text-orange-600 dark:text-orange-400 font-semibold mb-10">
+          كل ملف يُنقّى من أسماء المصانع الأصلية والعلامات المائية الصينية وبيانات الاتصال لأطراف ثالثة.
+        </p>
+
+        <div class="overflow-x-auto rounded-2xl shadow-lg">
+          <table class="min-w-full bg-white dark:bg-dark-900 divide-y divide-gray-200 dark:divide-dark-700">
+            <thead class="bg-gray-100 dark:bg-dark-800">
+              <tr>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">فئة الوثيقة</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">الملفات والتنسيقات المشمولة</th>
+                <th class="px-6 py-4 text-start text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">كيف يساعد فريقك</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-dark-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">أوراق تقديم العلامة الخاصة</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">PDF قابل للتعديل مع خانة ختم فارغة في الزاوية العلوية اليسرى</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">يضيف مهندسوك أو مقاولوك شعار شركتك ويقدمون مباشرة إلى المهندسين المعماريين.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">رسومات هندسية غير موسومة</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">CAD ثنائي الأبعاد (.dwg / .dxf) &amp; BIM/Revit ثلاثي الأبعاد (.rfa / .stp)</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">أدرج خلاطاتنا ومغاسلنا وأنظمة الدش مباشرة في مخططات البناء الخاصة بك.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">تقارير المواد وفحوصات المختبر</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">شهادات فحص المطحنة (MTC) وتقارير رذاذ الملح الحمضي 48/72 ساعة وبيانات الانفجار 1.6 ميجا باسكال و500 ألف دورة</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">يثبت النحاس الخالي من الرصاص (CW511L) أو درجة SUS304 الحقيقية لمفتشي المشروع.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">حزمة دعم شهادات OEM</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">شهادات ISO 9001 ومخططات أجزاء مفككة وقائمة مواد (BOM) وخطابات تفويض سجلات متعددة</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">يسرع تسجيل علامتك الخاصة أو السجل الثانوي لدى السلطات المحلية.</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-dark-800 transition-colors">
+                <td class="px-6 py-5 font-semibold text-gray-900 dark:text-white align-top">أدلة التثبيت في موقع العمل</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">أدلة محايدة بالإنجليزية / الإسبانية / العربية وقوالب قص بنسبة 1:1</td>
+                <td class="px-6 py-5 text-gray-600 dark:text-gray-400 align-top">يمنع أخطاء التثبيت في الموقع مع إبقاء علامتك في المقدمة.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 sm:py-20 bg-white dark:bg-dark-900">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">3. الأسئلة الشائعة</h2>
+          <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">س1: هل تحمل جميع المنتجات في كتالوجكم شهادات cUPC أو CE أو SASO بالفعل؟</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                لا. تختلف متطلبات الشهادة حسب البلد ونوع المنتج. بعض الطرازات المختارة في كتالوجنا تحمل سجلات نشطة cUPC أو NSF-61 أو CE أو SASO للتوريد بالجملة الفوري. بالنسبة للطرازات غير المعتمدة أو التصميمات المخصصة OEM، نوفر توثيقًا تقنيًا كاملًا وعينات اختبار حتى تحصل على الموافقة المحلية.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">س2: هل يمكنكم مساعدتنا في تسجيل cUPC أو WaterMark أو SABER تحت علامتنا الخاصة؟</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                نعم. بينما تعمل شركتك كمقدم الطلب الرسمي في سوقك المستهدف، يوفر اتحادنا الملف الفني الكامل. يشمل ذلك شهادات مطحنة المواد الخام ورسومات ثلاثية/ثنائية الأبعاد وتقارير اختبارات مختبر داخلية وخطابات تعاون للسجلات المتعددة عند الاقتضاء. ملاحظة: تعتمد الجداول الزمنية للموافقة على وكالة الشهادات المحلية لديك.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">س3: هل سيرى مقاولونا أو عملاؤنا النهائيون اسم المصنع الصيني على أوراق المواصفات أو الكراتين؟</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                أبدًا. نطبق بروتوكول علامة خاصة صارمًا عبر جميع المصانع الأعضاء. تترك كل ورقة تقديم منتج زاوية فارغة لختم شركتك. جميع ملفات CAD وأدلة التثبيت والعلامات بالليزر وكراتين التصدير خالية 100% من شعارات المصانع أو معرّفات المصدر.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item bg-gray-50 dark:bg-dark-800 rounded-xl overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-5 text-start flex items-center justify-between hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+              <span class="font-semibold text-gray-900 dark:text-white pr-4">س4: كيف تضمنون مطابقة المنتجات للمواصفات الدقيقة المقدمة للشهادة؟</span>
+              <svg class="w-5 h-5 text-gray-500 transition-transform faq-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-5">
+              <p class="text-gray-600 dark:text-gray-400">
+                يفحص فريقنا المستقل لضمان الجودة/مراقبة الجودة كل دفعة في ورشنا الشريكة قبل التجميع في موانئ قوانغتشو أو شنتشن. نتحقق من درجات المواد ونختبر 100% من التجهيزات الحاملة للمياه بحثًا عن تسرب الهواء وضغط الماء، ونفحص ثبات التشطيب (دلتا E أقل من 1.5) مقابل عينتك الرئيسية المعتمدة.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-20 bg-gray-50 dark:bg-dark-800">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-orange-500 dark:from-primary-700 dark:via-primary-600 dark:to-orange-600 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 end-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 start-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          </div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-bold mb-4">مستعد للتسجيل تحت علامتك الخاصة؟</h2>
+              <p class="text-lg text-white/90 leading-relaxed">
+                أخبرنا بسوقك المستهدف ونطاق منتجاتك. سنجمع ملفًا فنيًا كاملًا للعلامة الخاصة ونقدّم عرض سعر لبرنامج OEM / ODM خلال يوم عمل واحد.
+              </p>
+            </div>
+            <div class="text-center md:text-end md:justify-self-end">
+              <a href={localizeUrl("/contact")} class="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                طلب عرض OEM
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // FAQ Toggle
+    document.querySelectorAll('.faq-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const content = trigger.nextElementSibling;
+        const icon = trigger.querySelector('.faq-icon');
+
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+  </script>
+</BaseLayout>
