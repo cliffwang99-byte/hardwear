@@ -1,37 +1,41 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "buildmart",
-  "main": "./src/worker.ts",
-  "compatibility_date": "2026-02-24",
-  "compatibility_flags": ["nodejs_compat"],
-
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "buildmart",
-      "database_id": "751ab326-f11e-4b88-acc2-189a89d4c1da",
-    },
-  ],
-
-  "kv_namespaces": [
-    {
-      "binding": "SESSION",
-      "id": "d7c370e6cfc84b6ab2c0b72a70fd4dbf",
-    },
-  ],
-
-  "r2_buckets": [
-    {
-      "binding": "MEDIA",
-      "bucket_name": "buildmart-media",
-    },
-  ],
-
-  "images": {
-    "binding": "IMAGES",
-  },
-
-  "triggers": {
-    "crons": ["* * * * *"],
-  },
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "buildmart",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "buildmart",
+			"database_id": "751ab326-f11e-4b88-acc2-189a89d4c1da",
+		},
+	],
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "d7c370e6cfc84b6ab2c0b72a70fd4dbf",
+		},
+		{
+			"binding": "MARKDOWN_CACHE",
+			"id": "62a923a2136c4218b6f287f4d086c1a5",
+			"remote": true
+		},
+	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "buildmart-media",
+		},
+	],
+	"images": {
+		"binding": "IMAGES",
+	},
+	"triggers": {
+		"crons": [
+			"* * * * *"
+		],
+	},
 }
