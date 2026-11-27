@@ -53,6 +53,8 @@ test.txt
 *.md
 !README.md
 !LICENSE.md
+# 构建必需：translator/index.ts 以 ?raw 内联进 prompt，缺失会导致 astro build 失败
+!translator/translation-standards.md
 
 # Local pages not for production
 src/pages/China/

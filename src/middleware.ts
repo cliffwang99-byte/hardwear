@@ -86,7 +86,8 @@ function isSupportedMarkdownRoute(pathname: string): boolean {
 	const { path, locale } = stripLocale(pathname);
 	if (!(LOCALES as readonly string[]).includes(locale)) return false;
 
-	if (path === "/") return false; // 根路径（首页）默认不转换，按需放开
+	// 放行英文主站首页 "/"（es/ar 首页已被上方语种白名单拦截）
+	if (path === "/") return true;
 
 	if (DETAIL_ROUTE_REGEX.test(path)) return true;
 

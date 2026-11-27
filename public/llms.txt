@@ -1,0 +1,14 @@
+# MrKB — Kitchen & Bath OEM/ODM / FCL Supply Chain
+> Kitchen & bath hardware, vanity cabinets, and full-container (FCL) export supply chain for property projects and wholesale buyers. Browse the site at https://mrkb.net; every entry below can also be fetched as Markdown by sending the `Accept: text/markdown` header (English pages only; /es and /ar pages are not converted).
+
+## Main Content
+- [Products](/products): full product catalog with specifications
+- [Blog](/blog): industry insights, selection guides, and tutorials
+- [Categories](/categories): browse products by category
+- [Topics](/topics): product collections by use case / selling point
+- [Series](/series): products grouped by family
+- [OEM / ODM & Wholesale](/wholesale-oem): OEM/ODM and wholesale sourcing
+- [About Us](/about-us): brand background and supply chain overview
+
+## AI Agent Notes
+- The site's content language is English (en, no path prefix). Markdown conversion via `text/markdown` is available for English pages only; `/es` and `/ar` paths are the Spanish and Arabic versions of the site and are not converted to Markdown.

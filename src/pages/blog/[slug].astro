@@ -85,7 +85,7 @@ const pageContext = createPublicPageContext({
       />
     )}
 
-    <div class="max-w-[50.4rem] mx-auto">
+    <div data-ai-content data-ai-type="article" class="max-w-[50.4rem] mx-auto">
       <div class="flex items-center gap-3 mb-4">
         {post.category && (
           <span class="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold">{post.category}</span>
@@ -127,7 +127,7 @@ const pageContext = createPublicPageContext({
   </div>
 
   {post.products && post.products.length > 0 && (
-    <section class="py-12 bg-white dark:bg-dark-900 border-t border-gray-200 dark:border-dark-700">
+    <section data-ai-ignore class="py-12 bg-white dark:bg-dark-900 border-t border-gray-200 dark:border-dark-700">
       <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Related Products</h2>
@@ -158,7 +158,7 @@ const pageContext = createPublicPageContext({
   )}
 
   {recent.length > 0 && (
-    <section class="py-12 bg-gray-50 dark:bg-dark-800 border-t border-gray-200 dark:border-dark-700">
+    <section data-ai-ignore class="py-12 bg-gray-50 dark:bg-dark-800 border-t border-gray-200 dark:border-dark-700">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Articles</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
