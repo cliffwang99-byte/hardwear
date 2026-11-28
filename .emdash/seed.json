@@ -230,6 +230,7 @@
                   { "slug": "image", "label": "卡片图片", "type": "image" },
                   { "slug": "title", "label": "卡片标题", "type": "string" },
                   { "slug": "desc", "label": "卡片描述", "type": "text" },
+                  { "slug": "link", "label": "跳转链接", "type": "url" },
                   {
                     "slug": "span",
                     "label": "卡片尺寸",

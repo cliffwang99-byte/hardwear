@@ -14,6 +14,7 @@ interface Card {
   image?: unknown;
   title?: string;
   desc?: string;
+  link?: string;
   span?: string;
 }
 
@@ -39,11 +40,12 @@ if (!sectionTitle && !subText && cards.length === 0) return null;
 const gapClass =
   gap === "sm" ? "gap-3" : gap === "lg" ? "gap-8" : "gap-5";
 // 基准网格 2 列起步，lg 升 4 列——配合 colspan 拼出便当盒
+// 加大格子：auto-rows 更高，normal 卡最小高度提升到 9rem
 const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
 ---
 
-<section class="border-y border-gray-200 bg-gray-50 py-14 dark:border-dark-800 dark:bg-dark-900">
-  <div class="mx-auto max-w-6xl px-4">
+<section class="bg-gray-50 py-16 dark:bg-dark-900">
+  <div class="mx-auto max-w-7xl px-4">
     {sectionTitle && (
       <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
         {sectionTitle}
@@ -53,12 +55,19 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
       <p class="mb-10 max-w-2xl text-gray-600 dark:text-gray-300">{subText}</p>
     )}
 
-    <div class={`grid grid-flow-dense auto-rows-[minmax(120px,auto)] grid-cols-1 ${colClass} ${gapClass}`}>
+    <div class={`grid grid-flow-dense auto-rows-[minmax(9rem,auto)] grid-cols-1 ${colClass} ${gapClass}`}>
       {cards.map((card) => {
         const spanClass = SPAN_CLASS[card.span ?? "normal"] ?? "";
+        const hasLink = typeof card.link === "string" && card.link.length > 0;
+        const cardTag = hasLink ? "a" : "div";
         return (
-          <figure
-            class={`group relative flex min-h-40 flex-col justify-end overflow-hidden rounded-2xl ${spanClass} ${card.span === "normal" ? "border border-gray-200 bg-white shadow-sm dark:border-dark-700 dark:bg-dark-800" : ""}`}
+          <cardTag
+            {...(hasLink ? { href: card.link, target: "_blank", rel: "noopener" } : {})}
+            class={`group relative flex min-h-36 flex-col justify-end overflow-hidden rounded-2xl ${spanClass} ${
+              card.span === "normal"
+                ? "border border-gray-200 bg-white shadow-sm dark:border-dark-700 dark:bg-dark-800"
+                : ""
+            }`}
             key={card._key}
           >
             {card.image && (
@@ -70,7 +79,7 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
               />
             )}
             <figcaption
-              class={`relative p-5 ${card.span === "big" ? "" : "bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white"}`}
+              class={`relative p-6 ${card.span === "big" ? "" : "bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white"}`}
             >
               {card.title && (
                 <h3 class="mb-1 text-lg font-bold text-inherit">{card.title}</h3>
@@ -79,7 +88,22 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
                 <p class="text-sm leading-relaxed text-inherit opacity-90">{card.desc}</p>
               )}
             </figcaption>
-          </figure>
+            {hasLink && (
+              <span
+                class="absolute bottom-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white"
+                aria-hidden="true"
+              >
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </span>
+            )}
+          </cardTag>
         );
       })}
     </div>
