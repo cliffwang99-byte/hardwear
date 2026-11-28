@@ -1,0 +1,203 @@
+{
+  "version": "1",
+  "defaultLocale": "en",
+  "blockTypes": [
+    {
+      "slug": "hero_banner",
+      "label": "首屏大横幅",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "eyebrow", "label": "眉题", "type": "string" },
+            { "slug": "heading", "label": "主标题", "type": "string", "required": true },
+            { "slug": "sub_text", "label": "副标题", "type": "text" },
+            { "slug": "bg_image", "label": "背景图片", "type": "image" },
+            { "slug": "cta_label", "label": "按钮文字", "type": "string" },
+            { "slug": "cta_href", "label": "按钮链接", "type": "url" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rich_content",
+      "label": "图文混排",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "heading", "label": "区块标题", "type": "string" },
+            { "slug": "body", "label": "正文", "type": "portableText" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "feature_grid",
+      "label": "卖点优势网格",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "section_title", "label": "区块大标题", "type": "string" },
+            {
+              "slug": "items",
+              "label": "卡片列表",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  { "slug": "icon", "label": "图标", "type": "image" },
+                  { "slug": "title", "label": "卡片标题", "type": "string" },
+                  { "slug": "desc", "label": "简短描述", "type": "text" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "spec_table",
+      "label": "参数对比表",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "title", "label": "表格标题", "type": "string" },
+            { "slug": "caption", "label": "表头说明", "type": "text" },
+            { "slug": "rows", "label": "数据行", "type": "repeater", "validation": { "subFields": [
+              { "slug": "label", "label": "行标签", "type": "string" },
+              { "slug": "value", "label": "值", "type": "text" }
+            ] } },
+            { "slug": "cols", "label": "对比列", "type": "repeater", "validation": { "subFields": [
+              { "slug": "label", "label": "列名", "type": "string" },
+              { "slug": "value", "label": "列值", "type": "text" }
+            ] } }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "faq_accordion",
+      "label": "FAQ 折叠面板",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "title", "label": "FAQ 标题", "type": "string" },
+            {
+              "slug": "faqs",
+              "label": "问答列表",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  { "slug": "question", "label": "问题", "type": "string" },
+                  { "slug": "answer", "label": "回答", "type": "text" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "inquiry_cta",
+      "label": "快捷询价表单",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "heading", "label": "表单标题", "type": "string" },
+            { "slug": "lead", "label": "引导文案", "type": "text" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "category_showcase",
+      "label": "产品分类橱窗",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "title", "label": "区块标题", "type": "string" },
+            { "slug": "sub", "label": "引导文案", "type": "text" },
+            {
+              "slug": "category",
+              "label": "产品分类",
+              "type": "select",
+              "required": true,
+              "validation": {
+                "options": ["vanities", "cabinets", "faucets", "tops", "accessories"]
+              }
+            },
+            { "slug": "cols", "label": "每行数量", "type": "select", "defaultValue": "4", "validation": { "options": ["2", "3", "4"] } },
+            { "slug": "limit", "label": "最多显示数量", "type": "integer", "defaultValue": 8, "validation": { "min": 1, "max": 24 } }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "product_showcase",
+      "label": "产品橱窗（占位）",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "title", "label": "区块标题", "type": "string" },
+            { "slug": "sub", "label": "引导文案", "type": "text" },
+            { "slug": "cols", "label": "每行数量", "type": "select", "defaultValue": "4", "validation": { "options": ["2", "3", "4"] } }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "slug": "pages",
+      "label": "独立页面",
+      "labelSingular": "Page",
+      "supports": ["drafts", "revisions", "search", "seo"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "页面标题",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "sections",
+          "label": "页面内容积木",
+          "type": "blocks",
+          "validation": {
+            "allowedTypes": [
+              "hero_banner",
+              "rich_content",
+              "feature_grid",
+              "spec_table",
+              "faq_accordion",
+              "inquiry_cta",
+              "category_showcase",
+              "product_showcase"
+            ]
+          }
+        },
+        {
+          "slug": "featured_products",
+          "label": "精选产品橱窗（数据源）",
+          "type": "reference",
+          "validation": { "targetCollection": "products", "multiple": true }
+        }
+      ]
+    }
+  ]
+}

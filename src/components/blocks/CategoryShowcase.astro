@@ -1,0 +1,56 @@
+---
+// src/components/blocks/CategoryShowcase.astro
+import { Image } from "emdash/ui";
+import { localizePath } from "../../lib/i18n";
+import { getProductsByCategory } from "../../lib/shop";
+
+interface Props {
+  value?: {
+    _type?: string;
+    _key?: string;
+    title?: string;
+    sub?: string;
+    category?: string;
+    cols?: string;
+    limit?: number;
+  };
+}
+
+const { value } = Astro.props;
+if (!value?.category) return null;
+
+const products = (await getProductsByCategory(value.category)).slice(0, value?.limit ?? 8);
+if (products.length === 0) return null;
+
+const cols = value?.cols ?? "4";
+const currentLocale = Astro.currentLocale ?? "en";
+---
+
+<section class="mx-auto max-w-6xl px-4 py-14">
+  {value?.title && (
+    <h2 class="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+      {value.title}
+    </h2>
+  )}
+  {value?.sub && (
+    <p class="mb-10 text-center text-gray-600 dark:text-gray-400">{value.sub}</p>
+  )}
+  <div class={`grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-${cols}`}>
+    {products.map((p) => (
+      <a href={localizePath(`/product/${p.id}`, currentLocale)} class="group">
+        {Array.isArray(p.images) && p.images[0]
+          ? (
+            <Image
+              image={p.images[0]}
+              alt={p.name}
+              class="aspect-square w-full rounded-2xl object-cover"
+            />
+          )
+          : <div class="aspect-square w-full rounded-2xl bg-gray-100 dark:bg-dark-800"></div>}
+        <h3 class="mt-3 font-bold text-gray-900 group-hover:text-primary-600 dark:text-white">
+          {p.name}
+        </h3>
+      </a>
+    ))}
+  </div>
+</section>

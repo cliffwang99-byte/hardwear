@@ -1,0 +1,129 @@
+---
+// src/components/blocks/InquiryCta.astro
+
+interface Props {
+  value?: {
+    _type?: string;
+    _key?: string;
+    heading?: string;
+    lead?: string;
+  };
+  pageSlug?: string;
+  pageTitle?: string;
+}
+
+const { value, pageSlug = "", pageTitle = "" } = Astro.props;
+const heading = value?.heading ?? "Get a Quote";
+const lead = value?.lead ?? "Tell us about your project and our team will reply within 24 hours.";
+---
+
+<section class="bg-primary-950 py-14 dark:bg-dark-950">
+  <div class="mx-auto max-w-3xl px-4">
+    <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-dark-700 dark:bg-dark-800 sm:p-10">
+      <h2 class="text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{heading}</h2>
+      <p class="mt-3 text-center text-sm leading-relaxed text-gray-600 dark:text-gray-400 sm:text-base">{lead}</p>
+
+      <form id="inquiry-cta-form" class="mt-8 space-y-4" data-page-slug={pageSlug} data-page-title={pageTitle}>
+        <input type="text" name="honeypot_website" class="hidden" tabindex="-1" autocomplete="off" />
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label class="block">
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Name *</span>
+            <input
+              id="cta-quote-name"
+              type="text"
+              required
+              class="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-900 dark:text-white"
+              placeholder="Your name"
+            />
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Email *</span>
+            <input
+              id="cta-quote-email"
+              type="email"
+              required
+              class="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-900 dark:text-white"
+              placeholder="you@company.com"
+            />
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Message</span>
+          <textarea
+            id="cta-quote-message"
+            rows="4"
+            class="mt-1.5 w-full resize-y rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-900 dark:text-white"
+            placeholder="Tell us the models, quantities and any requirements..."
+          ></textarea>
+        </label>
+
+        <p id="cta-quote-error" class="hidden text-sm font-medium text-red-500"></p>
+        <p id="cta-quote-success" class="hidden text-sm font-medium text-green-600">
+          Thanks! Your inquiry has been submitted. Our team will contact you shortly.
+        </p>
+
+        <button
+          id="cta-quote-submit"
+          type="submit"
+          class="w-full rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:bg-primary-700 hover:shadow-lg"
+        >
+          Send Inquiry
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('inquiry-cta-form');
+    if (!form) return;
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var err = document.getElementById('cta-quote-error');
+      var ok = document.getElementById('cta-quote-success');
+      if (err) err.classList.add('hidden');
+      if (ok) ok.classList.add('hidden');
+
+      var name = document.getElementById('cta-quote-name').value.trim();
+      var email = document.getElementById('cta-quote-email').value.trim();
+      var message = document.getElementById('cta-quote-message').value.trim();
+      var honeypot = form.querySelector('input[name="honeypot_website"]')?.value || '';
+      var pageSlug = form.dataset.pageSlug || 'landing';
+      var pageTitle = form.dataset.pageTitle || 'Landing Page';
+
+      var btn = document.getElementById('cta-quote-submit');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+      try {
+        var res = await fetch('/api/inquiry/submit', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            message: message,
+            items: [{ id: pageSlug, name: pageTitle, quantity: 1, notes: message }],
+            honeypot_website: honeypot,
+            submitted_at: Date.now()
+          })
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.message || 'Submission failed');
+        }
+        form.reset();
+        if (ok) ok.classList.remove('hidden');
+      } catch (ex) {
+        if (err) {
+          err.textContent = ex.message || 'Something went wrong. Please try again.';
+          err.classList.remove('hidden');
+        }
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send Inquiry'; }
+      }
+    });
+  })();
+</script>

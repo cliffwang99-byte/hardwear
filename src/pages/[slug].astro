@@ -1,0 +1,166 @@
+---
+// src/pages/[slug].astro
+// 自由页面动态路由：承接 EmDash `pages` 集合的积木式内容。
+// 本文件同时服务 en（无前缀）/ es / ar（带前缀）三语种——
+// Astro i18n `fallbackType: "rewrite"` 会让 /es/xxx、/ar/xxx 回退到本路由，
+// Astro.currentLocale 自动就位，内部链接经 localizePath 正确加前缀。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { decodeSlug, getEmDashEntry, getSeoMeta, getSiteSettings } from 'emdash';
+import { createPublicPageContext } from 'emdash/page';
+import { localizePath } from '../lib/i18n';
+
+import HeroBanner from '../components/blocks/HeroBanner.astro';
+import RichContent from '../components/blocks/RichContent.astro';
+import FeatureGrid from '../components/blocks/FeatureGrid.astro';
+import SpecTable from '../components/blocks/SpecTable.astro';
+import FaqAccordion from '../components/blocks/FaqAccordion.astro';
+import InquiryCta from '../components/blocks/InquiryCta.astro';
+import CategoryShowcase from '../components/blocks/CategoryShowcase.astro';
+import ProductShowcase from '../components/blocks/ProductShowcase.astro';
+import BlockFallback from '../components/blocks/BlockFallback.astro';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+function localizeUrl(url: string): string {
+	return localizePath(url, currentLocale);
+}
+
+// slug 即 EmDash entry 的 id（与 blog/[slug] 同款用法）
+const slug = decodeSlug(Astro.params.slug ?? '');
+
+type PageEntry = {
+	entry?: {
+		data?: Record<string, unknown>;
+		slug?: string | null;
+		references?: Record<string, { entries?: unknown[]; nextCursor?: string } | undefined>;
+	} | null;
+	error?: unknown;
+};
+
+// 尽力而为：找不到页面或查询报错时fallback到首屏，不做 404 页
+let pageEntry: PageEntry['entry'] | null = null;
+let entryError: unknown = undefined;
+try {
+	const result = (await getEmDashEntry('pages' as never, slug ?? '', {
+		locale: currentLocale,
+		references: { featured_products: true },
+	})) as unknown as PageEntry;
+	pageEntry = result.entry ?? null;
+	entryError = result.error;
+} catch (e) {
+	entryError = e;
+}
+
+const pageData = (pageEntry?.data ?? {}) as Record<string, unknown>;
+const pageTitle = typeof pageData.title === 'string' ? pageData.title : '';
+const title = pageTitle || slug || '';
+const sections = Array.isArray(pageData.sections) ? pageData.sections : [];
+
+// 页面级 reference：精选产品橱窗的数据源（§8 双轨方案）
+// 本地库若缺 products 集合/该字段，这里优雅回退为空数组
+const featuredProducts =
+	(pageEntry?.references?.featured_products?.entries as unknown[] | undefined) ?? [];
+
+// 未找到页面：直接 404 而不是渲染空壳
+if (!pageEntry) {
+	return new Response(null, { status: 404 });
+}
+
+// SEO：pages 集合 supports 含 seo，局部字段优先于集合默认
+const seo = (pageData.seo ?? {}) as Record<string, unknown>;
+const siteSettings = await getSiteSettings();
+const siteTitle = siteSettings.title || 'MrKB';
+const titleSeparator = siteSettings.seo?.titleSeparator || ' | ';
+const siteUrl = siteSettings.url || Astro.url.origin;
+
+const seoMeta = getSeoMeta(
+	{
+		data: {
+			seo: {
+				title: typeof seo.title === 'string' ? seo.title : null,
+				description: typeof seo.description === 'string' ? seo.description : null,
+				image: typeof seo.image === 'string' ? seo.image : null,
+				canonical: typeof seo.canonical === 'string' ? seo.canonical : null,
+				noIndex: seo.noIndex === true,
+			},
+		},
+	},
+	{
+		siteTitle,
+		siteUrl,
+		titleSeparator,
+		path: Astro.url.pathname,
+		defaultTitle: pageTitle || title,
+		defaultDescription: '',
+		defaultOgImage: null,
+	},
+);
+
+const pageContext = createPublicPageContext({
+	Astro,
+	kind: 'content',
+	pageType: 'page',
+	title: seoMeta.title,
+	description: seoMeta.description,
+	canonical: seoMeta.canonical,
+	image: seoMeta.ogImage || null,
+	content: pageEntry.id ? { collection: 'pages', id: pageEntry.id, slug: pageEntry.slug ?? undefined } : undefined,
+	seo: {
+		ogTitle: seoMeta.ogTitle,
+		ogDescription: seoMeta.ogDescription,
+		ogImage: seoMeta.ogImage,
+		robots: seoMeta.robots,
+	},
+	siteName: siteTitle,
+	siteUrl,
+	breadcrumbs: [
+		{ name: 'Home', url: localizeUrl('/') },
+		{ name: pageTitle || title, url: Astro.url.pathname },
+	],
+});
+---
+
+<BaseLayout title={pageContext.title ?? ''} page={pageContext}>
+  <main class="min-h-screen" data-ai-content data-ai-type="page">
+    {
+      sections.length === 0 && (
+        <section class="mx-auto max-w-3xl px-4 py-20 text-center">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{pageTitle}</h1>
+          <p class="mt-4 text-gray-500 dark:text-gray-400">This page has no content yet.</p>
+        </section>
+      )
+    }
+    {
+      (sections as Array<Record<string, unknown>>).map((block, index) => {
+        const blockKey = typeof block._key === 'string' ? block._key : `block-${index}`;
+        const commonProps = { value: block, index, blockKey };
+        // 占位积木 → 用页面级 reference 数据填充，产品位置随块顺序走
+        if (block._type === 'product_showcase') {
+          return (
+            <ProductShowcase
+              {...commonProps}
+              products={featuredProducts as Array<Record<string, unknown>>}
+            />
+          );
+        }
+        if (block._type === 'inquiry_cta') {
+          return (
+            <InquiryCta
+              {...commonProps}
+              pageSlug={slug ?? ''}
+              pageTitle={pageTitle}
+            />
+          );
+        }
+        const Component: Record<string, any> = {
+          hero_banner: HeroBanner,
+          rich_content: RichContent,
+          feature_grid: FeatureGrid,
+          spec_table: SpecTable,
+          faq_accordion: FaqAccordion,
+          category_showcase: CategoryShowcase,
+        }[block._type as string] ?? BlockFallback;
+        return <Component {...commonProps} />;
+      })
+    }
+  </main>
+</BaseLayout>

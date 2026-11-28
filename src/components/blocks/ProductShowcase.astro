@@ -1,0 +1,66 @@
+---
+// src/components/blocks/ProductShowcase.astro
+import { Image } from "emdash/ui";
+import { localizePath } from "../../lib/i18n";
+
+interface ShowcaseProduct {
+  id?: string;
+  name?: string;
+  images?: unknown[];
+  data?: {
+    name?: string;
+    main_image?: unknown;
+  };
+}
+
+interface Props {
+  value?: {
+    _type?: string;
+    _key?: string;
+    title?: string;
+    sub?: string;
+    cols?: string;
+  };
+  products?: ShowcaseProduct[];
+}
+
+const { value, products = [] } = Astro.props;
+if (products.length === 0) return null;
+
+const cols = value?.cols ?? "4";
+const currentLocale = Astro.currentLocale ?? "en";
+---
+
+<section class="mx-auto max-w-6xl px-4 py-14">
+  {value?.title && (
+    <h2 class="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+      {value.title}
+    </h2>
+  )}
+  {value?.sub && (
+    <p class="mb-10 text-center text-gray-600 dark:text-gray-400">{value.sub}</p>
+  )}
+  <div class={`grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-${cols}`}>
+    {products.map((p) => {
+      const href = p.id ? localizePath(`/product/${p.id}`, currentLocale) : "#";
+      const title = p.data?.name ?? p.name ?? "";
+      const img = p.data?.main_image ?? (Array.isArray(p.images) ? p.images[0] : undefined);
+      return (
+        <a href={href} class="group">
+          {img
+            ? (
+              <Image
+                image={img}
+                alt={title}
+                class="aspect-square w-full rounded-2xl object-cover"
+              />
+            )
+            : <div class="aspect-square w-full rounded-2xl bg-gray-100 dark:bg-dark-800"></div>}
+          <h3 class="mt-3 font-bold text-gray-900 group-hover:text-primary-600 dark:text-white">
+            {title}
+          </h3>
+        </a>
+      );
+    })}
+  </div>
+</section>
