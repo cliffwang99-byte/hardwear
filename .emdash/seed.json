@@ -158,6 +158,58 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "image_text",
+      "label": "左右图文",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "eyebrow", "label": "眉题", "type": "string" },
+            { "slug": "heading", "label": "主标题", "type": "string" },
+            { "slug": "body", "label": "正文", "type": "portableText" },
+            { "slug": "image", "label": "配图", "type": "image" },
+            {
+              "slug": "image_side",
+              "label": "图片位置",
+              "type": "select",
+              "defaultValue": "left",
+              "validation": { "options": ["left", "right"] }
+            },
+            { "slug": "cta_label", "label": "按钮文字", "type": "string" },
+            { "slug": "cta_href", "label": "按钮链接", "type": "url" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "image_cards",
+      "label": "上图下文卡片组",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "section_title", "label": "区块标题", "type": "string" },
+            { "slug": "sub_text", "label": "引导文案", "type": "text" },
+            {
+              "slug": "cards",
+              "label": "卡片列表",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  { "slug": "image", "label": "卡片图片", "type": "image" },
+                  { "slug": "title", "label": "卡片标题", "type": "string" },
+                  { "slug": "desc", "label": "卡片描述", "type": "text" }
+                ]
+              }
+            },
+            { "slug": "cols", "label": "每行数量", "type": "select", "defaultValue": "3", "validation": { "options": ["2", "3", "4"] } }
+          ]
+        }
+      ]
     }
   ],
   "collections": [
@@ -187,7 +239,9 @@
               "faq_accordion",
               "inquiry_cta",
               "category_showcase",
-              "product_showcase"
+              "product_showcase",
+              "image_text",
+              "image_cards"
             ]
           }
         },

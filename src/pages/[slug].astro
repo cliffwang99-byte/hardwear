@@ -17,6 +17,8 @@ import FaqAccordion from '../components/blocks/FaqAccordion.astro';
 import InquiryCta from '../components/blocks/InquiryCta.astro';
 import CategoryShowcase from '../components/blocks/CategoryShowcase.astro';
 import ProductShowcase from '../components/blocks/ProductShowcase.astro';
+import ImageText from '../components/blocks/ImageText.astro';
+import ImageCards from '../components/blocks/ImageCards.astro';
 import BlockFallback from '../components/blocks/BlockFallback.astro';
 
 const currentLocale = Astro.currentLocale ?? 'en';
@@ -158,6 +160,8 @@ const pageContext = createPublicPageContext({
           spec_table: SpecTable,
           faq_accordion: FaqAccordion,
           category_showcase: CategoryShowcase,
+          image_text: ImageText,
+          image_cards: ImageCards,
         }[block._type as string] ?? BlockFallback;
         return <Component {...commonProps} />;
       })

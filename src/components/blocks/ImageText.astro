@@ -1,0 +1,65 @@
+---
+// src/components/blocks/ImageText.astro
+import { Image, PortableText } from "emdash/ui";
+
+interface Props {
+  value?: {
+    _type?: string;
+    _key?: string;
+    eyebrow?: string;
+    heading?: string;
+    body?: unknown;
+    image?: unknown;
+    image_side?: string;
+    cta_label?: string;
+    cta_href?: string;
+  };
+}
+
+const { value } = Astro.props;
+if (!value) return null;
+
+const { eyebrow, heading, body, image, image_side, cta_label, cta_href } = value;
+const hasBody = Array.isArray(body);
+const hasContent = eyebrow || heading || hasBody || cta_href;
+
+if (!image || !hasContent) return null;
+
+const mediaOnRight = image_side === "right";
+const rowClass = mediaOnRight ? "md:flex-row-reverse" : "";
+---
+
+<section class="mx-auto max-w-6xl px-4 py-14">
+  <div class={`flex flex-col items-center gap-10 md:flex-row lg:gap-16 ${rowClass}`}>
+    <figure class="w-full shrink-0 overflow-hidden rounded-2xl md:w-1/2">
+      <Image image={image} alt={heading ?? ""} class="aspect-[4/3] h-full w-full object-cover" placeholder={false} />
+    </figure>
+
+    <div class="w-full md:w-1/2">
+      {eyebrow && (
+        <p class="mb-4 text-sm font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">
+          {eyebrow}
+        </p>
+      )}
+      {heading && (
+        <h2 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{heading}</h2>
+      )}
+      {hasBody && (
+        <div class="richtext mb-6">
+          <PortableText value={body} />
+        </div>
+      )}
+      {cta_href && (
+        <a
+          href={cta_href}
+          class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-primary-700"
+        >
+          {cta_label || "Learn More"}
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      )}
+    </div>
+  </div>
+</section>
