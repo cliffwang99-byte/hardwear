@@ -59,26 +59,24 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
       {cards.map((card) => {
         const spanClass = SPAN_CLASS[card.span ?? "normal"] ?? "";
         const hasLink = typeof card.link === "string" && card.link.length > 0;
-        const cardTag = hasLink ? "a" : "div";
-        return (
-          <cardTag
-            {...(hasLink ? { href: card.link, target: "_blank", rel: "noopener" } : {})}
-            class={`group relative flex min-h-36 flex-col justify-end overflow-hidden rounded-2xl ${spanClass} ${
-              card.span === "normal"
-                ? "border border-gray-200 bg-white shadow-sm dark:border-dark-700 dark:bg-dark-800"
-                : ""
-            }`}
-            key={card._key}
-          >
+        const baseClass = `group relative flex min-h-36 flex-col justify-end overflow-hidden rounded-2xl ${spanClass} ${
+          card.span === "normal"
+            ? "border border-gray-200 bg-white shadow-sm dark:border-dark-700 dark:bg-dark-800"
+            : ""
+        }`;
+        // 有链接整卡可点击，无链接退化为普通容器——用显式分支而非动态标签，
+        // Astro 里小写变量名不会按动态标签解析，href 会丢失导致点击无反应
+        const inner = (
+          <>
             {card.image && (
               <Image
-                image={card.image}
+                image={card.image as any}
                 alt={card.title ?? ""}
                 class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 placeholder={false}
               />
             )}
-            <figcaption
+            <div
               class={`relative p-6 ${card.span === "big" ? "" : "bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white"}`}
             >
               {card.title && (
@@ -87,10 +85,10 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
               {card.desc && (
                 <p class="text-sm leading-relaxed text-inherit opacity-90">{card.desc}</p>
               )}
-            </figcaption>
+            </div>
             {hasLink && (
               <span
-                class="absolute bottom-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white"
+                class="absolute bottom-4 end-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white"
                 aria-hidden="true"
               >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +101,14 @@ const colClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
                 </svg>
               </span>
             )}
-          </cardTag>
+          </>
+        );
+        return hasLink ? (
+          <a href={card.link} target="_blank" rel="noopener" class={baseClass}>
+            {inner}
+          </a>
+        ) : (
+          <div class={baseClass}>{inner}</div>
         );
       })}
     </div>
