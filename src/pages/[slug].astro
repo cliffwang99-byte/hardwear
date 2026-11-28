@@ -19,6 +19,7 @@ import CategoryShowcase from '../components/blocks/CategoryShowcase.astro';
 import ProductShowcase from '../components/blocks/ProductShowcase.astro';
 import ImageText from '../components/blocks/ImageText.astro';
 import ImageCards from '../components/blocks/ImageCards.astro';
+import BentoGrid from '../components/blocks/BentoGrid.astro';
 import BlockFallback from '../components/blocks/BlockFallback.astro';
 
 const currentLocale = Astro.currentLocale ?? 'en';
@@ -162,6 +163,7 @@ const pageContext = createPublicPageContext({
           category_showcase: CategoryShowcase,
           image_text: ImageText,
           image_cards: ImageCards,
+          bento_grid: BentoGrid,
         }[block._type as string] ?? BlockFallback;
         return <Component {...commonProps} />;
       })
