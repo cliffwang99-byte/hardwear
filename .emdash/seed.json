@@ -84,7 +84,7 @@
     {
       "slug": "faq_accordion",
       "label": "FAQ 折叠面板",
-      "currentVersion": 1,
+      "currentVersion": 2,
       "versions": [
         {
           "version": 1,
@@ -101,6 +101,13 @@
                 ]
               }
             }
+          ]
+        },
+        {
+          "version": 2,
+          "fields": [
+            { "slug": "title", "label": "FAQ 标题", "type": "string" },
+            { "slug": "body", "label": "问答内容", "type": "portableText" }
           ]
         }
       ]
@@ -281,7 +288,7 @@
           }
         },
         {
-          "slug": "featured_products",
+          "slug": "products",
           "label": "精选产品橱窗（数据源）",
           "type": "reference",
           "validation": { "targetCollection": "products", "multiple": true }

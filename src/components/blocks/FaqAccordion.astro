@@ -1,7 +1,9 @@
 ---
 // src/components/blocks/FaqAccordion.astro
+import { PortableText } from "emdash/ui";
+import { faqBlocksToItems, portableTextToText } from "../../lib/shop";
 
-interface FaqItem {
+interface LegacyFaq {
   _key?: string;
   question?: string;
   answer?: string;
@@ -12,15 +14,29 @@ interface Props {
     _type?: string;
     _key?: string;
     title?: string;
-    faqs?: FaqItem[];
+    body?: unknown;
+    faqs?: LegacyFaq[];
   };
 }
 
 const { value } = Astro.props;
 const title = value?.title;
-const faqs = (Array.isArray(value?.faqs) ? value.faqs : []).filter(
+
+// v2：富文本正文，H2/H3/H4 标题作为问题、后续块作为答案；一次输入即可。
+const bodyItems = faqBlocksToItems(Array.isArray(value?.body) ? (value.body as unknown[]) : []);
+
+// 兼容 v1 历史数据：身上没有富文本时回退旧 repeater 结构。
+const legacyFaqs = (Array.isArray(value?.faqs) ? value.faqs : []).filter(
   (f) => f?.question && f?.answer,
 );
+
+const faqs =
+  bodyItems.length > 0
+    ? bodyItems
+    : legacyFaqs.map((f) => ({
+        question: f.question,
+        answerBlocks: [{ _type: "block", style: "normal", children: [{ _type: "span", text: f.answer }] }],
+      }));
 
 if (faqs.length === 0) return null;
 
@@ -30,7 +46,7 @@ const faqLd = JSON.stringify({
   mainEntity: faqs.map((f) => ({
     "@type": "Question",
     name: f.question,
-    acceptedAnswer: { "@type": "Answer", text: f.answer },
+    acceptedAnswer: { "@type": "Answer", text: portableTextToText(f.answerBlocks) },
   })),
 });
 ---
@@ -46,7 +62,6 @@ const faqLd = JSON.stringify({
     {faqs.map((faq) => (
       <div
         class="faq-item overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-dark-700 dark:bg-dark-800"
-        key={faq._key}
       >
         <button
           type="button"
@@ -57,8 +72,8 @@ const faqLd = JSON.stringify({
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div class="faq-content hidden px-6 pb-5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-          {faq.answer}
+        <div class="faq-content hidden px-6 pb-5 text-sm leading-relaxed text-gray-600 dark:text-gray-300 richtext max-w-none">
+          <PortableText value={faq.answerBlocks as never} />
         </div>
       </div>
     ))}

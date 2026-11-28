@@ -1,17 +1,7 @@
 ---
 // src/components/blocks/ProductShowcase.astro
-import { Image } from "emdash/ui";
-import { localizePath } from "../../lib/i18n";
-
-interface ShowcaseProduct {
-  id?: string;
-  name?: string;
-  images?: unknown[];
-  data?: {
-    name?: string;
-    main_image?: unknown;
-  };
-}
+// 产品橱窗：页面级 reference 的产品直接复用统一 ProductCard，价格由详情页展示，这里不传
+import ProductCard from "../ProductCard.astro";
 
 interface Props {
   value?: {
@@ -21,14 +11,36 @@ interface Props {
     sub?: string;
     cols?: string;
   };
-  products?: ShowcaseProduct[];
+  products?: Array<Record<string, unknown>>;
 }
 
 const { value, products = [] } = Astro.props;
 if (products.length === 0) return null;
 
 const cols = value?.cols ?? "4";
-const currentLocale = Astro.currentLocale ?? "en";
+
+// 静态类名映射：避免运行期拼接 Tailwind 类名导致样式不生效
+const gridClass =
+  cols === "2"
+    ? "sm:grid-cols-2"
+    : cols === "3"
+      ? "sm:grid-cols-2 lg:grid-cols-3"
+      : "sm:grid-cols-2 lg:grid-cols-4";
+
+// 「价格不显示」：只在 ProductCard 数据属性里传 0，不渲染价格数字
+const cards = products
+  .map((p) => {
+    if (!p || typeof p !== "object") return null;
+    const rec = p as Record<string, unknown>;
+    const data = (rec.data && typeof rec.data === "object" ? rec.data : {}) as Record<string, unknown>;
+    return {
+      id: (rec.id as string) ?? (rec.slug as string) ?? "",
+      name: typeof data.name === "string" ? data.name : typeof rec.title === "string" ? rec.title : "",
+      image: (data.image ?? " ") as string,
+      inStock: data.inStock !== false,
+    };
+  })
+  .filter((c): c is { id: string; name: string; image: string; inStock: boolean } => !!c && !!c.id && !!c.name);
 ---
 
 <section class="mx-auto max-w-6xl px-4 py-14">
@@ -40,27 +52,16 @@ const currentLocale = Astro.currentLocale ?? "en";
   {value?.sub && (
     <p class="mb-10 text-center text-gray-600 dark:text-gray-400">{value.sub}</p>
   )}
-  <div class={`grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-${cols}`}>
-    {products.map((p) => {
-      const href = p.id ? localizePath(`/product/${p.id}`, currentLocale) : "#";
-      const title = p.data?.name ?? p.name ?? "";
-      const img = p.data?.main_image ?? (Array.isArray(p.images) ? p.images[0] : undefined);
-      return (
-        <a href={href} class="group">
-          {img
-            ? (
-              <Image
-                image={img}
-                alt={title}
-                class="aspect-square w-full rounded-2xl object-cover"
-              />
-            )
-            : <div class="aspect-square w-full rounded-2xl bg-gray-100 dark:bg-dark-800"></div>}
-          <h3 class="mt-3 font-bold text-gray-900 group-hover:text-primary-600 dark:text-white">
-            {title}
-          </h3>
-        </a>
-      );
-    })}
+  <div class={`grid grid-cols-1 gap-6 ${gridClass}`}>
+    {cards.map((card) => (
+      <ProductCard
+        id={card.id}
+        name={card.name}
+        price={0}
+        originalPrice={undefined}
+        image={card.image}
+        inStock={card.inStock}
+      />
+    ))}
   </div>
 </section>

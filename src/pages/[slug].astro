@@ -45,7 +45,7 @@ let entryError: unknown = undefined;
 try {
 	const result = (await getEmDashEntry('pages' as never, slug ?? '', {
 		locale: currentLocale,
-		references: { featured_products: true },
+		references: { products: true },
 	})) as unknown as PageEntry;
 	pageEntry = result.entry ?? null;
 	entryError = result.error;
@@ -58,10 +58,10 @@ const pageTitle = typeof pageData.title === 'string' ? pageData.title : '';
 const title = pageTitle || slug || '';
 const sections = Array.isArray(pageData.sections) ? pageData.sections : [];
 
-// 页面级 reference：精选产品橱窗的数据源（§8 双轨方案）
+// 页面级 reference：精选产品橱窗的数据源（pages 集合 `products` 字段，后台勾选产品）
 // 本地库若缺 products 集合/该字段，这里优雅回退为空数组
 const featuredProducts =
-	(pageEntry?.references?.featured_products?.entries as unknown[] | undefined) ?? [];
+	(pageEntry?.references?.products?.entries as unknown[] | undefined) ?? [];
 
 // 未找到页面：直接 404 而不是渲染空壳
 if (!pageEntry) {
